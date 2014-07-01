@@ -1,12 +1,14 @@
+Zend-Db-Model-Generator
+----------------------
+
 * NOTICE - Please read the ChangeLog file for latest updates and changes
            regarding v0.7RC2.
 * I officially started working on a version that supports Zend Framework 2.
 * (about time!) :)
 
-Zend-Db-Model-Generator
-----------------------
 
-Instructions:
+
+**Instructions:**
 
 1. copy config.php-default to config.php inside data directory
 2. edit config.php and configure your db and other relevant directives.
@@ -23,12 +25,12 @@ parameters:
     --location            : specify where to create the files (default is current directory)
     --templates           : specify the location of the templates (default is "templates")
     --namespace           : override config file's default namespace
- *  --table               : table name (parameter can be used more then once)
+*    --table               : table name (parameter can be used more then once)
     --table-prefix        : remove that prefix of table name (can be used more then once)
     --all-tables          : create classes for all the scripts in the database
- *  --ignore-table        : not to create a class for a specific table
- *  --ignore-tables-regex : ignore tables by perl regular expression
- *  --tables-regex        : add tables by perl regular expression
+*    --ignore-table        : not to create a class for a specific table
+*    --ignore-tables-regex : ignore tables by perl regular expression
+*    --tables-regex        : add tables by perl regular expression
 
                     parameters with * can be used more then once.
 
@@ -53,38 +55,58 @@ placed by the script in their appropriate places
 USAGE
 -----
 
-class::toArray() - returns an array, keys are the column names
-class::fetchAll() - fetch all rows
-class::findOneBy<field>($value) - find a row where the field eq $value
-class::findBy<field>($value) - find an array
-class::find($id) - find a row by primary key
-class::fetchList($where=null, $order=null, $count=null, $offset=null) - fetch all , filtered by where, order, count and offset.
-class::fetchListToArray($where=null, $order=null, $count=null, $offset=null) - fetch all , filtered by where, order, count and offset.
-                                                                               returns each row in an array instead of an instance of the class.
-class::save($ignoreEmptyValuesOnUpdate=true) - save the current row
-class::set<field>($value) - sets a field with a value
-class::get<field>() - get a field's value
-class::fetchAllToArray() - returns all the rows of the table in an array
+```
+class::toArray() #- returns an array, keys are the column names
 
-class::deleteRowByPrimaryKey() - in general it's used to delete the current loaded row
-class::delete($where)   - delete rows in the table by $where
-class::countAllRows() -  counts all rows
-class::getPrimaryKeyName() - returns the name of the primary key column
-class::countByQuery($where='') - count query results
-class::select2Paginator(Zend_Db_Select $select) - created a Zend_Paginator class by a given select
-class::fetchAll2Paginator()  - fetch all rows into a Zend_Paginator
-class::fetchListToPaginator($where=null, $order=null, $count=null, $offset=null) -
-                    fetchs all rows optionally filtered by where, order, count and offset
-class::getTableName() - returns the table name
-class::getSelect($withFromPart=true,$resetColumns=true,$resetOrder=true,$resetLimitOffset=true) - returns a Zend_Db_Table_select object
-class::query2Paginator($query) - creates a Zend_Paginator for a query string
+class::fetchAll() #- fetch all rows
+
+class::findOneBy<field>($value) #- find a row where the field eq $value
+
+class::findBy<field>($value) #- find an array
+
+class::find($id) #- find a row by primary key
+
+class::fetchList($where=null, $order=null, $count=null, $offset=null) #- fetch all , filtered by where, order, count and offset.
+
+class::fetchListToArray($where=null, $order=null, $count=null, $offset=null) #- fetch all , filtered by where, order, count and offset.returns each row in an array instead of an instance of the class.
+
+class::save($ignoreEmptyValuesOnUpdate=true) #- save the current row
+
+class::set<field>($value) #- sets a field with a value
+
+class::get<field>() #- get a field's value
+
+class::fetchAllToArray() #- returns all the rows of the table in an array
+
+class::deleteRowByPrimaryKey() #- in general it's used to delete the current loaded row
+
+class::delete($where)   #- delete rows in the table by $where
+
+class::countAllRows() #-  counts all rows
+
+class::getPrimaryKeyName() #- returns the name of the primary key column
+
+class::countByQuery($where='') #- count query results
+
+class::select2Paginator(Zend_Db_Select $select) #- created a Zend_Paginator class by a given select
+
+class::fetchAll2Paginator()  #- fetch all rows into a Zend_Paginator
+
+class::fetchListToPaginator($where=null, $order=null, $count=null, $offset=null) #- fetchs all rows optionally filtered by where, order, count and offset
+
+class::getTableName() #- returns the table name
+
+class::getSelect($withFromPart=true,$resetColumns=true,$resetOrder=true,$resetLimitOffset=true) #- returns a Zend_Db_Table_select object
+
+class::query2Paginator($query) #- creates a Zend_Paginator for a query string
+
+```
 
 Example:
 
 class for database table 'users':
 
-===== example.php =======
-
+```
 <?php
 
 /* The following code may be needed without the usage of Zend Framework MVC.
@@ -138,9 +160,8 @@ $users->setId(9);
 $users->setUsername('newuser');
 $users->save();
 
-?>
 
-==== end of example.php ==
+```
 
 ** more examples can be found in testzdmg directory.
 
@@ -151,3 +172,7 @@ Charles Spraggs,Richard Hamilton,AJIT DIXIT,Aleksandar Scepanovic,Ivan
 Mosquera Paulo
 
 Changelog is created by svn2cl (http://arthurdejong.org/svn2cl).
+
+
+
+> Written with [StackEdit](https://stackedit.io/).
