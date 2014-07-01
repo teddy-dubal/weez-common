@@ -1,0 +1,11 @@
+{
+    "name": "vendor/weezdb",
+    "description": "Description of project Weezdb.",
+    "authors": [
+        {
+            "name": "T.ED",
+            "email": "t.erembertdubal@weezevent.com"
+        }
+    ],
+    "require": {}
+}
