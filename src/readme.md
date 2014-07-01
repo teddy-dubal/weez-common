@@ -14,7 +14,7 @@ Zend-Db-Model-Generator
 2. edit config.php and configure your db and other relevant directives.
 3. execute it .
 
-```
+```php
 
 php zend-db-model-generator.php --database testzdmg --all-tables
 
@@ -55,7 +55,8 @@ placed by the script in their appropriate places
 USAGE
 -----
 
-```
+```php
+
 class::toArray() #- returns an array, keys are the column names
 
 class::fetchAll() #- fetch all rows
@@ -106,7 +107,8 @@ Example:
 
 class for database table 'users':
 
-```
+```php
+
 <?php
 
 /* The following code may be needed without the usage of Zend Framework MVC.
