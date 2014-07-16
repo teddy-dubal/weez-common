@@ -5,37 +5,34 @@
  *
  * @author Steven Hadfield
  */
-abstract class IncludeAbstract
-{
-	const TYPE_MODEL = 'Model';
-	const TYPE_MAPPER = 'Mapper';
-	const TYPE_DBTABLE = 'DbTable';
+abstract class IncludeAbstract {
+
+    const TYPE_MODEL   = 'Model';
+    const TYPE_MAPPER  = 'Mapper';
+    const TYPE_DBTABLE = 'DbTable';
 
     protected $_vars;
-
     protected $_functions;
-
     protected $_parent_class;
-
     protected $_namespace;
 
-    public function __construct($namespace)
-    {
-    	$this->_namespace = $namespace;
+    public function __construct($namespace) {
+        $this->_namespace = $namespace;
         $this->setVars();
         $this->setFunctions();
         $this->setParentClass();
     }
 
     public abstract function getType();
+
     public abstract function setVars();
+
     public abstract function setFunctions();
 
     /**
      * @return string
      */
-    public function getVars()
-    {
+    public function getVars() {
         if (is_array($this->_vars)) {
             return join("\n\n", $this->_vars);
         }
@@ -46,8 +43,7 @@ abstract class IncludeAbstract
     /**
      * @return string
      */
-    public function getFunctions()
-    {
+    public function getFunctions() {
         if (is_array($this->_functions)) {
             return join("\n\n", $this->_functions);
         }
@@ -58,9 +54,8 @@ abstract class IncludeAbstract
     /**
      * @return string
      */
-    public function getParentClass()
-    {
-		return $this->_parent_class;
+    public function getParentClass() {
+        return $this->_parent_class;
     }
 
     /**
@@ -68,26 +63,26 @@ abstract class IncludeAbstract
      * class should still extend the default parent class to maintain
      * interoperability.
      */
-    public function setParentClass()
-    {
-    	$type = $this->getType();
-    	$class = $this->_namespace . '_Model_';
-    	switch ($type) {
-    		case self::TYPE_MODEL:
-    			$class .= 'ModelAbstract';
-    			break;
-    		case self::TYPE_MAPPER:
-    			$class .= 'Mapper_MapperAbstract';
-    			break;
-    		case self::TYPE_DBTABLE:
-    			$class .= 'DbTable_TableAbstract';
-    			break;
+    public function setParentClass() {
+        $type  = $this->getType();
+        $class = $this->_namespace . '\Model\\';
+        switch ($type) {
+            case self::TYPE_MODEL:
+                $class .= 'ModelAbstract';
+                break;
+            case self::TYPE_MAPPER:
+                $class .= 'Mapper\MapperAbstract';
+                break;
+            case self::TYPE_DBTABLE:
+                $class .= 'DbTable\TableAbstract';
+                break;
 
-    		default:
-    			throw new Exception('Unknown Type');
-    			break;
-    	}
+            default:
+                throw new Exception('Unknown Type');
+                break;
+        }
 
-		$this->_parent_class = $class;
+        $this->_parent_class = $class;
     }
+
 }
