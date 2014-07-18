@@ -1,19 +1,28 @@
 <?php
 
+namespace Weez\ZendModelGenerator\Lib;
+
+use Exception;
+use Weez\ZendModelGenerator\Lib\MakeDbTableFactory;
+
 /**
  * MySQL specific class for model creation
  */
-class Make_mysql extends MakeDbTable {
+class MakeMysql extends MakeDbTableFactory
+{
 
-    protected function getPDOString($host, $port = 3306, $dbname) {
+    protected function getPDOString($host, $port = 3306, $dbname)
+    {
         return "mysql:host=$host;port=$port;dbname=$dbname";
     }
 
-    protected function getPDOSocketString($host, $dbname) {
+    protected function getPDOSocketString($host, $dbname)
+    {
         return "mysql:unix_socket=$host;dbname=$dbname";
     }
 
-    public function getTablesNamesFromDb() {
+    public function getTablesNamesFromDb()
+    {
         $res    = $this->_pdo->query('show tables')->fetchAll();
         $tables = array();
         foreach ($res as $table) {
@@ -23,7 +32,8 @@ class Make_mysql extends MakeDbTable {
         return $tables;
     }
 
-    public function getDateTimeFormat() {
+    public function getDateTimeFormat()
+    {
         return "'YYYY-MM-ddTHH:mm:ss.S'";
     }
 
@@ -33,7 +43,8 @@ class Make_mysql extends MakeDbTable {
      * @param string $str
      * @return string
      */
-    protected function _convertTypeToPhp($str) {
+    protected function _convertTypeToPhp($str)
+    {
         if (preg_match('/(tinyint\(1\)|bit)/', $str)) {
             $res = 'boolean';
         } elseif (preg_match('/(datetime|timestamp|blob|char|enum|text|date)/', $str)) {
@@ -49,7 +60,8 @@ class Make_mysql extends MakeDbTable {
         return $res;
     }
 
-    public function parseForeignKeys() {
+    public function parseForeignKeys()
+    {
         $tbname = $this->getTableName();
         $this->_pdo->query("SET NAMES UTF8");
         $qry    = $this->_pdo->query("show create table `$tbname`");
@@ -113,7 +125,8 @@ class Make_mysql extends MakeDbTable {
         $this->setForeignKeysInfo($keys);
     }
 
-    public function parseDependentTables() {
+    public function parseDependentTables()
+    {
         $tbname = $this->getTableName();
         $tables = $this->getTableList();
         $this->_pdo->query("SET NAMES UTF8");
@@ -168,7 +181,8 @@ class Make_mysql extends MakeDbTable {
         $this->setDependentTables($dependents);
     }
 
-    public function parseDescribeTable() {
+    public function parseDescribeTable()
+    {
 
         $tbname = $this->getTableName();
         $this->_pdo->query("SET NAMES UTF8");

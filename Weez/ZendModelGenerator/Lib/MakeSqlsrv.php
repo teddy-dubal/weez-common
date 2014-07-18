@@ -1,9 +1,12 @@
 <?php
-require_once 'Make.mssql.php';
 
-class Make_sqlsqrv extends Make_mssql {
+namespace Weez\ZendModelGenerator\Lib;
 
-    protected function getPDOString($host, $port, $dbname) {
+class MakeSqlsrv /* extends MakeMssql */
+{
+
+    protected function getPDOString($host, $port, $dbname)
+    {
         $seperator = ':';
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $seperator = ',';
@@ -11,4 +14,5 @@ class Make_sqlsqrv extends Make_mssql {
 
         return "sqlsrv:server=$host; port=$port; Database=$dbname";
     }
+
 }

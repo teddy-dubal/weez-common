@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+require_once __DIR__ . '/../../../vendor/autoload.php';
+
+
 if (!is_file(dirname(__FILE__) . '/config/config.php')) {
     die("please copy config/config.php-default to config/config.php and modify.");
 }
@@ -128,7 +131,6 @@ foreach ($tables as $table) {
         echo "Warining: Failed to process $table: " . $e->getMessage() . " ... Skipping\n";
     }
 }
-
 
 echo "done!\n";
 

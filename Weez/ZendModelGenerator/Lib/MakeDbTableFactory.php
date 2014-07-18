@@ -1,11 +1,19 @@
 <?php
 
-require_once('MakeDbTableAbstract.php');
+namespace Weez\ZendModelGenerator\Lib;
+
+use Weez\ZendModelGenerator\Lib\MakeDbTableAbstract;
 
 /**
  * main class for files creation
  */
-abstract class MakeDbTable extends MakeDbTableAbstract {
+abstract class MakeDbTableFactory extends MakeDbTableAbstract
+{
+
+    /**
+     *   @var int $zfv;
+     */
+    protected $zfv;
 
     /**
      *   @var Boolean $_addRequire;
@@ -17,7 +25,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
      */
     protected $_includePath;
 
-    public function setIncludePath($path) {
+    public function setIncludePath($path)
+    {
         $this->_includePath = $path;
     }
 
@@ -25,7 +34,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
      *
      * @return string
      */
-    public function getIncludePath() {
+    public function getIncludePath()
+    {
         return $this->_includePath;
     }
 
@@ -37,12 +47,15 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
      * @param String $dbname
      * @param String $namespace
      */
-    function __construct($config, $dbname, $namespace) {
+    public function __construct($config, $dbname, $namespace, $zfv = 1)
+    {
         parent::__construct($config, $dbname, $namespace);
-
-        // set default template path for zfw 1.x
-        $this->setTemplatePath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v1');
-
+        $this->zfv = $zfv;
+        if (1 == $zfv) {
+            $this->setTemplatePath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v1');
+        } else {
+            $this->setTemplatePath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2');
+        }
         $this->_addRequire = $config['include.addrequire'];
         $path              = $this->_config['include.path'];
 
@@ -64,7 +77,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
     /**
      * creates the DbTable class file
      */
-    function makeDbTableFile() {
+    public function makeDbTableFile()
+    {
 
         $class = 'DbTable\\' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -106,7 +120,7 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
 
         if (sizeof($references) > 0) {
             $referenceMap = "protected \$_referenceMap = array(" .
-                join(',', $references) . "\n    );";
+                    join(',', $references) . "\n    );";
         }
 
         $dependentTables = '';
@@ -117,7 +131,7 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
 
         if (sizeof($dependents) > 0) {
             $dependentTables = "protected \$_dependentTables = array(\n        '" .
-                join("',\n        '", $dependents) . "'\n    );";
+                    join("',\n        '", $dependents) . "'\n    );";
         }
 
         $vars = array('referenceMap' => $referenceMap, 'dependentTables' => $dependentTables);
@@ -131,7 +145,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
     /**
      * creates the Mapper class file
      */
-    function makeMapperFile() {
+    public function makeMapperFile()
+    {
 
         $class = 'Mapper_' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -155,7 +170,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
     /**
      * creates the model class file
      */
-    function makeModelFile() {
+    public function makeModelFile()
+    {
 
         $class = 'Model\\' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -176,13 +192,23 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
         }
     }
 
+    public function doItAll()
+    {
+        if (1 == $this->zfv) {
+            $this->doItAllZf1();
+        } else {
+            $this->doItAllZf2();
+        }
+    }
+
     /**
      *
      * creates all class files
      *
      * @return Boolean
      */
-    function doItAll() {
+    private function doItAllZf1()
+    {
 
         $this->makeDbTableFile();
         $this->makeMapperFile();
@@ -238,7 +264,8 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
         return true;
     }
 
-    protected function copyIncludeFiles($dir, $dest) {
+    protected function copyIncludeFiles($dir, $dest)
+    {
         $files     = array();
         $directory = opendir($dir);
 
@@ -251,6 +278,33 @@ abstract class MakeDbTable extends MakeDbTableAbstract {
             copy($dir . DIRECTORY_SEPARATOR . $item, $dest . DIRECTORY_SEPARATOR . $item);
         }
         closedir($directory);
+    }
+
+    private function doItAllZf2()
+    {
+        $entityData = $this->getParsedTplContents('Entity.phtml');
+        $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity.php";
+
+        $managerData = $this->getParsedTplContents('Manager.phtml');
+        $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Manager.php";
+
+        $fooFile = $this->getLocation() . DIRECTORY_SEPARATOR . $this->_className . ".php";
+        $fooData = $this->getParsedTplContents('Foo.phtml');
+
+        $fooTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . $this->_className . "Table.php";
+        $fooTableData = $this->getParsedTplContents('FooTable.phtml');
+
+        $templatesDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2') . DIRECTORY_SEPARATOR;
+
+        if (!file_put_contents($entityFile, $entityData))
+            die("Error: could not write Entity file $entityFile.");
+        if (!file_put_contents($managerFile, $managerData))
+            die("Error: could not write Manager file $managerFile.");
+        if (!file_put_contents($fooFile, $fooData))
+            die("Error: could not write model file $fooFile.");
+        if (!file_put_contents($fooTableFile, $fooTableData))
+            die("Error: could not write model file $fooFile.");
+        return true;
     }
 
 }

@@ -1,11 +1,16 @@
 <?php
 
+namespace Weez\ZendModelGenerator\Lib;
+
+use Exception;
+
 /**
  * Class name should be (Model|Mapper|DbTable)_(ucfirst(TableName)
  *
  * @author Steven Hadfield
  */
-abstract class IncludeAbstract {
+abstract class IncludeAbstract
+{
 
     const TYPE_MODEL   = 'Model';
     const TYPE_MAPPER  = 'Mapper';
@@ -16,7 +21,8 @@ abstract class IncludeAbstract {
     protected $_parent_class;
     protected $_namespace;
 
-    public function __construct($namespace) {
+    public function __construct($namespace)
+    {
         $this->_namespace = $namespace;
         $this->setVars();
         $this->setFunctions();
@@ -32,7 +38,8 @@ abstract class IncludeAbstract {
     /**
      * @return string
      */
-    public function getVars() {
+    public function getVars()
+    {
         if (is_array($this->_vars)) {
             return join("\n\n", $this->_vars);
         }
@@ -43,7 +50,8 @@ abstract class IncludeAbstract {
     /**
      * @return string
      */
-    public function getFunctions() {
+    public function getFunctions()
+    {
         if (is_array($this->_functions)) {
             return join("\n\n", $this->_functions);
         }
@@ -54,7 +62,8 @@ abstract class IncludeAbstract {
     /**
      * @return string
      */
-    public function getParentClass() {
+    public function getParentClass()
+    {
         return $this->_parent_class;
     }
 
@@ -63,7 +72,8 @@ abstract class IncludeAbstract {
      * class should still extend the default parent class to maintain
      * interoperability.
      */
-    public function setParentClass() {
+    public function setParentClass()
+    {
         $type  = $this->getType();
         $class = $this->_namespace . '\Model\\';
         switch ($type) {

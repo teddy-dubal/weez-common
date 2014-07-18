@@ -215,12 +215,8 @@ throw new \Exception("Not used");
         * @param boolean $load Load the object if it is not already
         * @return <?= $this->_namespace ?>\Model\<?= $this->_getClassName($key['foreign_tbl_name']) . "\n" ?>
         */
-        public function get<?= $this->_getRelationName($key, 'dependent') ?>($load = true)
+        public function get<?= $this->_getRelationName($key, 'dependent') ?>()
         {
-        if ($this->_<?= $this->_getRelationName($key, 'dependent') ?> === null && $load) {
-        $this->getMapper()->loadRelated('<?= $this->_getCapital($key['key_name']) ?>', $this);
-        }
-
         return $this->_<?= $this->_getRelationName($key, 'dependent') ?>;
         }
     <?php else: ?>
@@ -256,19 +252,14 @@ throw new \Exception("Not used");
         /**
         * Gets dependent <?= $key['key_name'] . "\n" ?>
         *
-        * @param boolean $load Load the object if it is not already
         * @return array The array of <?= $this->_namespace ?>\Model\<?= $this->_getClassName($key['foreign_tbl_name']) . "\n" ?>
         */
-        /*
-        public function get<?= $this->_getRelationName($key, 'dependent') ?>($load = true)
-        {
-        if ($this->_<?= $this->_getRelationName($key, 'dependent') ?> === null && $load) {
-        $this->getMapper()->loadRelated('<?= $this->_getCapital($key['key_name']) ?>', $this);
-        }
 
+        public function get<?= $this->_getRelationName($key, 'dependent') ?>()
+        {
         return $this->_<?= $this->_getRelationName($key, 'dependent') ?>;
         }
-        */
+
     <?php endif; ?>
 <?php endforeach; ?>
 
@@ -276,7 +267,7 @@ throw new \Exception("Not used");
 * Array of options/values to be set for this model. Options without a
 * matching method are ignored.
 *
-* @param array $options
+* @param array $data
 *
 */
 
@@ -286,6 +277,24 @@ public function exchangeArray(array $data)
     $this->_<?= $column['capital'] ?>     = (isset($data['<?= $column['field'] ?>'])) ? $data['<?= $column['field'] ?>'] : null;
 <?php endforeach; ?>
 
+}
+
+/**
+* Returns an array, keys are the field names.
+*
+* @param <?= $this->_namespace ?>\Model\<?= $this->_className ?> $model
+* @return array
+*/
+public function toArray()
+{
+$result = array(<?php
+echo "\n";
+foreach ($this->_columns as $column):
+    ?>
+    '<?= $column['field'] ?>' => $this->get<?= $column['capital'] ?>(),
+<?php endforeach; ?>
+);
+return $result;
 }
 
 /**

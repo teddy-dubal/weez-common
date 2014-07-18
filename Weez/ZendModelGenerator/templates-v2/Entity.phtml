@@ -1,6 +1,8 @@
 <?php
+echo "<?php\n";
+?>
 
-namespace Interiale\Model;
+namespace <?= $this->_namespace ?>\Model;
 
 class Entity
 {
@@ -29,7 +31,7 @@ protected $_dependentList;
 * Set the list of columns associated with this model
 *
 * @param array $data
-* @return Interiale\Model\ModelAbstract
+* @return <?= $this->_namespace ?>\Model\ModelAbstract
 */
 public function setColumnsList($data)
 {
@@ -51,7 +53,7 @@ return $this->_columnsList;
 * Set the list of relationships associated with this model
 *
 * @param array $data
-* @return Interiale\Model\ModelAbstract
+* @return <?= $this->_namespace ?>\Model\ModelAbstract
 */
 public function setParentList($data)
 {
@@ -73,7 +75,7 @@ return $this->_parentList;
 * Set the list of relationships associated with this model
 *
 * @param array $data
-* @return Interiale\Model\ModelAbstract
+* @return <?= $this->_namespace ?>\Model\ModelAbstract
 */
 public function setDependentList($data)
 {
@@ -124,21 +126,11 @@ return null;
 * matching method are ignored.
 *
 * @param array $options
-* @return Interiale\Model\ModelAbstract
+* @return <?= $this->_namespace ?>\Model\ModelAbstract
 */
 public function setOptions(array $options)
 {
-$methods = get_class_methods($this);
-foreach ($options as $key => $value) {
-$key = preg_replace_callback('/_(.)/',
-create_function('$matches','return ucfirst($matches[1]);'),
-$key);
-$method = 'set' . ucfirst($key);
-
-if (in_array($method, $methods)) {
-$this->$method($value);
-}
-}
+$this->exchangeArray($options);
 return $this;
 }
 

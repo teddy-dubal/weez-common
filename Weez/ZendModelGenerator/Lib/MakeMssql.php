@@ -1,13 +1,17 @@
 <?php
 
+namespace Weez\ZendModelGenerator\Lib;
+
 /**
  * Microsoft SQL specific class for model creation
  */
-class Make_mssql extends MakeDbTable {
+class MakeMssql extends MakeDbTable
+{
 
     protected $_server_version = null;
 
-    protected function getPDOString($host, $port = 1433, $dbname) {
+    protected function getPDOString($host, $port = 1433, $dbname)
+    {
         $seperator = ':';
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $seperator = ',';
@@ -16,13 +20,14 @@ class Make_mssql extends MakeDbTable {
         return "mssql:host=$host$seperator$port;dbname=$dbname";
     }
 
-    protected function getServerVersion() {
+    protected function getServerVersion()
+    {
         if ($this->_server_version === null) {
             // Get Server version. Try the SQL Server 2000+ method first
             $version = $this->_pdo->query("select CAST(SERVERPROPERTY('productversion') as VARCHAR) as version");
 
             // For SQL Server 7 and older that don't have SERVERPROPERTY, try @@VERSION
-            if (! $version) {
+            if (!$version) {
                 $version = $this->_pdo->query("select CAST(@@VERSION as VARCHAR)");
             }
 
@@ -39,13 +44,14 @@ class Make_mssql extends MakeDbTable {
         return $this->_server_version;
     }
 
-    public function getTablesNamesFromDb() {
-        $res = $this->_pdo->query("select name
+    public function getTablesNamesFromDb()
+    {
+        $res    = $this->_pdo->query("select name
                 from sysobjects
                 where xtype = 'U' and uid = 1 and
                 name not in ('sysdiagrams', 'dtproperties')")->fetchAll();
         $tables = array();
-        foreach ($res as $table){
+        foreach ($res as $table) {
             $tables[] = $table[0];
         }
 
@@ -58,28 +64,31 @@ class Make_mssql extends MakeDbTable {
      * @param string $str
      * @return string
      */
-    protected function _convertTypeToPhp($str) {
+    protected function _convertTypeToPhp($str)
+    {
         if (preg_match('/(tinyint|bit)/', $str)) {
             $res = 'boolean';
-        } elseif(preg_match('/(date|time|text|binary|char|xml|uniqueidentifier)/', $str)) {
+        } elseif (preg_match('/(date|time|text|binary|char|xml|uniqueidentifier)/', $str)) {
             $res = 'string';
         } elseif (preg_match('/(decimal|numeric|real|float|money)/', $str)) {
             $res = 'float';
-        } elseif (preg_match('#^(?:tiny|small|medium|long|big|var)?(\w+)(?:\(\d+\))?(?:\s\w+)*$#',$str,$matches)) {
+        } elseif (preg_match('#^(?:tiny|small|medium|long|big|var)?(\w+)(?:\(\d+\))?(?:\s\w+)*$#', $str, $matches)) {
             $res = $matches[1];
         }
 
         return $res;
     }
 
-    public function getDateTimeFormat() {
+    public function getDateTimeFormat()
+    {
         return "'YYYY-MM-ddTHH:mm:ss.S'";
     }
 
-    public function parseForeignKeys() {
+    public function parseForeignKeys()
+    {
         $tbname = $this->getTableName();
         // $this->_pdo->query("SET NAMES UTF8");
-        $qry = $this->_pdo->query("select
+        $qry    = $this->_pdo->query("select
         so_ftable.name as foreign_table, sc_fcol.name as foreign_column, sc_col.name as local_column, so_key.name as fk_name
             from sysforeignkeys as fk
             join sysobjects as so_table on so_table.name = '$tbname' and fk.fkeyid = so_table.id and xtype = 'U'
@@ -97,44 +106,47 @@ class Make_mssql extends MakeDbTable {
 
         $keys = array();
         foreach ($res as $fkey) {
-            if (! isset($keys[$fkey['fk_name']])) {
+            if (!isset($keys[$fkey['fk_name']])) {
                 $keys[$fkey['fk_name']] = array(
-                  'key_name' => $fkey['fk_name'],
-                  'column_name' => $fkey['local_column'],
-                  'foreign_tbl_name' => $fkey['foreign_table'],
-                  'foreign_tbl_column_name' => $fkey['foreign_column']
+                    'key_name'                => $fkey['fk_name'],
+                    'column_name'             => $fkey['local_column'],
+                    'foreign_tbl_name'        => $fkey['foreign_table'],
+                    'foreign_tbl_column_name' => $fkey['foreign_column']
                 );
             } else {
-                if (! is_array($keys[$fkey['fk_name']]['column_name'])) {
-                    $keys[$fkey['fk_name']]['column_name'] = array($keys[$fkey['fk_name']]['column_name'], $fkey['local_column']);
+                if (!is_array($keys[$fkey['fk_name']]['column_name'])) {
+                    $keys[$fkey['fk_name']]['column_name'] = array($keys[$fkey['fk_name']]['column_name'],
+                        $fkey['local_column']);
                 } else {
                     $keys[$fkey['fk_name']]['column_name'][] = $keys[$fkey['fk_name']]['column_name'];
                 }
 
-                if (! is_array($keys[$fkey['fk_name']]['foreign_tbl_column_name'])) {
-                    $keys[$fkey['fk_name']]['foreign_tbl_column_name'] = array($keys[$fkey['fk_name']]['foreign_tbl_column_name'], $fkey['foreign_tbl_column_name']);
+                if (!is_array($keys[$fkey['fk_name']]['foreign_tbl_column_name'])) {
+                    $keys[$fkey['fk_name']]['foreign_tbl_column_name'] = array($keys[$fkey['fk_name']]['foreign_tbl_column_name'],
+                        $fkey['foreign_tbl_column_name']);
                 } else {
                     $keys[$fkey['fk_name']]['foreign_tbl_column_name'][] = $fkey['foreign_column'];
                 }
             }
 
             if ($this->_primaryKey['phptype'] == 'array') {
-    			foreach ($this->_primaryKey['fields'] as $pk) {
-    			    if ($pk == $fkey['local_column']) {
-    			        $this->_primaryKey['foreign_key'] = true;
-    			    }
-    			}
-    		} else {
-    		    if ($this->_primaryKey['field'] == $fkey['local_column']) {
-    		        $this->_primaryKey['foreign_key'] = true;
-    		    }
-    		}
+                foreach ($this->_primaryKey['fields'] as $pk) {
+                    if ($pk == $fkey['local_column']) {
+                        $this->_primaryKey['foreign_key'] = true;
+                    }
+                }
+            } else {
+                if ($this->_primaryKey['field'] == $fkey['local_column']) {
+                    $this->_primaryKey['foreign_key'] = true;
+                }
+            }
         }
 
         $this->setForeignKeysInfo($keys);
     }
 
-    public function parseDependentTables() {
+    public function parseDependentTables()
+    {
         $tbname = $this->getTableName();
 
         $qry = $this->_pdo->query("select so_ftable.name as foreign_table, sc_fcol.name as foreign_column, sc_col.name as local_column, so_key.name as fk_name
@@ -150,27 +162,30 @@ class Make_mssql extends MakeDbTable {
             throw new Exception("Unable to get list of dependencies for $tbname.");
         }
 
-        $res = $qry->fetchAll();
+        $res        = $qry->fetchAll();
         $dependents = array();
 
         foreach ($res as $fkey) {
-            if (! isset($dependents[$fkey['fk_name']])) {
+            if (!isset($dependents[$fkey['fk_name']])) {
                 $dependents[$fkey['fk_name']] = array(
-                    'key_name' => $fkey['fk_name'],
-                    'tbl_name' => $this->_namespace . '_Model_DbTable_' . $this->_getClassName($fkey['foreign_table']),
-                    'column_name' => $fkey['local_column'],
-                    'foreign_tbl_name' => $fkey['foreign_table'],
-                    'foreign_tbl_column_name'=> $fkey['foreign_column'],
+                    'key_name'                => $fkey['fk_name'],
+                    'tbl_name'                => $this->_namespace . '_Model_DbTable_' . $this->_getClassName($fkey['foreign_table']),
+                    'column_name'             => $fkey['local_column'],
+                    'foreign_tbl_name'        => $fkey['foreign_table'],
+                    'foreign_tbl_column_name' => $fkey['foreign_column'],
                 );
             } else {
-                if (! is_array($dependents[$fkey['fk_name']]['column_name'])) {
-                    $dependents[$fkey['fk_name']]['column_name'] = array($dependents[$fkey['fk_name']]['column_name'], $fkey['local_column']);
+                if (!is_array($dependents[$fkey['fk_name']]['column_name'])) {
+                    $dependents[$fkey['fk_name']]['column_name'] = array($dependents[$fkey['fk_name']]['column_name'],
+                        $fkey['local_column']);
                 } else {
                     $dependents[$fkey['fk_name']]['column_name'][] = $dependents[$fkey['fk_name']]['column_name'];
                 }
 
-                if (! is_array($dependents[$fkey['fk_name']]['foreign_tbl_column_name'])) {
-                    $dependents[$fkey['fk_name']]['foreign_tbl_column_name'] = array($dependents[$fkey['fk_name']]['foreign_tbl_column_name'], $fkey['foreign_tbl_column_name']);
+                if (!is_array($dependents[$fkey['fk_name']]['foreign_tbl_column_name'])) {
+                    $dependents[$fkey['fk_name']]['foreign_tbl_column_name'] = array(
+                        $dependents[$fkey['fk_name']]['foreign_tbl_column_name'],
+                        $fkey['foreign_tbl_column_name']);
                 } else {
                     $dependents[$fkey['fk_name']]['foreign_tbl_column_name'][] = $dependents['foreign_column'];
                 }
@@ -192,11 +207,11 @@ class Make_mssql extends MakeDbTable {
                 throw new Exception("Unable to retrieve primary key information for $tbname");
             }
 
-            $res_pk = $pk_query->fetchAll();
+            $res_pk     = $pk_query->fetchAll();
             $primaryKey = array();
             foreach ($res_pk as $pkey) {
                 $primaryKey[] = $pkey['name'];
-                if (! is_array($key['column_name'])) {
+                if (!is_array($key['column_name'])) {
                     if ($pkey['name'] == $key['column_name']) {
                         // Assign to be one now, but if there are more primary keys, this may be reassigned
                         $key['type'] = 'one';
@@ -205,8 +220,7 @@ class Make_mssql extends MakeDbTable {
                         $key['type'] = 'many';
                         continue 2;
                     }
-
-                } elseif (! in_array($pkey['name'], $key['column_name'])) {
+                } elseif (!in_array($pkey['name'], $key['column_name'])) {
                     // If they don't match, recognize this as one-to-many or many-to-many early
                     $key['type'] = 'many';
                     continue 2;
@@ -222,16 +236,16 @@ class Make_mssql extends MakeDbTable {
         }
 
         $this->setDependentTables($dependents);
-
     }
 
-    public function parseDescribeTable() {
+    public function parseDescribeTable()
+    {
 
         $tbname = $this->getTableName();
 
         // Works with SQL Server < 2005
         $version = $this->getServerVersion();
-        if (! $version || $version < 9) {
+        if (!$version || $version < 9) {
             $columns_query = $this->_pdo->query("select
                sc.name, st.name as type,sc.length as type_length,sp.value as comment
                 from syscolumns as sc
@@ -250,19 +264,19 @@ class Make_mssql extends MakeDbTable {
                 order by sc.colorder");
         }
 
-       if (!$columns_query) {
-           throw new Exception("Unable to retrieve column information for $tbname");
-       }
+        if (!$columns_query) {
+            throw new Exception("Unable to retrieve column information for $tbname");
+        }
 
         $res_columns = $columns_query->fetchAll();
-        if (! count($res_columns)) {
+        if (!count($res_columns)) {
             throw new Exception("No columns found for $tbname");
         }
 
         foreach ($res_columns as $row) {
             $columns[$row['name']] = array(
-                'field' => $row['name'],
-                'type'  => $row['type'] . (empty($row['type_length']) ? '' : '(' . $row['type_length'] . ')'),
+                'field'   => $row['name'],
+                'type'    => $row['type'] . (empty($row['type_length']) ? '' : '(' . $row['type_length'] . ')'),
                 'phptype' => $this->_convertTypeToPhp($row['type']),
                 'capital' => $this->_getCapital($row['name']),
             );
@@ -285,14 +299,14 @@ class Make_mssql extends MakeDbTable {
             throw new Exception("Unable to retrieve primary key information for $tbname");
         }
 
-        $res_pk = $pk_query->fetchAll();
+        $res_pk     = $pk_query->fetchAll();
         $primaryKey = array();
         foreach ($res_pk as $key) {
             $primaryKey[] = array(
-                'field' => $key['name'],
-                'type'  => $columns[$key['name']]['type'],
-                'phptype' => $columns[$key['name']]['phptype'],
-                'capital' => $columns[$key['name']]['capital'],
+                'field'       => $key['name'],
+                'type'        => $columns[$key['name']]['type'],
+                'phptype'     => $columns[$key['name']]['phptype'],
+                'capital'     => $columns[$key['name']]['capital'],
                 'foreign_key' => false,
             );
         }
@@ -312,7 +326,7 @@ class Make_mssql extends MakeDbTable {
             );
 
             $fields = count($primaryKey);
-            $i = 0;
+            $i      = 0;
             foreach ($primaryKey as $key) {
                 $temp['field'] .= "'" . $key['field'] . "'";
                 $i++;
@@ -328,7 +342,7 @@ class Make_mssql extends MakeDbTable {
         }
 
         $this->_primaryKey = $primaryKey;
-        $this->_columns = $columns;
+        $this->_columns    = $columns;
     }
 
 }

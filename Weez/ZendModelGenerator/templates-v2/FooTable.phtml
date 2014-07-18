@@ -1,0 +1,326 @@
+<?php
+$columnsWithoutPrimaryKeys = array();
+$columnsWithoutPrimaryKeysAsVars = array();
+
+$columnsRequired = array();
+$columnsNotRequired = array();
+
+foreach ($this->_columns as $column) {
+    $field = $column['field'];
+    if ($field != $this->_primaryKey['field']) {
+        array_push($columnsWithoutPrimaryKeys, $field);
+        array_push($columnsWithoutPrimaryKeysAsVars, '$' . $field);
+        if ($column['required']) {
+            array_push($columnsRequired, $field);
+        } else {
+            array_push($columnsNotRequired, $field);
+        }
+    }
+}
+
+$parametersForFunctionArray = array();
+
+foreach ($columnsRequired as $field) {
+    $parametersForFunctionArray[] = "$" . $field;
+}
+foreach ($columnsNotRequired as $field) {
+    $parametersForFunctionArray[] = "$" . $field . " = null";
+}
+
+$paramsForFunction = join(", ", $parametersForFunctionArray);
+
+echo "<?php\n";
+?>
+/**
+* Application Model DbTables
+*
+* @package <?= $this->_namespace ?>\Model
+* @subpackage DbTable
+* @author <?= $this->_author . "\n" ?>
+* @copyright <?= $this->_copyright . "\n" ?>
+* @license <?= $this->_license . "\n" ?>
+*/
+namespace <?= $this->_namespace ?>\Model;
+
+use <?= $this->_namespace ?>\Model\Manager;
+
+class <?= $this->_className ?>Table extends Manager
+{
+/**
+* $table - name of database table
+*
+* @var string
+*/
+protected $table ='<?= $this->_tbname ?>';
+
+/**
+* $tableName - name of table
+*
+* @var string
+*/
+protected $tableName ='<?= $this->_tbname ?>';
+
+/**
+* $_id - this is the primary key name
+*
+* @var <?= $this->_primaryKey['phptype'] . "\n" ?>
+*/
+protected $_id = <?php
+if ($this->_primaryKey['phptype'] !== 'array') {
+    echo '\'' . $this->_primaryKey['field'] . '\'';
+} else {
+    echo $this->_primaryKey['field'];
+}
+?>;
+
+protected $_sequence = <?= ($this->_primaryKey['phptype'] !== 'array') ? 'true' : 'false'; ?>;
+
+public function qi($name)  { return $this->adapter->platform->quoteIdentifier($name); }
+
+public function fp($name) { return $this->adapter->driver->formatParameterName($name); }
+
+
+public function __construct(Adapter $adapter)
+{
+parent::__construct($adapter,new <?= $this->_className ?>);
+}
+
+public function fetchAll()
+{
+return $this->all();
+}
+
+/**
+* Finds row by primary key
+*
+* @param <?= $this->_primaryKey['phptype'] ?> $id primary key
+* @return <?= $this->_namespace ?>\Model\<?= $this->_className ?>|null The object or null if not found
+*/
+public function find($id)
+{
+$id  = (int) $id;
+$rowset = $this->select(<?= ($this->_primaryKey['phptype'] !== 'array') ? 'array(' . $this->_primaryKey['field'] . ' => $id)' : $this->_primaryKey['field']; ?>);
+$row = $rowset->current();
+if (!$row) {
+throw new \Exception("Could not find row $id");
+}
+return $row;
+}
+
+public function findBy($criteria=array())
+{
+return $this->select()->from('<?= $this->_tbname ?>')->columns($criteria);
+}
+
+/**
+* Saves current row, and optionally dependent rows
+*
+* @param \<?= $this->_namespace ?>\Model\<?= $this->_className ?> $entity
+* @param boolean $ignoreEmptyValues Should empty values saved
+* @param boolean $recursive Should the object graph be walked for all related elements
+* @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
+* @return boolean If the save action was successful
+*/
+
+public function save(Entity $entity,$ignoreEmptyValues = true, $recursive = false, $useTransaction = true)
+{
+$data = $entity->toArray();
+if ($ignoreEmptyValues) {
+foreach ($data as $key => $value) {
+if ($value === null or $value === '') {
+unset($data[$key]);
+}
+}
+}
+
+<?php if ($this->_primaryKey['phptype'] == 'array') : ?>
+    $primary_key = array();
+    <?php foreach ($this->_primaryKey['fields'] as $key) : ?>
+        $pk_val = $entity->get<?= $key['capital'] ?>();
+        if ($pk_val === null) {
+        return false;
+        } else {
+        $primary_key['<?= $key['field'] ?>'] = $pk_val;
+        }
+    <?php endforeach; ?>
+
+    $exists = $this->find($primary_key);
+    $success = true;
+
+    if ($useTransaction) {
+    $this->adapter->getDriver()->getConnection()->beginTransaction();
+    }
+
+    try {
+    // Check for current existence to know if needs to be inserted
+    if ($exists === null) {
+    $this->insert($data);
+<?php else : ?>
+    $primary_key = $entity->get<?= $this->_primaryKey['capital'] ?>();
+    $success = true;
+
+    if ($useTransaction) {
+    $this->adapter->getDriver()->getConnection()->beginTransaction();
+    }
+
+    <?php if (!$this->_primaryKey['foreign_key']): ?>
+        unset($data['<?= $this->_primaryKey['field'] ?>']);
+
+        try {
+        if ($primary_key === null) {
+    <?php else: ?>
+        $exists = $this->find($primary_key);
+        try {
+        if ($exists === null) {
+    <?php endif; ?>
+    $this->insert($data);
+    $primary_key = $this->getLastInsertValue();
+    if ($primary_key) {
+    $entity->set<?= $this->_primaryKey['capital'] ?>($primary_key);
+    <?php if ($this->_returnId): ?>
+        $success = $primary_key;
+    <?php endif; ?>
+    } else {
+    $success = false;
+    }
+<?php endif; ?>
+} else {
+$this->update($data,array(<?php
+echo "\n                                 ";
+if ($this->_primaryKey['phptype'] == 'array'):
+    $fields = count($this->_primaryKey['fields']);
+    $i = 0;
+    foreach ($this->_primaryKey['fields'] as $key):
+        echo '\'' . $key['field'] . ' = ?\' => $primary_key[\'' . $key['field'] . '\']';
+        $i++;
+        if ($i != $fields):
+            echo ",\n                                 ";
+        endif;
+    endforeach;
+else:
+    echo '\'' . $this->_primaryKey['field'] . ' = ?\' => $primary_key';
+endif;
+echo "\n";
+?>
+)
+);
+}
+<?php if (count($this->getDependentTables()) > 0) : ?>
+    if ($recursive) {
+    <?php foreach ($this->getDependentTables() as $key) : ?>
+        if ($success && $entity->get<?= $this->_getRelationName($key, 'dependent') ?>() !== null) {
+        <?php if ($key['type'] !== 'many') : ?>
+            $success = $success &&
+            $entity->get<?= $this->_getRelationName($key, 'dependent') ?>()
+            <?php if ($this->_primaryKey['phptype'] !== 'array') : ?>
+                ->set<?= $this->_getCapital($key['column_name']) ?>($primary_key)
+            <?php endif; ?>
+            ->save($ignoreEmptyValues, $recursive, false);
+        <?php else: ?>
+            $<?= $this->_getClassName($key['foreign_tbl_name']) ?> = $entity->get<?= $this->_getRelationName($key, 'dependent') ?>();
+            foreach ($<?= $this->_getClassName($key['foreign_tbl_name']) ?> as $value) {
+            $success = $success &&
+            $value<?php if ($this->_primaryKey['phptype'] !== 'array') : ?>
+                ->set<?= $this->_getCapital($key['column_name']) ?>($primary_key)
+                <?php
+            elseif (is_array($key['column_name'])) :
+                foreach ($key['column_name'] as $column) :
+                    ?>
+                    ->set<?= $this->_getCapital($column) ?>($primary_key['<?php echo $column ?>'])
+                <?php endforeach; ?>
+            <?php endif; ?>
+            ->save($ignoreEmptyValues, $recursive, false);
+
+            if (! $success) {
+            break;
+            }
+            }
+        <?php endif; ?>
+        }
+
+    <?php endforeach; ?>
+    }
+<?php endif; ?>
+
+if ($useTransaction && $success) {
+$this->adapter->getDriver()->getConnection()->commit();
+} elseif ($useTransaction) {
+$this->adapter->getDriver()->getConnection()->rollback();
+}
+} catch (Exception $e) {
+if ($useTransaction) {
+$this->adapter->getDriver()->getConnection()->rollback();
+}
+
+$success = false;
+}
+
+return $success;
+}
+
+/**
+* Deletes the current model
+*  @param Entity $entity
+* @param boolean $useTransaction Flag to indicate if delete should be done inside a database transaction
+<?php if ($this->_softDeleteColumn == null): ?>
+    * @see <?= $this->_namespace ?>\Model\Manager::delete()
+<?php endif; ?>
+* @return int
+*/
+public function delete(Entity $entity,$useTransaction = true)
+{
+if (! $entity instanceof \<?= $this->_namespace ?>\Model\<?= $this->_className ?>) {
+throw new \Exception('Unable to delete: invalid model passed to mapper');
+}
+if ($useTransaction) {
+$this->adapter->getDriver()->getConnection()->beginTransaction();
+}
+try {
+<?php
+if ($this->_softDeleteColumn != null):
+    foreach ($this->_columns as $column):
+        if ($column['field'] == $this->_softDeleteColumn):
+            ?>
+            $entity->set<?= $column['capital'] ?>(<?php
+            if ($column['phptype'] == 'boolean'):
+                echo 'true';
+            else:
+                echo '1';
+            endif;
+            break;
+        endif;
+    endforeach;
+    ?>);
+    $result = $this->save($entity);
+<?php else: ?>
+    <?php if ($this->_primaryKey['phptype'] == 'array') : ?>
+        $where = array();
+        <?php foreach ($this->_primaryKey['fields'] as $key) : ?>
+            $pk_val = $entity->get<?= $key['capital'] ?>();
+            if ($pk_val === null) {
+            throw new \Exception('The value for <?= $key['capital'] ?> cannot be null');
+            } else {
+            $where[] =  array($this->qi('<?= $key['field'] ?>  = ?'), $pk_val);
+            }
+        <?php endforeach; ?>
+    <?php else : ?>
+        $where = array($this->qi('<?= $this->_primaryKey['field'] ?> = ?'), $entity->get<?= $this->_primaryKey['capital'] ?>());
+    <?php endif; ?>
+    $result = $this->delete($where);
+<?php endif; ?>
+
+if ($useTransaction) {
+$this->adapter->getDriver()->getConnection()->commit();
+}
+} catch (Exception $e) {
+
+if ($useTransaction) {
+$this->adapter->getDriver()->getConnection()->rollback();
+}
+$result = false;
+}
+
+return $result;
+}
+
+}

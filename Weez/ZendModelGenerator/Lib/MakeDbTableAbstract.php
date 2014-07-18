@@ -1,9 +1,12 @@
 <?php
 
+namespace Weez\ZendModelGenerator\Lib;
+
 /**
  * main class for files creation
  */
-abstract class MakeDbTableAbstract {
+abstract class MakeDbTableAbstract
+{
 
     /**
      *  @var String $_tbname;
@@ -166,7 +169,8 @@ abstract class MakeDbTableAbstract {
      *
      * @param array $info
      */
-    public function setForeignKeysInfo($info) {
+    public function setForeignKeysInfo($info)
+    {
         $this->_foreignKeysInfo = $info;
     }
 
@@ -174,7 +178,8 @@ abstract class MakeDbTableAbstract {
      *
      * @return array
      */
-    public function getForeignKeysInfo() {
+    public function getForeignKeysInfo()
+    {
         return $this->_foreignKeysInfo;
     }
 
@@ -182,7 +187,8 @@ abstract class MakeDbTableAbstract {
      *
      * @param string $location
      */
-    public function setLocation($location) {
+    public function setLocation($location)
+    {
         $this->_location = $location;
     }
 
@@ -190,7 +196,8 @@ abstract class MakeDbTableAbstract {
      *
      * @return string
      */
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this->_location;
     }
 
@@ -198,7 +205,8 @@ abstract class MakeDbTableAbstract {
      *
      * @param string $templatePath
      */
-    public function setTemplatePath($templatePath) {
+    public function setTemplatePath($templatePath)
+    {
         $this->_templatePath = realpath($templatePath);
     }
 
@@ -206,7 +214,8 @@ abstract class MakeDbTableAbstract {
      *
      * @return string
      */
-    public function getTemplatePath() {
+    public function getTemplatePath()
+    {
         return $this->_templatePath;
     }
 
@@ -214,8 +223,9 @@ abstract class MakeDbTableAbstract {
      *
      * @param string $table
      */
-    public function setTableName($table) {
-        $this->_tbname = $table;
+    public function setTableName($table)
+    {
+        $this->_tbname    = $table;
         $this->_className = $this->_getClassName($table);
     }
 
@@ -223,7 +233,8 @@ abstract class MakeDbTableAbstract {
      *
      * @return string
      */
-    public function getTableName() {
+    public function getTableName()
+    {
         return $this->_tbname;
     }
 
@@ -231,14 +242,16 @@ abstract class MakeDbTableAbstract {
      *
      * @param array $list
      */
-    public function setTableList($list) {
+    public function setTableList($list)
+    {
         $this->_tableList = $list;
     }
 
     /**
      * @return array
      */
-    public function getTableList() {
+    public function getTableList()
+    {
         return $this->_tableList;
     }
 
@@ -246,14 +259,16 @@ abstract class MakeDbTableAbstract {
      *
      * @param array $list
      */
-    public function setDependentTables($tables) {
+    public function setDependentTables($tables)
+    {
         $this->_dependentTables = $tables;
     }
 
     /**
      * @return array
      */
-    public function getDependentTables() {
+    public function getDependentTables()
+    {
         return $this->_dependentTables;
     }
 
@@ -261,7 +276,8 @@ abstract class MakeDbTableAbstract {
      *
      * @param array $prefixes
      */
-    public function addTablePrefixes($prefixes) {
+    public function addTablePrefixes($prefixes)
+    {
         $this->_tablePrefixes = array_merge($this->_tablePrefixes, $prefixes);
     }
 
@@ -269,7 +285,8 @@ abstract class MakeDbTableAbstract {
      *
      * @param array $prefixes
      */
-    public function setTablePrefixes($prefixes) {
+    public function setTablePrefixes($prefixes)
+    {
         $this->_tablePrefixes = $prefixes;
     }
 
@@ -277,7 +294,8 @@ abstract class MakeDbTableAbstract {
      *
      * @return array
      */
-    public function getTablePrefixes() {
+    public function getTablePrefixes()
+    {
         return $this->_tablePrefixes;
     }
 
@@ -289,7 +307,8 @@ abstract class MakeDbTableAbstract {
      * @param String $str
      * @return String
      */
-    protected function _getCapital($str) {
+    protected function _getCapital($str)
+    {
         $temp = '';
         foreach (explode("_", $str) as $part) {
             $temp.=ucfirst($part);
@@ -304,7 +323,8 @@ abstract class MakeDbTableAbstract {
      * @param string $str
      * @return string
      */
-    protected function _getClassName($str) {
+    protected function _getClassName($str)
+    {
         $temp = '';
         // Remove common prefixes
         foreach ($this->_tablePrefixes as $prefix) {
@@ -337,7 +357,8 @@ abstract class MakeDbTableAbstract {
      * @param string $str
      * @return string
      */
-    protected function _getRelationName(array $relation_info, $type = 'parent') {
+    protected function _getRelationName(array $relation_info, $type = 'parent')
+    {
         if ($type == 'parent') {
             // Check if a column exists with the same resulting name
             $str = $this->_getClassName($relation_info['column_name']);
@@ -380,8 +401,9 @@ abstract class MakeDbTableAbstract {
      *
      * @param string $name
      */
-    protected function _hasColumn($name) {
-        $found = false;
+    protected function _hasColumn($name)
+    {
+        $found   = false;
         $capName = $this->_getCapital($name);
         foreach ($this->_columns as $column) {
             $found = ($column['field'] == $name || $column['capital'] == $capName);
@@ -402,14 +424,15 @@ abstract class MakeDbTableAbstract {
      */
     abstract protected function _convertTypeToPhp($str);
 
-    public function parseTable() {
+    public function parseTable()
+    {
         // Ensure table specific data is reset
-        $this->_primaryKey = null;
-        $this->_columns = array();
+        $this->_primaryKey       = null;
+        $this->_columns          = array();
         $this->_softDeleteColumn = null;
-        $this->_classDesc = null;
-        $this->_foreignKeysInfo = array();
-        $this->_dependentTables = array();
+        $this->_classDesc        = null;
+        $this->_foreignKeysInfo  = array();
+        $this->_dependentTables  = array();
 
         $this->parseDescribeTable();
         $this->parseForeignKeys();
@@ -439,20 +462,21 @@ abstract class MakeDbTableAbstract {
      * @param String $dbname
      * @param String $namespace
      */
-    function __construct($config, $dbname, $namespace) {
+    function __construct($config, $dbname, $namespace)
+    {
         $this->_namespace = $namespace;
 
 
-        $this->_config = $config;
+        $this->_config   = $config;
         $this->_returnId = $config['save.return_id'];
-        $pdoString = "";
+        $pdoString       = "";
         if ($this->_config['db.socket']) {
             $pdoString = $this->getPDOSocketString($this->_config['db.socket'], $dbname);
         } else {
             $pdoString = $this->getPDOString($this->_config['db.host'], $this->_config['db.port'], $dbname);
         }
         try {
-            $pdo = new PDO($pdoString, $this->_config['db.user'], $this->_config['db.password']
+            $pdo        = new \PDO($pdoString, $this->_config['db.user'], $this->_config['db.password']
             );
             $this->_pdo = $pdo;
         } catch (Exception $e) {
@@ -461,12 +485,12 @@ abstract class MakeDbTableAbstract {
 
         //$this->_tbname=$tbname;
         //docs section
-        $this->_author = $this->_config['docs.author'];
-        $this->_license = $this->_config['docs.license'];
+        $this->_author    = $this->_config['docs.author'];
+        $this->_license   = $this->_config['docs.license'];
         $this->_copyright = $this->_config['docs.copyright'];
 
         $this->_cacheManagerName = $this->_config['cache.manager_name'];
-        $this->_cacheName = $this->_config['cache.name'];
+        $this->_cacheName        = $this->_config['cache.name'];
 
         $this->_loggerName = $this->_config['log.logger_name'];
     }
@@ -478,10 +502,11 @@ abstract class MakeDbTableAbstract {
      * @param String $tplFile
      * @return String
      */
-    public function getParsedTplContents($tplFile, $vars = array()) {
+    public function getParsedTplContents($tplFile, $vars = array())
+    {
         extract($vars);
         ob_start();
-        require($this->getTemplatePath().DIRECTORY_SEPARATOR.$tplFile);
+        require($this->getTemplatePath() . DIRECTORY_SEPARATOR . $tplFile);
         $data = ob_get_contents();
         ob_end_clean();
         return $data;

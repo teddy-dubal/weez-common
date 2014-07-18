@@ -1,9 +1,12 @@
 <?php
-require_once 'Make.mssql.php';
 
-class Make_dblib extends Make_mssql {
+namespace Weez\ZendModelGenerator\Lib;
 
-    protected function getPDOString($host, $port = 1433, $dbname) {
+class MakeDblib extends MakeMssql
+{
+
+    protected function getPDOString($host, $port = 1433, $dbname)
+    {
         $seperator = ':';
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $seperator = ',';
@@ -11,4 +14,5 @@ class Make_dblib extends Make_mssql {
 
         return "dblib:host=$host$seperator$port;dbname=$dbname";
     }
+
 }
