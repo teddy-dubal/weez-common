@@ -76,9 +76,12 @@ echo "$vars\n\n";
 /**
 * Sets up column and relationship lists
 */
-public function __construct()
+public function __construct($adapter = null)
 {
 parent::init();
+if (null != $adapter){
+$this->getMapper()->getDbTable()->setAdapter($adapter);
+}
 $this->setColumnsList(array(
 <?php foreach ($this->_columns as $column): ?>
 '<?=$column['field']?>'=>'<?=$column['capital']?>',
