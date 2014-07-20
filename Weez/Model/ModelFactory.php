@@ -2,6 +2,8 @@
 
 namespace Weez\Model;
 
+use \Exception;
+
 class ModelFactory {
 
     private $adapter;
