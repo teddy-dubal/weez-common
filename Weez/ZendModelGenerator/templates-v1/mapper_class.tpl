@@ -64,10 +64,10 @@ $this->_logger = Zend_Registry::get('<?=$this->_loggerName ?>');
 * @param <?=$this->_namespace?>\Model\DbTable\TableAbstract $dbTable
 * @return <?=$this->_namespace?>\Model\Mapper\MapperAbstract
 */
-public function setDbTable($dbTable)
+public function setDbTable($dbTable,$options)
 {
 if (is_string($dbTable)) {
-$dbTable = new $dbTable();
+$dbTable = new $dbTable($options);
 }
 
 if (! $dbTable instanceof \Zend_Db_Table_Abstract) {
