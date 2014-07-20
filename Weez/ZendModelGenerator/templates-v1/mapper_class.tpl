@@ -524,10 +524,10 @@ return $paginator;
 
 /**
 * Returns the dbTable class
-*
+* @param array options
 * @return <?=$this->_namespace?>\Model\DbTable\TableAbstract
 */
-public abstract function getDbTable();
+public abstract function getDbTable($options = null);
 
 /**
 * Returns an array, keys are the field names.

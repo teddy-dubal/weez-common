@@ -67,13 +67,13 @@ return $result;
 
 /**
 * Returns the DbTable class associated with this mapper
-*
+* @params array of options for dbtable
 * @return <?=$this->_namespace?>\Model\DbTable\<?=$this->_className . "\n"?>
 */
-public function getDbTable()
+public function getDbTable($options = null)
 {
 if ($this->_dbTable === null) {
-$this->setDbTable('\<?=$this->_namespace?>\Model\DbTable\<?=$this->_className?>');
+$this->setDbTable('\<?=$this->_namespace?>\Model\DbTable\<?=$this->_className?>',$options);
 }
 
 return $this->_dbTable;

@@ -80,7 +80,7 @@ public function __construct($adapter = null)
 {
 parent::init();
 if (null != $adapter){
-$this->getMapper()->getDbTable()->setAdapter($adapter);
+$this->getMapper()->getDbTable(array('db' => $adapter));
 }
 $this->setColumnsList(array(
 <?php foreach ($this->_columns as $column): ?>
