@@ -1,8 +1,8 @@
 <?php
-$columnsWithoutPrimaryKeys = array();
+$columnsWithoutPrimaryKeys       = array();
 $columnsWithoutPrimaryKeysAsVars = array();
 
-$columnsRequired = array();
+$columnsRequired    = array();
 $columnsNotRequired = array();
 
 foreach ($this->_columns as $column) {
@@ -34,15 +34,15 @@ echo "<?php\n";
 /**
 * Application Model DbTables
 *
-* @package <?= $this->_namespace ?>\Model
+* @package <?= $this->_namespace ?>
 * @subpackage DbTable
 * @author <?= $this->_author . "\n" ?>
 * @copyright <?= $this->_copyright . "\n" ?>
 * @license <?= $this->_license . "\n" ?>
 */
-namespace <?= $this->_namespace ?>\Model;
+namespace <?= $this->_namespace ?>;
 
-use <?= $this->_namespace ?>\Model\Manager;
+use <?= $this->_namespace ?>\Manager;
 
 class <?= $this->_className ?>Table extends Manager
 {
@@ -94,7 +94,7 @@ return $this->all();
 * Finds row by primary key
 *
 * @param <?= $this->_primaryKey['phptype'] ?> $id primary key
-* @return <?= $this->_namespace ?>\Model\<?= $this->_className ?>|null The object or null if not found
+* @return <?= $this->_namespace ?>\<?= $this->_className ?>|null The object or null if not found
 */
 public function find($id)
 {
@@ -115,7 +115,7 @@ return $this->select()->from('<?= $this->_tbname ?>')->columns($criteria);
 /**
 * Saves current row, and optionally dependent rows
 *
-* @param \<?= $this->_namespace ?>\Model\<?= $this->_className ?> $entity
+* @param \<?= $this->_namespace ?>\<?= $this->_className ?> $entity
 * @param boolean $ignoreEmptyValues Should empty values saved
 * @param boolean $recursive Should the object graph be walked for all related elements
 * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
@@ -189,7 +189,7 @@ $this->update($data,array(<?php
 echo "\n                                 ";
 if ($this->_primaryKey['phptype'] == 'array'):
     $fields = count($this->_primaryKey['fields']);
-    $i = 0;
+    $i      = 0;
     foreach ($this->_primaryKey['fields'] as $key):
         echo '\'' . $key['field'] . ' = ?\' => $primary_key[\'' . $key['field'] . '\']';
         $i++;
@@ -263,13 +263,13 @@ return $success;
 *  @param Entity $entity
 * @param boolean $useTransaction Flag to indicate if delete should be done inside a database transaction
 <?php if ($this->_softDeleteColumn == null): ?>
-    * @see <?= $this->_namespace ?>\Model\Manager::delete()
+    * @see <?= $this->_namespace ?>\Manager::delete()
 <?php endif; ?>
 * @return int
 */
 public function delete(Entity $entity,$useTransaction = true)
 {
-if (! $entity instanceof \<?= $this->_namespace ?>\Model\<?= $this->_className ?>) {
+if (! $entity instanceof \<?= $this->_namespace ?>\<?= $this->_className ?>) {
 throw new \Exception('Unable to delete: invalid model passed to mapper');
 }
 if ($useTransaction) {

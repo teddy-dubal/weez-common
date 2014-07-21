@@ -2,12 +2,12 @@
 echo "<?php\n";
 ?>
 
-namespace <?= $this->_namespace ?>\Model;
+namespace <?= $this->_namespace ?>;
 
 /**
 * Application Model DbTables
 *
-* @package <?= $this->_namespace ?>\Model
+* @package <?= $this->_namespace ?>
 * @author <?= $this->_author . "\n" ?>
 * @copyright <?= $this->_copyright . "\n" ?>
 * @license <?= $this->_license . "\n" ?>
@@ -87,7 +87,7 @@ return $this->_name;
 /**
 * Saves current row, and optionally dependent rows
 *
-* @param \<?= $this->_namespace ?>\Model\<?= $this->_className ?> $model
+* @param \<?= $this->_namespace ?>\<?= $this->_className ?> $model
 * @param boolean $ignoreEmptyValues Should empty values saved
 * @param boolean $recursive Should the object graph be walked for all related elements
 * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
