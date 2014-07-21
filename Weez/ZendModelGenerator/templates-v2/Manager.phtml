@@ -112,6 +112,15 @@ throw new \Exception('Form id does not exit');
 return $returnId;
 }
 
+/**
+* Deletes the current model
+*
+* @param Entity $entity
+* @param boolean $useTransaction Flag to indicate if delete should be done inside a database transaction
+* @return int
+*/
+public abstract function deleteEntity($entity,$useTransaction);
+
 }
 
 

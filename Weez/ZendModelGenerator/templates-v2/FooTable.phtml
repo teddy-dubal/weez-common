@@ -267,7 +267,7 @@ return $success;
 <?php endif; ?>
 * @return int
 */
-public function delete(Entity $entity,$useTransaction = true)
+public function deleteEntity(Entity $entity,$useTransaction = true)
 {
 if (! $entity instanceof \<?= $this->_namespace ?>\<?= $this->_className ?>) {
 throw new \Exception('Unable to delete: invalid model passed to mapper');
