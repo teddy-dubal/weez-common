@@ -36,7 +36,6 @@ public function __construct(Adapter $adapter,Entity $entity)
 $this->adapter = $adapter;
 $this->entity = $entity;
 $this->featureSet = new Feature\FeatureSet();
-$this->featureSet->addFeature(new Feature\GlobalAdapterFeature());
 $this->initialize();
 }
 
