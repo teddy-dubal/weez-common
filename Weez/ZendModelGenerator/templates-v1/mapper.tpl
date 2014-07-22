@@ -198,7 +198,7 @@ return $result;
 * @param boolean $ignoreEmptyValues Should empty values saved
 * @param boolean $recursive Should the object graph be walked for all related elements
 * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
-* @return boolean If the save action was successful
+* @return current Id
 */
 public function save(\<?=$this->_namespace?>\Model\<?=$this->_className?> $model,
 $ignoreEmptyValues = true, $recursive = false, $useTransaction = true
@@ -237,7 +237,7 @@ $this->getDbTable()->getAdapter()->beginTransaction();
 try {
 // Check for current existence to know if needs to be inserted
 if ($exists === null) {
-$this->getDbTable()->insert($data);
+$success = $this->getDbTable()->insert($data);
 <?php else :?>
 $primary_key = $model->get<?=$this->_primaryKey['capital']?>();
 $success = true;
