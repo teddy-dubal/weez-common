@@ -2,7 +2,7 @@
 echo "<?php\n";
 ?>
 
-namespace <?= $this->_namespace ?>;
+namespace <?= $this->_namespace ?>\Table;
 
 /**
 * Application Model DbTables
@@ -56,7 +56,7 @@ return $this;
 
 /**
 * Retrive container
-* @return Pimple
+* @return \Pimple
 */
 public function getContainer()
 {
@@ -90,7 +90,7 @@ return $this->_name;
 * @param boolean $ignoreEmptyValues Should empty values saved
 * @param boolean $recursive Should the object graph be walked for all related elements
 * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
-* @return int Id model
+* @return integer Id model
 */
 public function save(Entity $entity)
 {

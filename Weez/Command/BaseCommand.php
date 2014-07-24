@@ -8,6 +8,8 @@ use Symfony\Component\Console\Command\Command;
 abstract class BaseCommand extends Command
 {
 
+    protected $c;
+
     /**
      * Inject container
      */

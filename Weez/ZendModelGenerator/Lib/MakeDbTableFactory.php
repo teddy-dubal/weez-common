@@ -283,27 +283,36 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
     private function doItAllZf2()
     {
         $entityData = $this->getParsedTplContents('Entity.phtml');
-        $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity.php";
+        $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
 
         $managerData = $this->getParsedTplContents('Manager.phtml');
-        $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Manager.php";
+        $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . "Manager.php";
 
-        $fooFile = $this->getLocation() . DIRECTORY_SEPARATOR . $this->_className . ".php";
+        $fooFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . $this->_className . ".php";
         $fooData = $this->getParsedTplContents('Foo.phtml');
 
-        $fooTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . $this->_className . "Table.php";
+        $fooTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . "Table.php";
         $fooTableData = $this->getParsedTplContents('FooTable.phtml');
 
         $templatesDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2') . DIRECTORY_SEPARATOR;
-
+        if (null != $twig         = $this->getTwig()) {
+            $var      = get_object_vars($this);
+            $twig_var = array(
+                'namespace'       => $var['_namespace'],
+                'className'       => $var['_className'],
+                'columns'         => $var['_columns'],
+                'foreignKeysInfo' => $this->getForeignKeysInfo(),
+            );
+            echo $twig->render('Entity.php.twig', $twig_var);
+        }
         if (!file_put_contents($entityFile, $entityData))
             die("Error: could not write Entity file $entityFile.");
-        if (!file_put_contents($managerFile, $managerData))
-            die("Error: could not write Manager file $managerFile.");
-        if (!file_put_contents($fooFile, $fooData))
-            die("Error: could not write model file $fooFile.");
-        if (!file_put_contents($fooTableFile, $fooTableData))
-            die("Error: could not write model file $fooFile.");
+//        if (!file_put_contents($managerFile, $managerData))
+//            die("Error: could not write Manager file $managerFile.");
+//        if (!file_put_contents($fooFile, $fooData))
+//            die("Error: could not write model file $fooFile.");
+//        if (!file_put_contents($fooTableFile, $fooTableData))
+//            die("Error: could not write model file $fooFile.");
         return true;
     }
 

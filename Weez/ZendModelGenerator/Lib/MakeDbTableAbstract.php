@@ -14,6 +14,11 @@ abstract class MakeDbTableAbstract
     protected $_tbname;
 
     /**
+     *  @var \Twig_Environment $twig;
+     */
+    protected $twig;
+
+    /**
      *
      *  @var String $_dbname;
      */
@@ -264,6 +269,20 @@ abstract class MakeDbTableAbstract
         $this->_dependentTables = $tables;
     }
 
+    public function setTwig($twig)
+    {
+        $this->twig = $twig;
+        if (null != $tpl        = $this->getTemplatePath()) {
+            $this->twig->getLoader()->setPaths($tpl);
+        }
+        return $twig;
+    }
+
+    public function getTwig()
+    {
+        return $this->twig;
+    }
+
     /**
      * @return array
      */
@@ -468,7 +487,7 @@ abstract class MakeDbTableAbstract
 
 
         $this->_config   = $config;
-        $this->_returnId = $config['save.return_id'];
+        $this->_returnId = isset($config['save.return_id']) ? $config['save.return_id'] : true;
         $pdoString       = "";
         if ($this->_config['db.socket']) {
             $pdoString = $this->getPDOSocketString($this->_config['db.socket'], $dbname);

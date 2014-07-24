@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Twig_Environment;
+use Twig_Extension_Debug;
+use Twig_Loader_Filesystem;
 use Weez\ZendModelGenerator\Lib\MakeMysql;
 
 class GenerateDbModelCommand extends BaseCommand
@@ -64,6 +67,7 @@ EOT
             default:
                 break;
         }
+        $dbAdapter->setTwig($this->getTwig());
         $tables = array();
         if ($tablesAll) {
             $tables = $dbAdapter->getTablesNamesFromDb();
@@ -93,10 +97,13 @@ EOT
                 }
                 break;
             case 2:
-                if (!is_dir($location)) {
-                    if (!@mkdir($location, 0755, true)) {
-                        $output->writeln(sprintf('<error>Could not create directory zf2 "%s"</error>', $location));
-                        return false;
+                foreach (array('Table', 'Entity') as $name) {
+                    $dir = $location . $name;
+                    if (!is_dir($dir)) {
+                        if (!@mkdir($dir, 0755, true)) {
+                            $output->writeln(sprintf('<error>Could not create directory zf2 "%s"</error>', $dir));
+                            return false;
+                        }
                     }
                 }
                 break;
@@ -169,6 +176,15 @@ EOT
             );
             $input->setArgument('location', $location);
         }
+    }
+
+    public function getTwig()
+    {
+        $loader = new Twig_Loader_Filesystem();
+        $twig   = new Twig_Environment($loader);
+        // use
+        //echo $container['translator']->render('index.html.twig', array('name' => 'Fabien'));
+        return $twig;
     }
 
 }

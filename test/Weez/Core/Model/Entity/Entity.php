@@ -1,8 +1,6 @@
 <?php
-echo "<?php\n";
-?>
 
-namespace <?= $this->_namespace ?>\Entity;
+namespace Weez\Core\Model\Entity;
 
 class Entity
 {
@@ -31,7 +29,7 @@ protected $_dependentList;
 * Set the list of columns associated with this model
 *
 * @param array $data
-* @return <?= $this->_namespace ?>\Entity
+* @return Weez\Core\Model\Entity
 */
 public function setColumnsList($data)
 {
@@ -53,7 +51,7 @@ return $this->_columnsList;
 * Set the list of relationships associated with this model
 *
 * @param array $data
-* @return <?= $this->_namespace ?>\Entity
+* @return Weez\Core\Model\Entity
 */
 public function setParentList($data)
 {
@@ -75,7 +73,7 @@ return $this->_parentList;
 * Set the list of relationships associated with this model
 *
 * @param array $data
-* @return <?= $this->_namespace ?>\Entity
+* @return Weez\Core\Model\Entity
 */
 public function setDependentList($data)
 {
@@ -126,7 +124,7 @@ return null;
 * matching method are ignored.
 *
 * @param array $options
-* @return <?= $this->_namespace ?>\Entity
+* @return Weez\Core\Model\Entity
 */
 public function setOptions(array $options)
 {

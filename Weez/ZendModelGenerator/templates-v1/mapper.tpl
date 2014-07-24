@@ -237,7 +237,7 @@ $this->getDbTable()->getAdapter()->beginTransaction();
 try {
 // Check for current existence to know if needs to be inserted
 if ($exists === null) {
-$success = $this->getDbTable()->insert($data);
+$this->getDbTable()->insert($data);
 <?php else :?>
 $primary_key = $model->get<?=$this->_primaryKey['capital']?>();
 $success = true;
