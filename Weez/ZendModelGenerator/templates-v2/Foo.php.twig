@@ -9,9 +9,9 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
 
-class {{className}} extends Entity implements InputFilterAwareInterface
+class {{className}} extends Entity 
 {
-{% for (column in columns): %}
+{% for column in columns %}
     /**
     {% if column['comment'] is defined %}
     * {{ column['comment']  }}
@@ -20,279 +20,264 @@ class {{className}} extends Entity implements InputFilterAwareInterface
     *
     * @var {{column['phptype']}}
     */
-    protected $_{{column['capital']}};
+    protected ${{column['capital']}};
 
 {% endfor %}
 
 
-{% for ( key in  foreignKeysInfo) %}
+{% for  key in  foreignKeysInfo %}
     /**
-    * Parent relation {{$key['key_name']  }}
+    * Parent relation {{key['key_name']  }}
     *
-    * @var {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
+    * @var \{{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}}
     */
-    protected $_{{$this->_getRelationName($key, 'parent') }};
-
+    protected ${{getRelationNameParent[key['key_name']] }};
 {% endfor %}
 
-<?php foreach ($this->getDependentTables() as $key): }}
+{% for key in  dependentTables %}
     /**
-    * Dependent relation {{$key['key_name']  }}
-    * Type: {{($key['type'] == 'one') ? 'One-to-One' : 'One-to-Many' }} relationship
+    * Dependent relation {{key['key_name']  }}
+    * Type: {%if key['type'] == 'one'%} 'One-to-One' {% else %} 'One-to-Many' {% endif %} relationship
     *
-    * @var {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
+    * @var {{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}}
     */
-    protected $_{{$this->_getRelationName($key, 'dependent') }};
+    protected ${{getRelationNameDependent[key['key_name']] }};
 
 {% endfor %}
-/**
-* Sets up column and relationship lists
-*/
-public function __construct()
-{
-$this->setColumnsList(array(
-<?php foreach ($this->_columns as $column): }}
-    '{{$column['field'] }}'=>'{{$column['capital'] }}',
-{% endfor %}
-));
-
-$this->setParentList(array(
-<?php foreach ($this->getForeignKeysInfo() as $key): }}
-    '{{$this->_getCapital($key['key_name']) }}'=> array(
-    'property' => '{{$this->_getRelationName($key, 'parent') }}',
-    'table_name' => '{{$this->_getClassName($key['foreign_tbl_name']) }}',
-    ),
-{% endfor %}
-));
-
-$this->setDependentList(array(
-<?php foreach ($this->getDependentTables() as $key): }}
-    '{{$this->_getCapital($key['key_name']) }}' => array(
-    'property' => '{{$this->_getRelationName($key, 'dependent') }}',
-    'table_name' => '{{$this->_getClassName($key['foreign_tbl_name']) }}',
-    ),
-{% endfor %}
-));
-}
-
-public function setInputFilter(InputFilterInterface $inputFilter)
-{
-throw new \Exception("Not used");
-}
-
-<?php foreach ($this->_columns as $column): }}
-
+{#
     /**
-    * Sets column {{$column['field'] }}<?php if (strpos($column['type'], 'datetime') !== false): }}. Stored in ISO 8601 format.<?php
-    endif;
-    echo "\n";
-    }}
-    *
-    <?php if (strpos($column['type'], 'datetime') !== false): }}
-        * @param string|Datetime $date
-    <?php else: }}
-        * @param {{$column['phptype'] }} $data
-    <?php endif; }}
-    * @return {{namespace}}\{{$this->_className  }}
+    * Sets up column and relationship lists
     */
-    public function set{{$column['capital'] }}($data)
+    public function __construct()
     {
-    <?php if (strpos($column['type'], 'datetime') !== false): }}
+    
+        $this->setColumnsList(array(
+        {% for column in columns %}
+        '{{column['field']}}'=>'{{column['capital']}}',
+        {% endfor %}
+            ));
+
+            $this->setParentList(array(
+            {% for  key in  foreignKeysInfo %}
+                '{{getCapital[key['key_name']] }}'=> array(
+                'property'      => '{{getRelationNameParent[key['key_name']]}}',
+                'table_name'    => '{{getClassName[key['key_name']]}}',
+                ),
+            {% endfor %}
+        ));
+
+        $this->setDependentList(array(
+        {% for key in  dependentTables %}
+            '{{getCapital[key['key_name']] }}' => array(
+            'property'      => '{{getRelationNameDependent[key['key_name']]}}',
+            'table_name'    => '{{getClassName[key['key_name']]}}',
+            ),
+        {% endfor %}
+        ));
+    }
+#}
+          
+
+{% for column in columns %}
+{#
+    /**
+    * Sets column {{column['field'] }}{% if 'datetime' in column['type'] %}. Stored in ISO 8601 format.{%endif%}
+    *
+    {% if 'datetime' in column['type'] %}
+    * @param string|Datetime $date
+    {% else %}
+    * @param {{column['phptype'] }} $data
+    {% endif %}
+    * @return {{namespace}}\{{className}}
+    */
+    public function set{{column['capital']}}($data)
+    {
+        {% if 'datetime' in column['type'] %}
         if (! empty($data)) {
-        if (! $data instanceof \DateTime) {
-        $data = new \DateTime($data);
+            if (! $data instanceof \DateTime) {
+                $data = new \DateTime($data);
+            }
+            $data = $data->format (<?php echo $this->getDateTimeFormat() }});
         }
-
-        $data = $data->format (<?php echo $this->getDateTimeFormat() }});
-        }
-
-    <?php endif; }}
-    $this->_{{$column['capital'] }} = $data;
-    return $this;
+        {% endif %}
+        $this->{{column['capital'] }} = $data;
+        return $this;
     }
 
     /**
-    * Gets column {{$column['field']  }}
+    * Gets column {{column['field']  }}
     *
-    <?php if (strpos($column['type'], 'datetime') !== false): }}
-        * @param boolean $returnDateTime
-        * @return \DateTime|null|string DateTime representation of this datetime if enabled, or ISO 8601 string if not
-    <?php else: }}
-        * @return {{$column['phptype']  }}
-    <?php endif; }}
+    {% if 'datetime' in column['type'] %}
+    * @param boolean $returnDateTime
+    * @return \DateTime|null|string DateTime representation of this datetime if enabled, or ISO 8601 string if not
+    {% else %}
+    * @return {{column['phptype']  }}
+    {% endif %}
     */
-    public function get{{$column['capital'] }}(<?php if (strpos($column['type'], 'datetime') !== false): }}$returnDateTime = false<?php endif; }})
+    public function get{{column['capital'] }}({% if 'datetime' in column['type'] %}$returnDateTime = false{%endif%})
     {
-    <?php if (strpos($column['type'], 'datetime') !== false): }}
+        {% if 'datetime' in column['type'] %}
         if ($returnDateTime) {
-        if ($this->_{{$column['capital'] }} === null) {
-        return null;
+            if ($this->{{column['capital'] }} === null) {
+                return null;
+            }
+            return new \DateTime($this->{{column['capital'] }}, <?php echo this->getDateTimeFormat() }});
         }
-        return new \DateTime($this->_{{$column['capital'] }}, <?php echo $this->getDateTimeFormat() }});
-        }
-
-        return $this->_{{$column['capital'] }};
-    <?php elseif ($column['phptype'] == 'boolean'): }}
-        return $this->_{{$column['capital'] }} ? true : false;
-    <?php else: }}
-        return $this->_{{$column['capital'] }};
-    <?php endif; }}
+        return $this->{{column['capital'] }};
+    {% elseif (column['phptype'] == 'boolean') %}
+        return $this->{{column['capital'] }} ? true : false;
+    {% else %}
+        return $this->{{column['capital'] }};
+    {% endif %}
     }
+    #}
 {% endfor %}
 
 
-<?php foreach ($this->getForeignKeysInfo() as $key): }}
-
+{% for  key in  foreignKeysInfo %}
+   {#
     /**
-    * Sets parent relation {{$this->_getClassName($key['column_name'])  }}
+    * Sets parent relation {{getClassName[key['key_name']]['column_name']}}
     *
-    * @param {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data
-    * @return {{namespace}}\{{$this->_className  }}
+    * @param \{{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data
+    * @return \{{namespace}}\{{className}}
     */
-    public function set{{$this->_getRelationName($key, 'parent') }}(\{{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data)
+    public function set{{getRelationNameParent[key['key_name']] }}(\{{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data)
     {
-    $this->_{{$this->_getRelationName($key, 'parent') }} = $data;
+        $this->{{getRelationNameParent[key['key_name']] }} = $data;
 
-    $primary_key = $data->getPrimaryKey();
-    <?php if (is_array($key['foreign_tbl_column_name']) && is_array($key['column_name'])) : }}
-        <?php
-        while ($column = next($key['foreign_tbl_column_name'])) :
-            $foreign_column = next($key['column_name']);
-            }}
-            $this->set{{$this->_getCapital($column) }}($primary_key['<?php echo $foreign_column }}']);
-            <?php
-        endwhile;
-    else :
-        }}
+        $primary_key = $data->getPrimaryKey();
+        {% if key['foreign_tbl_column_name'] is iterable and key['column_name'] is iterable  %}
+            {% for column in key['foreign_tbl_column_name']%}
+        //$foreign_column = next(key['column_name']);
+        
+        
+            {% endfor %}
+        {%else%}
         if (is_array($primary_key)) {
-        $primary_key = $primary_key['{{$key['foreign_tbl_column_name'] }}'];
+        $primary_key = $primary_key['{{key['foreign_tbl_column_name'] }}'];
         }
 
-        $this->set{{$this->_getCapital($key['column_name']) }}($primary_key);
-    <?php endif; }}
+        $this->set{{getCapital[key['key_name']] }}($primary_key);
+        {% endif %}
 
-    return $this;
+        return $this;
     }
 
     /**
-    * Gets parent {{$this->_getClassName($key['column_name'])  }}
+    * Gets parent {{this->getClassName(key['column_name'])  }}
     *
     * @param boolean $load Load the object if it is not already
-    * @return {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
+    * @return {{namespace}}\{{this->getClassName(key['foreign_tbl_name'])  }}
     */
-    public function get{{$this->_getRelationName($key, 'parent') }}($load = true)
+    public function get{{getRelationNameParent[key['key_name']] }}($load = true)
     {
-    if ($this->_{{$this->_getRelationName($key, 'parent') }} === null && $load) {
-    $this->getMapper()->loadRelated('{{$this->_getCapital($key['key_name']) }}', $this);
+    if ($this->{{getRelationNameParent[key['key_name']] }} === null && $load) {
+    $this->getMapper()->loadRelated('{{this->getCapital(key['key_name']) }}', $this);
     }
 
-    return $this->_{{$this->_getRelationName($key, 'parent') }};
+    return $this->{{getRelationNameParent[key['key_name']] }};
     }
-{% endfor %}
-<?php foreach ($this->getDependentTables() as $key): }}
+    {% endfor %}
 
-    <?php if ($key['type'] == 'one') : }}
+        {% for key in  dependentTables %}
+
+        {% if (key['type'] == 'one') : }}
         /**
-        * Sets dependent relation {{$key['key_name']  }}
+        * Sets dependent relation {{key['key_name']  }}
         *
-        * @param {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data
-        * @return {{namespace}}\{{$this->_className  }}
+        * @param {{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data
+        * @return {{namespace}}\{{className}}
         */
-        public function set{{$this->_getRelationName($key, 'dependent') }}(\{{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data)
+        public function set{{this->getRelationName(key, 'dependent') }}(\{{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data)
         {
-        $this->_{{$this->_getRelationName($key, 'dependent') }} = $data;
+        $this->{{this->getRelationName(key, 'dependent') }} = $data;
         return $this;
         }
 
         /**
-        * Gets dependent {{$key['key_name']  }}
+        * Gets dependent {{key['key_name']  }}
         *
         * @param boolean $load Load the object if it is not already
-        * @return {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
+        * @return {{namespace}}\{{this->getClassName(key['foreign_tbl_name'])  }}
         */
-        public function get{{$this->_getRelationName($key, 'dependent') }}()
+        public function get{{this->getRelationName(key, 'dependent') }}()
         {
-        return $this->_{{$this->_getRelationName($key, 'dependent') }};
+        return $this->{{this->getRelationName(key, 'dependent') }};
         }
-    <?php else: }}
+        {% else: }}
         /**
-        * Sets dependent relations {{$key['key_name']  }}
+        * Sets dependent relations {{key['key_name']  }}
         *
-        * @param array $data An array of {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
-        * @return {{namespace}}\{{$this->_className  }}
+        * @param array $data An array of {{namespace}}\{{this->getClassName(key['foreign_tbl_name'])  }}
+        * @return {{namespace}}\{{className}}
         */
-        public function set{{$this->_getRelationName($key, 'dependent') }}(array $data)
+        public function set{{this->getRelationName(key, 'dependent') }}(array $data)
         {
-        $this->_{{$this->_getRelationName($key, 'dependent') }} = array();
+        $this->{{this->getRelationName(key, 'dependent') }} = array();
 
         foreach ($data as $object) {
-        $this->add{{$this->_getRelationName($key, 'dependent') }}($object);
+        $this->add{{this->getRelationName(key, 'dependent') }}($object);
         }
 
         return $this;
         }
 
         /**
-        * Sets dependent relations {{$key['key_name']  }}
+        * Sets dependent relations {{key['key_name']  }}
         *
-        * @param {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data
-        * @return {{namespace}}\{{$this->_className  }}
+        * @param {{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data
+        * @return {{namespace}}\{{className}}
         */
-        public function add{{$this->_getRelationName($key, 'dependent') }}(\{{namespace}}\{{$this->_getClassName($key['foreign_tbl_name']) }} $data)
+        public function add{{this->getRelationName(key, 'dependent') }}(\{{namespace}}\{{getClassName[key['key_name']]['foreign_tbl_name']}} $data)
         {
-        $this->_{{$this->_getRelationName($key, 'dependent') }}[] = $data;
+        $this->{{this->getRelationName(key, 'dependent') }}[] = $data;
         return $this;
         }
 
         /**
-        * Gets dependent {{$key['key_name']  }}
+        * Gets dependent {{key['key_name']  }}
         *
-        * @return array The array of {{namespace}}\{{$this->_getClassName($key['foreign_tbl_name'])  }}
+        * @return array The array of {{namespace}}\{{this->getClassName(key['foreign_tbl_name'])  }}
         */
 
-        public function get{{$this->_getRelationName($key, 'dependent') }}()
+        public function get{{this->getRelationName(key, 'dependent') }}()
         {
-        return $this->_{{$this->_getRelationName($key, 'dependent') }};
+        return $this->{{this->getRelationName(key, 'dependent') }};
         }
 
-    <?php endif; }}
+        {% endif%}
+        #}
 {% endfor %}
 
-/**
-* Array of options/values to be set for this model. Options without a
-* matching method are ignored.
-*
-* @param array $data
-*
-*/
+    /**
+    * Array of options/values to be set for this model. Options without a
+    * matching method are ignored.
+    *
+    * @param array $data
+    *
+    */
+    public function exchangeArray(array $data)
+    {
+    {% for column in columns %}
+        $this->{{column['capital']}}     = (isset($data['{{column['field'] }}'])) ? $data['{{column['field'] }}'] : null;
+    {% endfor %}
+    }
 
-public function exchangeArray(array $data)
-{
-<?php foreach ($this->_columns as $column): }}
-    $this->_{{$column['capital'] }}     = (isset($data['{{$column['field'] }}'])) ? $data['{{$column['field'] }}'] : null;
-{% endfor %}
-
-}
-
-/**
-* Returns an array, keys are the field names.
-*
-* @param {{namespace}}\{{className}} $model
-* @return array
-*/
-public function toArray()
-{
-$result = array(<?php
-echo "\n";
-foreach ($this->_columns as $column):
-    }}
-    '{{$column['field'] }}' => $this->get{{$column['capital'] }}(),
-{% endfor %}
-);
-return $result;
-}
+    /**
+    * Returns an array, keys are the field names.
+    *
+    * @param \{{namespace}}\{{className}} $model
+    * @return array
+    */
+    public function toArray()
+    {
+        $result = array(
+        {% for column in columns %}
+            '{{column['field'] }}' => $this->get{{column['capital'] }}(),
+        {% endfor %}
+        );
+        return $result;
+    }
 
 }
-
-
-

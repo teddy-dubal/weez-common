@@ -296,21 +296,41 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
 
         $templatesDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2') . DIRECTORY_SEPARATOR;
         if (null != $twig         = $this->getTwig()) {
-            $var      = get_object_vars($this);
+            $var = get_object_vars($this);
+
+            $foreignKeysInfo          = $this->getForeignKeysInfo();
+            $dependentTables          = $this->getDependentTables();
+            $getRelationNameParent    = array();
+            $getRelationNameDependent = array();
+            $getCapital               = array();
+            $getClassName             = array();
+            foreach ($foreignKeysInfo as $key) {
+                echo $key['key_name'];
+                echo $getRelationNameParent[$key['key_name']]            = $this->_getRelationName($key, 'parent');
+                $getRelationNameDependent[$key['key_name']]         = $this->_getRelationName($key, 'dependent');
+                $getCapital[$key['key_name']]                       = $this->_getCapital($key['key_name']);
+                $getClassName[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
+                $getClassName[$key['key_name']]['column_name']      = $this->_getClassName($key['column_name']);
+            }
             $twig_var = array(
-                'namespace'       => $var['_namespace'],
-                'className'       => $var['_className'],
-                'columns'         => $var['_columns'],
-                'foreignKeysInfo' => $this->getForeignKeysInfo(),
+                'namespace'                => $var['_namespace'],
+                'className'                => $var['_className'],
+                'columns'                  => $var['_columns'],
+                'foreignKeysInfo'          => $foreignKeysInfo,
+                'dependentTables'          => $dependentTables,
+                'getRelationNameParent'    => $getRelationNameParent,
+                'getRelationNameDependent' => $getRelationNameDependent,
+                'getCapital'               => $getCapital,
+                'getClassName'             => $getClassName,
             );
-            echo $twig->render('Entity.php.twig', $twig_var);
         }
-        if (!file_put_contents($entityFile, $entityData))
+        if (!file_put_contents($entityFile, $twig->render('Entity.php.twig', $twig_var)))
             die("Error: could not write Entity file $entityFile.");
 //        if (!file_put_contents($managerFile, $managerData))
 //            die("Error: could not write Manager file $managerFile.");
 //        if (!file_put_contents($fooFile, $fooData))
-//            die("Error: could not write model file $fooFile.");
+        if (!file_put_contents($fooFile, $twig->render('Foo.php.twig', $twig_var)))
+            die("Error: could not write model file $fooFile.");
 //        if (!file_put_contents($fooTableFile, $fooTableData))
 //            die("Error: could not write model file $fooFile.");
         return true;
