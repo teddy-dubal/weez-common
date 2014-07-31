@@ -14,11 +14,6 @@ abstract class MakeDbTableAbstract
     protected $_tbname;
 
     /**
-     *  @var \Twig_Environment $twig;
-     */
-    protected $twig;
-
-    /**
      *
      *  @var String $_dbname;
      */
@@ -267,20 +262,6 @@ abstract class MakeDbTableAbstract
     public function setDependentTables($tables)
     {
         $this->_dependentTables = $tables;
-    }
-
-    public function setTwig($twig)
-    {
-        $this->twig = $twig;
-        if (null != $tpl        = $this->getTemplatePath()) {
-            $this->twig->getLoader()->setPaths($tpl);
-        }
-        return $twig;
-    }
-
-    public function getTwig()
-    {
-        return $this->twig;
     }
 
     /**

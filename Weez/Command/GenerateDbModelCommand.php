@@ -9,7 +9,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig_Environment;
-use Twig_Extension_Debug;
 use Twig_Loader_Filesystem;
 use Weez\ZendModelGenerator\Lib\MakeMysql;
 
@@ -67,7 +66,6 @@ EOT
             default:
                 break;
         }
-        $dbAdapter->setTwig($this->getTwig());
         $tables = array();
         if ($tablesAll) {
             $tables = $dbAdapter->getTablesNamesFromDb();
