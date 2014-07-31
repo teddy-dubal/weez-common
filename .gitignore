@@ -68,3 +68,4 @@ extras/documentation
 # Composer PHAR
 /composer.phar
 
+/.project
