@@ -44,199 +44,154 @@ class EntityItem extends AbstractGenerator
                         ))
             ));
         }
-
-        foreach ($this->data['foreignKeysInfo'] as $column) {
-            $comment           = !empty($column['comment']) ? $column['comment'] : '';
+        foreach ($this->data['foreignKeysInfo'] as $key) {
+            $name              = $this->data['relationNameParent'][$key['key_name']] . '_' . $key['column_name'];
             $classProperties[] = PropertyGenerator::fromArray(array(
-                        'name'     => $column['capital'],
+                        'name'     => $name,
                         'flags'    => PropertyGenerator::FLAG_PROTECTED,
                         'docblock' => DocBlockGenerator::fromArray(array(
-                            'shortDescription' => $comment,
+                            'shortDescription' => 'Parent relation',
                             'longDescription'  => null,
                             'tags'             => array(
-                                new PropertyTag($column['capital'], array($column['phptype'])),
+                                new PropertyTag($name, array($this->data['_namespace'] . '\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name']))
                             )
                         ))
             ));
         }
+        foreach ($this->data['dependentTables'] as $key) {
+            $name              = $this->data['relationNameDependent'][$key['key_name']];
+            $longDescr         = sprintf('Type:  %s relationship', ($key['type'] == 'one') ? 'One-to-One' : 'One-to-Many');
+            $classProperties[] = PropertyGenerator::fromArray(array(
+                        'name'     => $name,
+                        'flags'    => PropertyGenerator::FLAG_PROTECTED,
+                        'docblock' => DocBlockGenerator::fromArray(array(
+                            'shortDescription' => 'Dependent relation ',
+                            'longDescription'  => $longDescr,
+                            'tags'             => array(
+                                new PropertyTag($name, array($this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name']))
+                            )
+                        ))
+            ));
+        }
+        $constructBody = '$this->setColumnsList(array(' . "\n";
+        foreach ($this->data['_columns'] as $column) {
+            $constructBody .= '     \'' . $column['field'] . '\' => \'' . $column['capital'] . '\',' . "\n";
+        }
+        $constructBody .='));' . "\n";
+        $constructBody .='$this->setParentList(array(' . "\n";
+        foreach ($this->data['foreignKeysInfo'] as $key) {
+            $name = $this->data['relationNameParent'][$key['key_name']] . '_' . $key['column_name'];
+            $constructBody .= ' \'' . $this->data['capital'][$key['key_name']] . '\' => array(' . "\n";
+            $constructBody .= '     \'property\' => \'' . $name . '\',' . "\n";
+            $constructBody .= '     \'table_name\' => \'' . $this->data['className'][$key['key_name']]['foreign_tbl_name'] . '\',' . "\n";
+            $constructBody .= ' ),' . "\n";
+        }
+        $constructBody .='));' . "\n";
+        $constructBody .='$this->setDependentList(array(' . "\n";
+        foreach ($this->data['dependentTables'] as $key) {
+            $name = $this->data['relationNameDependent'][$key['key_name']];
+            $constructBody .= ' \'' . $this->data['capitalDependent'][$key['key_name']] . '\' => array(' . "\n";
+            $constructBody .= '     \'property\' => \'' . $name . '\',' . "\n";
+            $constructBody .= '     \'table_name\' => \'' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . '\',' . "\n";
+            $constructBody .= ' ),' . "\n";
+        }
+        $constructBody .='));' . "\n";
+        $methods = array(
+            array(
+                'name'       => '__construct',
+                'parameters' => array(
+                ),
+                'flags'      => MethodGenerator::FLAG_PUBLIC,
+                'body'       => $constructBody,
+                'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => 'Sets up column and relationship lists',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('adapter', array('Adapter')),
+                                new ParamTag('entity', array('Entity')),
+                            )
+                        )
+                )
+            ),
+        );
+        $methods = array_merge($methods, $this->getAccessor($this->data));
         return array(
             'name'          => $this->data['_className'],
             'namespacename' => $this->data['_namespace'],
             'extendedclass' => 'Entity',
             'properties'    => $classProperties,
-            'methods'       => array(
-                array(
-                    'name'       => 'setColumnsList',
-                    'parameters' => array('data'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => '$this->_columnsList = $data;' . "\n" . 'return $this;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Set the list of columns associated with this model',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('data', array('array')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'getColumnsList',
-                    'parameters' => array(),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => 'return $this->_columnsList;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Returns columns list array',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ReturnTag(array(
-                                        'datatype' => 'array',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'setParentList',
-                    'parameters' => array('data'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => '$this->_parentList = $data;' . "\n" . 'return $this;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Set the list of relationships associated with this model',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('data', array('array')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'getParentList',
-                    'parameters' => array(),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => 'return $this->_parentList;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Returns relationship list array',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ReturnTag(array(
-                                        'datatype' => 'array',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'setDependentList',
-                    'parameters' => array('data'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => '$this->_dependentList = $data;' . "\n" . 'return $this;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Set the list of relationships associated with this model',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('data', array('array')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'getDependentList',
-                    'parameters' => array(),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => 'return $this->_dependentList;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Returns relationship list array',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ReturnTag(array(
-                                        'datatype' => 'array',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'columnNameToVar',
-                    'parameters' => array('column'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => 'if (! isset($this->_columnsList[$column])) {' . "\n" .
-                    '   throw new \Exception("column \'$column\' not found!");' . "\n" .
-                    '}' . "\n" .
-                    'return $this->_columnsList[$column];',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Converts database column name to php setter/getter function name',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('column', array('string')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'varNameToColumn',
-                    'parameters' => array('thevar'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       =>
-                    'foreach ($this->_columnsList as $column => $var) {' . "\n" .
-                    '   if ($var == $thevar) {' . "\n" .
-                    '       return $column;' . "\n" .
-                    '   }' . "\n" .
-                    '}' . "\n" .
-                    'return null;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Converts database column name to PHP setter/getter function name',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('thevar', array('string')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-                array(
-                    'name'       => 'setOptions',
-                    'parameters' => array('options'),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       =>
-                    '$this->exchangeArray($options);' . "\n" .
-                    'return $this;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Array of options/values to be set for this model. Options without a matching method are ignored.',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('options', array('array')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                            )),
-                                )
-                            )
-                    )
-                ),
-            )
+            'methods'       => $methods
         );
+    }
+
+    private function getAccessor()
+    {
+        $methods = array();
+        foreach ($this->data['_columns'] as $column) {
+            $comment       = 'Sets column ' . $column['field'];
+            $comment.= strpos($column['type'], 'datetime') === false ? '' : ' Stored in ISO 8601 format .';
+            $constructBody = '';
+            if (strpos($column['type'], 'datetime') !== false) {
+                $constructBody .= 'if (! empty($data)) {' . "\n";
+                $constructBody .= '     if (! $data instanceof \DateTime) {' . "\n";
+                $constructBody .= '         $data = new \DateTime($data);' . "\n";
+                $constructBody .= '     }' . "\n";
+                $constructBody .= '     $data = $data->format (\'YYYY-MM-ddTHH:mm:ss.S\');' . "\n";
+                $constructBody .= '}' . "\n";
+            }
+            $constructBody .= '$this->' . $column['capital'] . ' = $data;' . "\n";
+            $constructBody .= 'return $this;' . "\n";
+            $methods[]     = array(
+                'name'       => 'set' . $column['capital'],
+                'parameters' => array('data'),
+                'flags'      => MethodGenerator::FLAG_PUBLIC,
+                'body'       => $constructBody,
+                'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => $comment,
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('data', array('mixed')),
+                            )
+                        )
+                )
+            );
+            $comment       = 'Gets column ' . $column['field'];
+            $comment.= strpos($column['type'], 'datetime') === false ? '' : ' Stored in ISO 8601 format .';
+            $constructBody = '';
+            if (strpos($column['type'], 'datetime') !== false) {
+                $constructBody .= 'if ($returnDateTime) {' . "\n";
+                $constructBody .= '     if ($this->' . $column['capital'] . ' === null) {' . "\n";
+                $constructBody .= '         return null;' . "\n";
+                $constructBody .= '     }' . "\n";
+                $constructBody .= '     return new \DateTime($this->' . $column['capital'] . ',\'YYYY-MM-ddTHH:mm:ss.S\');' . "\n";
+                $constructBody .= '}' . "\n";
+                $constructBody .= 'return $this->' . $column['capital'] . ';' . "\n";
+            } elseif ($column['phptype'] == 'boolean') {
+                $constructBody .= 'return $this->' . $column['capital'] . ' ? true : false;' . "\n";
+            } else {
+                $constructBody .= 'return $this->' . $column['capital'] . ' ;' . "\n";
+            }
+            $methods[] = array(
+                'name'       => 'get' . $column['capital'],
+                'parameters' => array(),
+                'flags'      => MethodGenerator::FLAG_PUBLIC,
+                'body'       => $constructBody,
+                'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => $comment,
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ReturnTag(array(
+                                    'datatype' => $column['phptype'],
+                                        )),
+                            )
+                        )
+                )
+            );
+        }
+        return $methods;
     }
 
     /**

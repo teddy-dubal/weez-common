@@ -38,112 +38,197 @@ class Bugs extends Entity
     protected $VerifiedBy = null;
 
     /**
-     * Set the list of columns associated with this model
+     * Parent relation
      *
-     * @param array $data
-     * @return self
+     * @property Weez\Core\Model\Accounts $Accounts_reported_by
      */
-    public function setColumnsList($data)
+    protected $Accounts_reported_by = null;
+
+    /**
+     * Parent relation
+     *
+     * @property Weez\Core\Model\Accounts $Accounts_assigned_to
+     */
+    protected $Accounts_assigned_to = null;
+
+    /**
+     * Parent relation
+     *
+     * @property Weez\Core\Model\Accounts $Accounts_verified_by
+     */
+    protected $Accounts_verified_by = null;
+
+    /**
+     * Dependent relation 
+     *
+     * Type:  One-to-Many relationship
+     *
+     * @property Weez\Core\Model\BugsProducts $BugsProducts
+     */
+    protected $BugsProducts = null;
+
+    /**
+     * Sets up column and relationship lists
+     *
+     * @param Adapter $adapter
+     * @param Entity $entity
+     */
+    public function __construct()
     {
-        $this->_columnsList = $data;
+        $this->setColumnsList(array(
+             'bug_id' => 'BugId',
+             'bug_description' => 'BugDescription',
+             'bug_status' => 'BugStatus',
+             'reported_by' => 'ReportedBy',
+             'assigned_to' => 'AssignedTo',
+             'verified_by' => 'VerifiedBy',
+        ));
+        $this->setParentList(array(
+         'BugsIbfk1' => array(
+             'property' => 'Accounts_reported_by',
+             'table_name' => 'Accounts',
+         ),
+         'BugsIbfk2' => array(
+             'property' => 'Accounts_assigned_to',
+             'table_name' => 'Accounts',
+         ),
+         'BugsIbfk3' => array(
+             'property' => 'Accounts_verified_by',
+             'table_name' => 'Accounts',
+         ),
+        ));
+        $this->setDependentList(array(
+         'BugsProductsIbfk1' => array(
+             'property' => 'BugsProducts',
+             'table_name' => 'BugsProducts',
+         ),
+        ));
+    }
+
+    /**
+     * Sets column bug_id
+     *
+     * @param mixed $data
+     */
+    public function setBugId($data)
+    {
+        $this->BugId = $data;
         return $this;
     }
 
     /**
-     * Returns columns list array
+     * Gets column bug_id
      *
-     * @return array
+     * @return int
      */
-    public function getColumnsList()
+    public function getBugId()
     {
-        return $this->_columnsList;
+        return $this->BugId ;
     }
 
     /**
-     * Set the list of relationships associated with this model
+     * Sets column bug_description
      *
-     * @param array $data
-     * @return self
+     * @param mixed $data
      */
-    public function setParentList($data)
+    public function setBugDescription($data)
     {
-        $this->_parentList = $data;
+        $this->BugDescription = $data;
         return $this;
     }
 
     /**
-     * Returns relationship list array
+     * Gets column bug_description
      *
-     * @return array
+     * @return string
      */
-    public function getParentList()
+    public function getBugDescription()
     {
-        return $this->_parentList;
+        return $this->BugDescription ;
     }
 
     /**
-     * Set the list of relationships associated with this model
+     * Sets column bug_status
      *
-     * @param array $data
-     * @return self
+     * @param mixed $data
      */
-    public function setDependentList($data)
+    public function setBugStatus($data)
     {
-        $this->_dependentList = $data;
+        $this->BugStatus = $data;
         return $this;
     }
 
     /**
-     * Returns relationship list array
+     * Gets column bug_status
      *
-     * @return array
+     * @return string
      */
-    public function getDependentList()
+    public function getBugStatus()
     {
-        return $this->_dependentList;
+        return $this->BugStatus ;
     }
 
     /**
-     * Converts database column name to php setter/getter function name
+     * Sets column reported_by
      *
-     * @param string $column
-     * @return self
+     * @param mixed $data
      */
-    public function columnNameToVar($column)
+    public function setReportedBy($data)
     {
-        if (! isset($this->_columnsList[$column])) {
-           throw new \Exception("column '$column' not found!");
-        }
-        return $this->_columnsList[$column];
-    }
-
-    /**
-     * Converts database column name to PHP setter/getter function name
-     *
-     * @param string $thevar
-     * @return self
-     */
-    public function varNameToColumn($thevar)
-    {
-        foreach ($this->_columnsList as $column => $var) {
-           if ($var == $thevar) {
-               return $column;
-           }
-        }
-        return null;
-    }
-
-    /**
-     * Array of options/values to be set for this model. Options without a matching
-     * method are ignored.
-     *
-     * @param array $options
-     * @return self
-     */
-    public function setOptions($options)
-    {
-        $this->exchangeArray($options);
+        $this->ReportedBy = $data;
         return $this;
+    }
+
+    /**
+     * Gets column reported_by
+     *
+     * @return string
+     */
+    public function getReportedBy()
+    {
+        return $this->ReportedBy ;
+    }
+
+    /**
+     * Sets column assigned_to
+     *
+     * @param mixed $data
+     */
+    public function setAssignedTo($data)
+    {
+        $this->AssignedTo = $data;
+        return $this;
+    }
+
+    /**
+     * Gets column assigned_to
+     *
+     * @return string
+     */
+    public function getAssignedTo()
+    {
+        return $this->AssignedTo ;
+    }
+
+    /**
+     * Sets column verified_by
+     *
+     * @param mixed $data
+     */
+    public function setVerifiedBy($data)
+    {
+        $this->VerifiedBy = $data;
+        return $this;
+    }
+
+    /**
+     * Gets column verified_by
+     *
+     * @return string
+     */
+    public function getVerifiedBy()
+    {
+        return $this->VerifiedBy ;
     }
 
 

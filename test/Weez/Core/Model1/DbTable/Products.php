@@ -1,0 +1,46 @@
+<?php
+
+namespace Weez\Core\Model\Model\DbTable;
+/**
+* Application Model DbTables
+*
+* @package Weez\Core\Model\Model
+* @subpackage DbTable
+* @author T.ED <teddy.dubal@gmail.com>
+* @copyright ZF model generator
+* @license http://framework.zend.com/license/new-bsd     New BSD License
+*/
+
+/**
+* Table definition for products
+*
+* @package Weez\Core\Model\Model
+* @subpackage DbTable
+* @author T.ED <teddy.dubal@gmail.com>
+*/
+class Products extends TableAbstract
+{
+/**
+* $_name - name of database table
+*
+* @var string
+*/
+protected $_name = 'products';
+
+/**
+* $_id - this is the primary key name
+*
+* @var int
+*/
+protected $_id = 'product_id';
+
+protected $_sequence = true;
+
+
+protected $_dependentTables = array(
+        '\Weez\Core\Model\Model\DbTable\BugsProducts'
+    );
+
+
+
+}

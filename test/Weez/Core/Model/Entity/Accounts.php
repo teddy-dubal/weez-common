@@ -13,112 +13,80 @@ class Accounts extends Entity
     protected $AccountName = null;
 
     /**
-     * Set the list of columns associated with this model
+     * Dependent relation 
      *
-     * @param array $data
-     * @return self
+     * Type:  One-to-Many relationship
+     *
+     * @property Weez\Core\Model\Bugs $BugsByReportedBy
      */
-    public function setColumnsList($data)
+    protected $BugsByReportedBy = null;
+
+    /**
+     * Dependent relation 
+     *
+     * Type:  One-to-Many relationship
+     *
+     * @property Weez\Core\Model\Bugs $BugsByAssignedTo
+     */
+    protected $BugsByAssignedTo = null;
+
+    /**
+     * Dependent relation 
+     *
+     * Type:  One-to-Many relationship
+     *
+     * @property Weez\Core\Model\Bugs $BugsByVerifiedBy
+     */
+    protected $BugsByVerifiedBy = null;
+
+    /**
+     * Sets up column and relationship lists
+     *
+     * @param Adapter $adapter
+     * @param Entity $entity
+     */
+    public function __construct()
     {
-        $this->_columnsList = $data;
+        $this->setColumnsList(array(
+             'account_name' => 'AccountName',
+        ));
+        $this->setParentList(array(
+        ));
+        $this->setDependentList(array(
+         'BugsIbfk1' => array(
+             'property' => 'BugsByReportedBy',
+             'table_name' => 'Bugs',
+         ),
+         'BugsIbfk2' => array(
+             'property' => 'BugsByAssignedTo',
+             'table_name' => 'Bugs',
+         ),
+         'BugsIbfk3' => array(
+             'property' => 'BugsByVerifiedBy',
+             'table_name' => 'Bugs',
+         ),
+        ));
+    }
+
+    /**
+     * Sets column account_name
+     *
+     * @param mixed $data
+     */
+    public function setAccountName($data)
+    {
+        $this->AccountName = $data;
         return $this;
     }
 
     /**
-     * Returns columns list array
+     * Gets column account_name
      *
-     * @return array
+     * @return string
      */
-    public function getColumnsList()
+    public function getAccountName()
     {
-        return $this->_columnsList;
-    }
-
-    /**
-     * Set the list of relationships associated with this model
-     *
-     * @param array $data
-     * @return self
-     */
-    public function setParentList($data)
-    {
-        $this->_parentList = $data;
-        return $this;
-    }
-
-    /**
-     * Returns relationship list array
-     *
-     * @return array
-     */
-    public function getParentList()
-    {
-        return $this->_parentList;
-    }
-
-    /**
-     * Set the list of relationships associated with this model
-     *
-     * @param array $data
-     * @return self
-     */
-    public function setDependentList($data)
-    {
-        $this->_dependentList = $data;
-        return $this;
-    }
-
-    /**
-     * Returns relationship list array
-     *
-     * @return array
-     */
-    public function getDependentList()
-    {
-        return $this->_dependentList;
-    }
-
-    /**
-     * Converts database column name to php setter/getter function name
-     *
-     * @param string $column
-     * @return self
-     */
-    public function columnNameToVar($column)
-    {
-        if (! isset($this->_columnsList[$column])) {
-           throw new \Exception("column '$column' not found!");
-        }
-        return $this->_columnsList[$column];
-    }
-
-    /**
-     * Converts database column name to PHP setter/getter function name
-     *
-     * @param string $thevar
-     * @return self
-     */
-    public function varNameToColumn($thevar)
-    {
-        foreach ($this->_columnsList as $column => $var) {
-           if ($var == $thevar) {
-               return $column;
-           }
-        }
-        return null;
-    }
-
-    /**
-     * Array of options/values to be set for this model. Options without a matching
-     * method are ignored.
-     *
-     * @param array $options
-     * @return self
-     */
-    public function setOptions($options)
-    {
-        $this->exchangeArray($options);
-        return $this;
+        return $this->AccountName ;
     }
 
 

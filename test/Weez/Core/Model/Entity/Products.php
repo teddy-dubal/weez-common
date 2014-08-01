@@ -18,112 +18,76 @@ class Products extends Entity
     protected $ProductName = null;
 
     /**
-     * Set the list of columns associated with this model
+     * Dependent relation 
      *
-     * @param array $data
-     * @return self
+     * Type:  One-to-Many relationship
+     *
+     * @property Weez\Core\Model\BugsProducts $BugsProducts
      */
-    public function setColumnsList($data)
+    protected $BugsProducts = null;
+
+    /**
+     * Sets up column and relationship lists
+     *
+     * @param Adapter $adapter
+     * @param Entity $entity
+     */
+    public function __construct()
     {
-        $this->_columnsList = $data;
+        $this->setColumnsList(array(
+             'product_id' => 'ProductId',
+             'product_name' => 'ProductName',
+        ));
+        $this->setParentList(array(
+        ));
+        $this->setDependentList(array(
+         'BugsProductsIbfk2' => array(
+             'property' => 'BugsProducts',
+             'table_name' => 'BugsProducts',
+         ),
+        ));
+    }
+
+    /**
+     * Sets column product_id
+     *
+     * @param mixed $data
+     */
+    public function setProductId($data)
+    {
+        $this->ProductId = $data;
         return $this;
     }
 
     /**
-     * Returns columns list array
+     * Gets column product_id
      *
-     * @return array
+     * @return int
      */
-    public function getColumnsList()
+    public function getProductId()
     {
-        return $this->_columnsList;
+        return $this->ProductId ;
     }
 
     /**
-     * Set the list of relationships associated with this model
+     * Sets column product_name
      *
-     * @param array $data
-     * @return self
+     * @param mixed $data
      */
-    public function setParentList($data)
+    public function setProductName($data)
     {
-        $this->_parentList = $data;
+        $this->ProductName = $data;
         return $this;
     }
 
     /**
-     * Returns relationship list array
+     * Gets column product_name
      *
-     * @return array
+     * @return string
      */
-    public function getParentList()
+    public function getProductName()
     {
-        return $this->_parentList;
-    }
-
-    /**
-     * Set the list of relationships associated with this model
-     *
-     * @param array $data
-     * @return self
-     */
-    public function setDependentList($data)
-    {
-        $this->_dependentList = $data;
-        return $this;
-    }
-
-    /**
-     * Returns relationship list array
-     *
-     * @return array
-     */
-    public function getDependentList()
-    {
-        return $this->_dependentList;
-    }
-
-    /**
-     * Converts database column name to php setter/getter function name
-     *
-     * @param string $column
-     * @return self
-     */
-    public function columnNameToVar($column)
-    {
-        if (! isset($this->_columnsList[$column])) {
-           throw new \Exception("column '$column' not found!");
-        }
-        return $this->_columnsList[$column];
-    }
-
-    /**
-     * Converts database column name to PHP setter/getter function name
-     *
-     * @param string $thevar
-     * @return self
-     */
-    public function varNameToColumn($thevar)
-    {
-        foreach ($this->_columnsList as $column => $var) {
-           if ($var == $thevar) {
-               return $column;
-           }
-        }
-        return null;
-    }
-
-    /**
-     * Array of options/values to be set for this model. Options without a matching
-     * method are ignored.
-     *
-     * @param array $options
-     * @return self
-     */
-    public function setOptions($options)
-    {
-        $this->exchangeArray($options);
-        return $this;
+        return $this->ProductName ;
     }
 
 

@@ -285,14 +285,33 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
 
     private function doItAllZf2()
     {
-        $vars            = get_object_vars($this);
-        $foreignKeysInfo = $this->getForeignKeysInfo();
-        foreach ($foreignKeysInfo as $key) {
-            $getRelationNameDependent[$key['key_name']]         = $this->_getRelationName($key, 'dependent');
+        $vars                     = get_object_vars($this);
+        $vars['foreignKeysInfo']  = $this->getForeignKeysInfo();
+        $vars['dependentTables']  = $this->getDependentTables();
+        $getRelationNameDependent = array();
+        $getRelationNameParent    = array();
+        $getCapital               = array();
+        $getCapitalDependent      = array();
+        $getClassName             = array();
+        $getClassNameDependent    = array();
+        foreach ($vars['foreignKeysInfo'] as $key) {
+            $getRelationNameParent[$key['key_name']]            = $this->_getRelationName($key, 'parent');
             $getCapital[$key['key_name']]                       = $this->_getCapital($key['key_name']);
             $getClassName[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
             $getClassName[$key['key_name']]['column_name']      = $this->_getClassName($key['column_name']);
         }
+        foreach ($vars['dependentTables'] as $key) {
+            $getRelationNameDependent[$key['key_name']]                  = $this->_getRelationName($key, 'dependent');
+            $getClassNameDependent[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
+            $getCapitalDependent[$key['key_name']]                       = $this->_getCapital($key['key_name']);
+        }
+        $vars['relationNameDependent'] = $getRelationNameDependent;
+        $vars['relationNameParent']    = $getRelationNameParent;
+        $vars['className']             = $getClassName;
+        $vars['classNameDependent']    = $getClassNameDependent;
+        $vars['capital']               = $getCapital;
+        $vars['capitalDependent']      = $getCapitalDependent;
+
         $entity      = new Entity();
         $entity->setData($vars);
         $entityFile  = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
