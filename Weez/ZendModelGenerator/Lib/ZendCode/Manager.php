@@ -249,6 +249,7 @@ class Manager extends AbstractGenerator
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse('Zend\Db\TableGateway\AbstractTableGateway')
                 ->addUse('Zend\Db\TableGateway\Feature')
+                ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse('Pimple')
                 ->addUse('Zend\Db\Adapter\Adapter');
         $fileGenerator = $this->getFileGenerator();
