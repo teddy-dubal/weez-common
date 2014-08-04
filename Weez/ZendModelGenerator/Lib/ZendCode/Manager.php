@@ -29,7 +29,7 @@ class Manager extends AbstractGenerator
         $data = $this->getData();
         return array(
             'name'          => 'Manager',
-            'namespacename' => $data['_namespace'],
+            'namespacename' => $data['_namespace'] . '\Table',
             'extendedclass' => 'AbstractTableGateway',
             'flags'         => ClassGenerator::FLAG_ABSTRACT,
             'docblock'      => DocBlockGenerator::fromArray(
