@@ -121,7 +121,7 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-        $constructBody = 'parent::__construct($adapter,new ' . $this->data['_className'] . '());' . PHP_EOL;
+        $constructBody = 'parent::__construct($adapter,new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
         $methods       = array(
             array(
                 'name'       => '__construct',
@@ -513,7 +513,7 @@ class EntityManager extends AbstractGenerator
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse($this->data['_namespace'] . '\Table\Manager')
                 ->addUse('Zend\Db\Adapter\Adapter')
-                ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'])
+                ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'], $this->data['_className'] . 'Entity')
         ;
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
