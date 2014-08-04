@@ -5,12 +5,14 @@ namespace Weez\ZendModelGenerator\Lib;
 use Weez\ZendModelGenerator\Lib\MakeDbTableAbstract;
 use Weez\ZendModelGenerator\Lib\ZendCode\Entity;
 use Weez\ZendModelGenerator\Lib\ZendCode\EntityItem;
+use Weez\ZendModelGenerator\Lib\ZendCode\EntityManager;
 use Weez\ZendModelGenerator\Lib\ZendCode\Manager;
 
 /**
  * main class for files creation
  */
-abstract class MakeDbTableFactory extends MakeDbTableAbstract {
+abstract class MakeDbTableFactory extends MakeDbTableAbstract
+{
 
     /**
      *   @var int $zfv;
@@ -27,7 +29,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
      */
     protected $_includePath;
 
-    public function setIncludePath($path) {
+    public function setIncludePath($path)
+    {
         $this->_includePath = $path;
     }
 
@@ -35,7 +38,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
      *
      * @return string
      */
-    public function getIncludePath() {
+    public function getIncludePath()
+    {
         return $this->_includePath;
     }
 
@@ -47,7 +51,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
      * @param String $dbname
      * @param String $namespace
      */
-    public function __construct($config, $dbname, $namespace, $zfv = 1) {
+    public function __construct($config, $dbname, $namespace, $zfv = 1)
+    {
         parent::__construct($config, $dbname, $namespace);
         $this->zfv = $zfv;
         if (1 == $zfv) {
@@ -76,7 +81,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
     /**
      * creates the DbTable class file
      */
-    public function makeDbTableFile() {
+    public function makeDbTableFile()
+    {
 
         $class = 'DbTable\\' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -118,7 +124,7 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
 
         if (sizeof($references) > 0) {
             $referenceMap = "protected \$_referenceMap = array(" .
-                join(',', $references) . "\n    );";
+                    join(',', $references) . "\n    );";
         }
 
         $dependentTables = '';
@@ -129,7 +135,7 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
 
         if (sizeof($dependents) > 0) {
             $dependentTables = "protected \$_dependentTables = array(\n        '" .
-                join("',\n        '", $dependents) . "'\n    );";
+                    join("',\n        '", $dependents) . "'\n    );";
         }
 
         $vars = array('referenceMap' => $referenceMap, 'dependentTables' => $dependentTables);
@@ -143,7 +149,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
     /**
      * creates the Mapper class file
      */
-    public function makeMapperFile() {
+    public function makeMapperFile()
+    {
 
         $class = 'Mapper_' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -167,7 +174,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
     /**
      * creates the model class file
      */
-    public function makeModelFile() {
+    public function makeModelFile()
+    {
 
         $class = 'Model\\' . $this->_className;
         $file  = $this->getIncludePath() . $class . '.inc.php';
@@ -188,7 +196,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         }
     }
 
-    public function doItAll() {
+    public function doItAll()
+    {
         if (1 == $this->zfv) {
             $this->doItAllZf1();
         } else {
@@ -202,7 +211,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
      *
      * @return boolean
      */
-    private function doItAllZf1() {
+    private function doItAllZf1()
+    {
 
         $this->makeDbTableFile();
         $this->makeMapperFile();
@@ -258,7 +268,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         return true;
     }
 
-    protected function copyIncludeFiles($dir, $dest) {
+    protected function copyIncludeFiles($dir, $dest)
+    {
         $files     = array();
         $directory = opendir($dir);
 
@@ -273,7 +284,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         closedir($directory);
     }
 
-    private function doItAllZf2() {
+    private function doItAllZf2()
+    {
         $vars                     = get_object_vars($this);
         $vars['foreignKeysInfo']  = $this->getForeignKeysInfo();
         $vars['dependentTables']  = $this->getDependentTables();
@@ -295,10 +307,10 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         $vars['className']             = $getClassName;
         $vars['classNameDependent']    = $getClassNameDependent;
 
-        $entity      = new Entity();
+        $entity     = new Entity();
         $entity->setData($vars);
-        $entityFile  = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
-//
+        $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
+
         $manager     = new Manager();
         $manager->setData($vars);
         $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . "Manager.php";
@@ -306,21 +318,19 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         $entityItem     = new EntityItem();
         $entityItem->setData($vars);
         $entityItemFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . $this->_className . ".php";
-//        $fooData = $this->getParsedTplContents('Foo.phtml');
-//
-//        $fooTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . "Table.php";
-//        $fooTableData = $this->getParsedTplContents('FooTable.phtml');
-//
-//        $templatesDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2') . DIRECTORY_SEPARATOR;
-//
+
+        $entityManager     = new EntityManager();
+        $entityManager->setData($vars);
+        $entityManagerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . ".php";
+
         if (!file_put_contents($entityFile, $entity->generate()))
             die("Error: could not write Entity file $entityFile.");
         if (!file_put_contents($managerFile, $manager->generate()))
             die("Error: could not write Manager file $managerFile.");
         if (!file_put_contents($entityItemFile, $entityItem->generate()))
             die("Error: could not write model file $entityItemFile.");
-////        if (!file_put_contents($fooTableFile, $fooTableData))
-////            die("Error: could not write model file $fooFile.");
+        if (!file_put_contents($entityManagerFile, $entityManager->generate()))
+            die("Error: could not write model file $entityManagerFile.");
         return true;
     }
 
