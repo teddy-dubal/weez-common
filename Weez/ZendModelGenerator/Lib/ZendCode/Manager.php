@@ -24,12 +24,14 @@ use Zend\Code\Generator\PropertyGenerator;
 class Manager extends AbstractGenerator
 {
 
+    private $data;
+
     public function getClassArrayRepresentation()
     {
-        $data = $this->getData();
+        $this->data = $this->getData();
         return array(
             'name'          => 'Manager',
-            'namespacename' => $data['_namespace'] . '\Table',
+            'namespacename' => $this->data['_namespace'] . '\Table',
             'extendedclass' => 'AbstractTableGateway',
             'flags'         => ClassGenerator::FLAG_ABSTRACT,
             'docblock'      => DocBlockGenerator::fromArray(
@@ -39,19 +41,19 @@ class Manager extends AbstractGenerator
                         'tags'             => array(
                             array(
                                 'name'        => 'package',
-                                'description' => $data['_namespace'],
+                                'description' => $this->data['_namespace'],
                             ),
                             array(
                                 'name'        => 'author',
-                                'description' => $data['_author'],
+                                'description' => $this->data['_author'],
                             ),
                             array(
                                 'name'        => 'copyright',
-                                'description' => $data['_copyright'],
+                                'description' => $this->data['_copyright'],
                             ),
                             array(
                                 'name'        => 'license',
-                                'description' => $data['_license'],
+                                'description' => $this->data['_license'],
                             ),
                         )
                     )
