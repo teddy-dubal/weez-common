@@ -128,7 +128,7 @@ class EntityManager extends AbstractGenerator
                 'parameters' => array(
                     ParameterGenerator::fromArray(array(
                         'name' => 'adapter',
-                        'type' => 'Adapter',
+                            //'type' => 'Adapter',
                     ))
                 ),
                 'flags'      => MethodGenerator::FLAG_PUBLIC,

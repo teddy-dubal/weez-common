@@ -66,7 +66,7 @@ class Manager extends AbstractGenerator
                     'parameters' => array(
                         ParameterGenerator::fromArray(array(
                             'name' => 'adapter',
-                            'type' => 'Adapter',
+                                //'type' => 'Adapter',
                         )),
                         ParameterGenerator::fromArray(array(
                             'name' => 'entity',
