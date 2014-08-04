@@ -513,6 +513,7 @@ class EntityManager extends AbstractGenerator
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse($this->data['_namespace'] . '\Table\Manager')
                 ->addUse('Zend\Db\Adapter\Adapter')
+                ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'], $this->data['_className'] . 'Entity')
         ;
         $fileGenerator = $this->getFileGenerator();
