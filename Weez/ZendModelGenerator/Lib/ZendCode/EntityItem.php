@@ -34,7 +34,7 @@ class EntityItem extends AbstractGenerator
 
         return array(
             'name'          => $this->data['_className'],
-            'namespacename' => $this->data['_namespace'],
+            'namespacename' => $this->data['_namespace'] . '\Entity',
             'extendedclass' => 'Entity',
             'docblock'      => DocBlockGenerator::fromArray(
                     array(
@@ -472,7 +472,10 @@ class EntityItem extends AbstractGenerator
     public function generate()
     {
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
-        $class->addUse($this->data['_namespace'] . '\Entity');
+        $class
+                ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'])
+                ->addUse($this->data['_namespace'] . '\Entity')
+        ;
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
                         ->setClass($class)

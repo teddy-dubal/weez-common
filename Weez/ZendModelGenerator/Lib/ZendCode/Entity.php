@@ -26,7 +26,7 @@ class Entity extends AbstractGenerator
         $data = $this->getData();
         return array(
             'name'          => 'Entity',
-            'namespacename' => $data['_namespace'],
+            'namespacename' => $data['_namespace'] . '\Entity',
             'methods'       => array(
                 array(
                     'name'       => 'setColumnsList',
