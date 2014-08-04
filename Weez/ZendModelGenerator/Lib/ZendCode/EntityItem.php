@@ -473,8 +473,7 @@ class EntityItem extends AbstractGenerator
     {
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class
-                //->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'])
-                ->addUse($this->data['_namespace'] . '\Entity')
+                ->addUse($this->data['_namespace'] . '\Entity\\Entity')
         ;
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
