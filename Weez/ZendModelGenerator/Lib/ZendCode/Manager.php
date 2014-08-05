@@ -136,7 +136,12 @@ class Manager extends AbstractGenerator
                     'name'       => 'all',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => 'return $this->select();',
+                    'body'       => '$select = $this->select();'
+                    . '$result = array();' . PHP_EOL
+                    . 'foreach ($select as $v) {' . PHP_EOL
+                    . '     $result[] = $v->getArrayCopy();' . PHP_EOL
+                    . '}' . PHP_EOL
+                    . 'return $result;',
                     'docblock'   => DocBlockGenerator::fromArray(
                             array(
                                 'shortDescription' => '',

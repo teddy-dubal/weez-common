@@ -230,7 +230,7 @@ class EntityManager extends AbstractGenerator
     private function getDeleteEntityMethod()
     {
         $constructBody = '' . PHP_EOL;
-        $constructBody .= 'if (! $entity instanceof \\' . $this->data['_namespace'] . '\\' . $this->data['_className'] . ' ){' . PHP_EOL;
+        $constructBody .= 'if (! $entity instanceof ' . $this->data['_className'] . 'Entity ){' . PHP_EOL;
         $constructBody .= '     throw new \Exception(\'Unable to delete: invalid entity\');' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
         $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
