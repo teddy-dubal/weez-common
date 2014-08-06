@@ -3,6 +3,10 @@
 namespace Weez\ZendModelGenerator\Lib;
 
 use Weez\ZendModelGenerator\Lib\MakeDbTableAbstract;
+use Weez\ZendModelGenerator\Lib\ZendCode\Entity;
+use Weez\ZendModelGenerator\Lib\ZendCode\EntityItem;
+use Weez\ZendModelGenerator\Lib\ZendCode\EntityManager;
+use Weez\ZendModelGenerator\Lib\ZendCode\Manager;
 
 /**
  * main class for files creation
@@ -16,7 +20,7 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
     protected $zfv;
 
     /**
-     *   @var Boolean $_addRequire;
+     *   @var boolean $_addRequire;
      */
     protected $_addRequire;
 
@@ -205,7 +209,7 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
      *
      * creates all class files
      *
-     * @return Boolean
+     * @return boolean
      */
     private function doItAllZf1()
     {
@@ -282,57 +286,51 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract
 
     private function doItAllZf2()
     {
-        $entityData = $this->getParsedTplContents('Entity.phtml');
+        $vars                     = get_object_vars($this);
+        $vars['foreignKeysInfo']  = $this->getForeignKeysInfo();
+        $vars['dependentTables']  = $this->getDependentTables();
+        $getRelationNameDependent = array();
+        $getRelationNameParent    = array();
+        $getClassName             = array();
+        $getClassNameDependent    = array();
+        foreach ($vars['foreignKeysInfo'] as $key) {
+            $getRelationNameParent[$key['key_name']]            = $this->_getRelationName($key, 'parent');
+            $getClassName[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
+            $getClassName[$key['key_name']]['column_name']      = $this->_getClassName($key['column_name']);
+        }
+        foreach ($vars['dependentTables'] as $key) {
+            $getRelationNameDependent[$key['key_name']]                  = $this->_getRelationName($key, 'dependent');
+            $getClassNameDependent[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
+        }
+        $vars['relationNameDependent'] = $getRelationNameDependent;
+        $vars['relationNameParent']    = $getRelationNameParent;
+        $vars['className']             = $getClassName;
+        $vars['classNameDependent']    = $getClassNameDependent;
+
+        $entity     = new Entity();
+        $entity->setData($vars);
         $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
 
-        $managerData = $this->getParsedTplContents('Manager.phtml');
+        $manager     = new Manager();
+        $manager->setData($vars);
         $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . "Manager.php";
 
-        $fooFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . $this->_className . ".php";
-        $fooData = $this->getParsedTplContents('Foo.phtml');
+        $entityItem     = new EntityItem();
+        $entityItem->setData($vars);
+        $entityItemFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . $this->_className . ".php";
 
-        $fooTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . "Table.php";
-        $fooTableData = $this->getParsedTplContents('FooTable.phtml');
+        $entityManager     = new EntityManager();
+        $entityManager->setData($vars);
+        $entityManagerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . ".php";
 
-        $templatesDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates-v2') . DIRECTORY_SEPARATOR;
-        if (null != $twig         = $this->getTwig()) {
-            $var = get_object_vars($this);
-
-            $foreignKeysInfo          = $this->getForeignKeysInfo();
-            $dependentTables          = $this->getDependentTables();
-            $getRelationNameParent    = array();
-            $getRelationNameDependent = array();
-            $getCapital               = array();
-            $getClassName             = array();
-            foreach ($foreignKeysInfo as $key) {
-                echo $key['key_name'];
-                echo $getRelationNameParent[$key['key_name']]            = $this->_getRelationName($key, 'parent');
-                $getRelationNameDependent[$key['key_name']]         = $this->_getRelationName($key, 'dependent');
-                $getCapital[$key['key_name']]                       = $this->_getCapital($key['key_name']);
-                $getClassName[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
-                $getClassName[$key['key_name']]['column_name']      = $this->_getClassName($key['column_name']);
-            }
-            $twig_var = array(
-                'namespace'                => $var['_namespace'],
-                'className'                => $var['_className'],
-                'columns'                  => $var['_columns'],
-                'foreignKeysInfo'          => $foreignKeysInfo,
-                'dependentTables'          => $dependentTables,
-                'getRelationNameParent'    => $getRelationNameParent,
-                'getRelationNameDependent' => $getRelationNameDependent,
-                'getCapital'               => $getCapital,
-                'getClassName'             => $getClassName,
-            );
-        }
-        if (!file_put_contents($entityFile, $twig->render('Entity.php.twig', $twig_var)))
+        if (!file_put_contents($entityFile, $entity->generate()))
             die("Error: could not write Entity file $entityFile.");
-//        if (!file_put_contents($managerFile, $managerData))
-//            die("Error: could not write Manager file $managerFile.");
-//        if (!file_put_contents($fooFile, $fooData))
-        if (!file_put_contents($fooFile, $twig->render('Foo.php.twig', $twig_var)))
-            die("Error: could not write model file $fooFile.");
-//        if (!file_put_contents($fooTableFile, $fooTableData))
-//            die("Error: could not write model file $fooFile.");
+        if (!file_put_contents($managerFile, $manager->generate()))
+            die("Error: could not write Manager file $managerFile.");
+        if (!file_put_contents($entityItemFile, $entityItem->generate()))
+            die("Error: could not write model file $entityItemFile.");
+        if (!file_put_contents($entityManagerFile, $entityManager->generate()))
+            die("Error: could not write model file $entityManagerFile.");
         return true;
     }
 

@@ -17,7 +17,7 @@
         "zendframework/zend-db": "2.3.*",
         "zendframework/zend-inputfilter": "2.3.*",
         "zendframework/zend-code": "2.3.*",
-        "pimple/pimple": "2.1.1",
+        "pimple/pimple": "3.0.0",
         "symfony/yaml": "2.6.x-dev"
     },
     "autoload": {
