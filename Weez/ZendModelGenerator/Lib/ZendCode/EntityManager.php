@@ -269,9 +269,9 @@ class EntityManager extends AbstractGenerator
                 if ($column['field'] == $this->data['_softDeleteColumn']) {
                     $constructBody .= '     $entity->set' . $column['capital'] . '(' . PHP_EOL;
                     if ($column['phptype'] == 'boolean') {
-                        $constructBody .= 'true' . PHP_EOL;
+                        $constructBody .= 'true';
                     } else {
-                        $constructBody .= '1' . PHP_EOL;
+                        $constructBody .= '1';
                     }
                     $constructBody .= ');' . PHP_EOL;
                     break;
