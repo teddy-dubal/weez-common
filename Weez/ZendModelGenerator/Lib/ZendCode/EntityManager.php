@@ -178,8 +178,8 @@ class EntityManager extends AbstractGenerator
         $constructBody .= 'if (!$row) {' . PHP_EOL;
         $constructBody .= '     return null;' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
-        $constructBody .= 'return $row;' . PHP_EOL;
-        $methods[]     = array(
+        $constructBody .= 'return $row->getArrayCopy();' . PHP_EOL;
+        $methods[] = array(
             'name'       => 'find',
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
@@ -200,8 +200,10 @@ class EntityManager extends AbstractGenerator
                     )
             )
         );
+
+
         $constructBody = '' . PHP_EOL;
-        $constructBody .= 'return $this->select()->from(\'' . $this->data['_tbname'] . '\')->columns($criteria);' . PHP_EOL;
+        $constructBody .= 'return $this->select($criteria)->toArray();' . PHP_EOL;
         $methods[]     = array(
             'name'       => 'findBy',
             'parameters' => array(
@@ -253,11 +255,11 @@ class EntityManager extends AbstractGenerator
                     $constructBody .= '         if ($pk_val === null) {' . PHP_EOL;
                     $constructBody .= '             throw new \Exception(\'The value for ' . $key['capital'] . 'cannot be null\');' . PHP_EOL;
                     $constructBody .= '         } else {' . PHP_EOL;
-                    $constructBody .= '             $where[] =  array($this->qi(\'' . $key['field'] . '= ?\'), $pk_val); ' . PHP_EOL;
+                    $constructBody .= '             $where[] =  array(\'' . $key['field'] . '\' => $pk_val); ' . PHP_EOL;
                     $constructBody .= '         }' . PHP_EOL;
                 }
             } else {
-                $constructBody .= '$where = array($this->qi(\'' . $this->data['_primaryKey']['field'] . '= ?\'), $entity->get' . $this->data['_primaryKey']['capital'] . '());' . PHP_EOL;
+                $constructBody .= '     $where = array(\'' . $this->data['_primaryKey']['field'] . '\' => $entity->get' . $this->data['_primaryKey']['capital'] . '());' . PHP_EOL;
             }
             $constructBody .= '     $result = $this->delete($where);' . PHP_EOL;
         }
