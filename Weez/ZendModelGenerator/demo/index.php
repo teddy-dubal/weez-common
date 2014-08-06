@@ -33,6 +33,7 @@ echo sprintf('Ajout de %s users', $nbUser) . "<br>";
 for ($i = 0; $i < $nbUser; $i++) {
     $user   = new User();
     $user->setOptions(array('name' => 'Teddy_' . $i));
+    $user->setOptions(array('name' => 'Teddy'));
     $result = $userManager->saveEntity($user);
     echo sprintf('User id:%s', $result) . "<br>";
 }
@@ -58,10 +59,9 @@ var_dump($u);
 echo '</pre>';
 echo "***********************************************" . "<br>";
 echo "***********************************************" . "<br>";
-$name = 'Teddy_5';
+$name = 'Teddy';
 echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
-$u    = $userManager->findBy(array('name' => $name));
-
+$u    = $userManager->findBy(array('name' => $name), 'id ASC', 5);
 echo '<pre>';
 var_dump($u);
 echo '</pre>';

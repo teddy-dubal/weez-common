@@ -202,15 +202,37 @@ class EntityManager extends AbstractGenerator
         );
 
 
-        $constructBody = '' . PHP_EOL;
-        $constructBody .= 'return $this->select($criteria)->toArray();' . PHP_EOL;
+        $constructBody = '$r = $this->sql->select()->where($criteria);' . PHP_EOL;
+        $constructBody .= 'if ($order) {' . PHP_EOL;
+        $constructBody .= '      $r->order($order);' . PHP_EOL;
+        $constructBody .= '}' . PHP_EOL;
+        $constructBody .= 'if ($count) {' . PHP_EOL;
+        $constructBody .= '      $r->limit($count);' . PHP_EOL;
+        $constructBody .= '}' . PHP_EOL;
+        $constructBody .= 'if ($offset) {' . PHP_EOL;
+        $constructBody .= '      $r->offset($offset);' . PHP_EOL;
+        $constructBody .= '}' . PHP_EOL;
+        $constructBody .= 'return $this->selectWith($r)->toArray();' . PHP_EOL;
+        $constructBody .= '' . PHP_EOL;
         $methods[]     = array(
             'name'       => 'findBy',
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name'         => 'criteria',
                     'defaultvalue' => array(),
-                ))
+                )),
+                ParameterGenerator::fromArray(array(
+                    'name'         => 'order',
+                    'defaultvalue' => null,
+                )),
+                ParameterGenerator::fromArray(array(
+                    'name'         => 'count',
+                    'defaultvalue' => null,
+                )),
+                ParameterGenerator::fromArray(array(
+                    'name'         => 'offset',
+                    'defaultvalue' => null,
+                )),
             ),
             'flags'      => MethodGenerator::FLAG_PUBLIC,
             'body'       => $constructBody,
@@ -220,6 +242,9 @@ class EntityManager extends AbstractGenerator
                         'longDescription'  => null,
                         'tags'             => array(
                             new ParamTag('criteria', array($this->data['_primaryKey']['phptype'])),
+                            new ParamTag('order', array('string')),
+                            new ParamTag('count', array('int')),
+                            new ParamTag('offset', array('int')),
                             new ReturnTag(array('datatype' => 'array of \'' . $this->data['_namespace'] . '\\' . $this->data['_className'] . '|null')),
                         )
                     )
