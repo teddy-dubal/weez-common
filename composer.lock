@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "de4e0546de1c6467edc4df9728904820",
+    "hash": "d3058b07cb33ac49b441903fe7636e53",
     "packages": [
         {
             "name": "pimple/pimple",
@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "a61d4fb086e33c3b45c80b638fb915c62eac58a3"
+                "reference": "50f77fb648d248bb921321e6fcb43e0a1a9376cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/a61d4fb086e33c3b45c80b638fb915c62eac58a3",
-                "reference": "a61d4fb086e33c3b45c80b638fb915c62eac58a3",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/50f77fb648d248bb921321e6fcb43e0a1a9376cc",
+                "reference": "50f77fb648d248bb921321e6fcb43e0a1a9376cc",
                 "shasum": ""
             },
             "require": {
@@ -107,7 +107,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-20 19:24:23"
+            "time": "2014-08-05 09:07:51"
         },
         {
             "name": "symfony/filesystem",
@@ -204,55 +204,6 @@
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
             "time": "2014-07-28 13:20:53"
-        },
-        {
-            "name": "symfony/yaml",
-            "version": "dev-master",
-            "target-dir": "Symfony/Component/Yaml",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/Yaml.git",
-                "reference": "07ff901ce8b081cf227091b4919d347fa999b2a0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/07ff901ce8b081cf227091b4919d347fa999b2a0",
-                "reference": "07ff901ce8b081cf227091b4919d347fa999b2a0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.6-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Yaml\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:06:26"
         },
         {
             "name": "zendframework/zend-code",
@@ -608,7 +559,7 @@
         },
         {
             "name": "zf1/zend-cache",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-cache.git",
@@ -649,7 +600,7 @@
         },
         {
             "name": "zf1/zend-date",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-date.git",
@@ -688,7 +639,7 @@
         },
         {
             "name": "zf1/zend-db",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-db.git",
@@ -731,7 +682,7 @@
         },
         {
             "name": "zf1/zend-exception",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-exception.git",
@@ -768,7 +719,7 @@
         },
         {
             "name": "zf1/zend-loader",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-loader.git",
@@ -806,7 +757,7 @@
         },
         {
             "name": "zf1/zend-locale",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-locale.git",
@@ -849,7 +800,7 @@
         },
         {
             "name": "zf1/zend-registry",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-registry.git",
@@ -890,7 +841,7 @@
         },
         {
             "name": "zf1/zend-xml",
-            "version": "dev-master",
+            "version": "1.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf1/zend-xml.git",
@@ -930,12 +881,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "zf1/zend-db": 20,
-        "zf1/zend-date": 20,
-        "zf1/zend-registry": 20,
-        "symfony/yaml": 20
-    },
+    "stability-flags": [],
     "platform": [],
     "platform-dev": []
 }
