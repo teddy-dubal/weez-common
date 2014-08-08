@@ -417,11 +417,12 @@ class EntityManager extends AbstractGenerator
                 } else {
                     $constructBody .= '             $' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' = $entity->get' . $this->data['relationNameDependent'][$key['key_name']] . '();' . PHP_EOL;
                     $constructBody .= '             foreach ($' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' as $value) {' . PHP_EOL;
-                    $constructBody .= '                 $success = $success && $value' . PHP_EOL;
+                    $constructBody .= '                 $success = $success && $value';
                     if ($this->data['_primaryKey']['phptype'] !== 'array') {
                         $constructBody .= '                 ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
                     } elseif (is_array($key['column_name'])) {
-                        foreach ($key['column_name'] as $column) {
+                        $cn = eval('return ' . $key['column_name'] . ';');
+                        foreach ($cn as $column) {
                             $constructBody .= '         ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
                         }
                     }

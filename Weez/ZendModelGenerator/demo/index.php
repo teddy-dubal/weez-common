@@ -61,7 +61,7 @@ echo "***********************************************" . "<br>";
 echo "***********************************************" . "<br>";
 $name = 'Teddy';
 echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
-$u    = $userManager->findBy(array('name' => $name), 'id ASC', 5);
+$u    = $userManager->findBy(array('name' => $name), 'id ASC', 10);
 echo '<pre>';
 var_dump($u);
 echo '</pre>';
