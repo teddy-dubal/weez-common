@@ -417,13 +417,13 @@ class EntityManager extends AbstractGenerator
                 } else {
                     $constructBody .= '             $' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' = $entity->get' . $this->data['relationNameDependent'][$key['key_name']] . '();' . PHP_EOL;
                     $constructBody .= '             foreach ($' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' as $value) {' . PHP_EOL;
-                    $constructBody .= '                 $success = $success && $value';
+                    $constructBody .= '                 $success = $success && $value' . PHP_EOL;
                     if ($this->data['_primaryKey']['phptype'] !== 'array') {
-                        $constructBody .= '                 ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
+                        $constructBody .= '                     ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
                     } elseif (is_array($key['column_name'])) {
-                        $cn = eval('return ' . $key['column_name'] . ';');
-                        foreach ($cn as $column) {
-                            $constructBody .= '         ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
+                        foreach (explode(',', $key['column_name'][0]) as $_column) {
+                            $column = trim(str_replace('`', '', $_column));
+                            $constructBody .= '                 ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
                         }
                     }
                     $constructBody .= '                 ->save($ignoreEmptyValues, $recursive, false);' . PHP_EOL;
