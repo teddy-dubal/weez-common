@@ -8,21 +8,17 @@ use Weez\ZendModelGenerator\Lib\MakeDbTableFactory;
 /**
  * MySQL specific class for model creation
  */
-class MakeMysql extends MakeDbTableFactory
-{
+class MakeMysql extends MakeDbTableFactory {
 
-    protected function getPDOString($host, $port = 3306, $dbname)
-    {
+    protected function getPDOString($host, $port = 3306, $dbname) {
         return "mysql:host=$host;port=$port;dbname=$dbname";
     }
 
-    protected function getPDOSocketString($host, $dbname)
-    {
+    protected function getPDOSocketString($host, $dbname) {
         return "mysql:unix_socket=$host;dbname=$dbname";
     }
 
-    public function getTablesNamesFromDb()
-    {
+    public function getTablesNamesFromDb() {
         $res    = $this->_pdo->query('show tables')->fetchAll();
         $tables = array();
         foreach ($res as $table) {
@@ -32,8 +28,7 @@ class MakeMysql extends MakeDbTableFactory
         return $tables;
     }
 
-    public function getDateTimeFormat()
-    {
+    public function getDateTimeFormat() {
         return "'YYYY-MM-ddTHH:mm:ss.S'";
     }
 
@@ -43,8 +38,7 @@ class MakeMysql extends MakeDbTableFactory
      * @param string $str
      * @return string
      */
-    protected function _convertTypeToPhp($str)
-    {
+    protected function _convertTypeToPhp($str) {
         if (preg_match('/(tinyint\(1\)|bit)/', $str)) {
             $res = 'boolean';
         } elseif (preg_match('/(datetime|timestamp|blob|char|enum|text|date)/', $str)) {
@@ -60,8 +54,7 @@ class MakeMysql extends MakeDbTableFactory
         return $res;
     }
 
-    public function parseForeignKeys()
-    {
+    public function parseForeignKeys() {
         $tbname = $this->getTableName();
         $this->_pdo->query("SET NAMES UTF8");
         $qry    = $this->_pdo->query("show create table `$tbname`");
@@ -94,7 +87,6 @@ class MakeMysql extends MakeDbTableFactory
                 } else {
                     $column_name = $tblinfo[2];
                 }
-
                 if (strpos($tblinfo[4], ',') !== false) {
                     $foreign_column_name = explode('`,`', $tblinfo[4]);
                 } else {
@@ -121,12 +113,10 @@ class MakeMysql extends MakeDbTableFactory
                 }
             }
         }
-
         $this->setForeignKeysInfo($keys);
     }
 
-    public function parseDependentTables()
-    {
+    public function parseDependentTables() {
         $tbname = $this->getTableName();
         $tables = $this->getTableList();
         $this->_pdo->query("SET NAMES UTF8");
@@ -181,8 +171,7 @@ class MakeMysql extends MakeDbTableFactory
         $this->setDependentTables($dependents);
     }
 
-    public function parseDescribeTable()
-    {
+    public function parseDescribeTable() {
 
         $tbname = $this->getTableName();
         $this->_pdo->query("SET NAMES UTF8");
