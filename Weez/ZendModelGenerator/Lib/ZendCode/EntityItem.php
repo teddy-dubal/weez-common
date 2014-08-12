@@ -172,7 +172,7 @@ class EntityItem extends AbstractGenerator
                 $constructBody .= '     if (! $data instanceof \DateTime) {' . PHP_EOL;
                 $constructBody .= '         $data = new \DateTime($data);' . PHP_EOL;
                 $constructBody .= '     }' . PHP_EOL;
-                $constructBody .= '     $data = $data->format (\'YYYY-MM-ddTHH:mm:ss.S\');' . PHP_EOL;
+                $constructBody .= '     $data = $data->format (\DateTime::ISO8601);' . PHP_EOL;
                 $constructBody .= '}' . PHP_EOL;
             }
             $constructBody .= '$this->' . $column['capital'] . ' = $data;' . PHP_EOL;
