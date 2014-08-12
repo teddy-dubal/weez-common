@@ -190,7 +190,18 @@ class EntityItem extends AbstractGenerator {
             $comment       = 'Gets column ' . $column['field'];
             $comment.= strpos($column['type'], 'datetime') === false ? '' : ' Stored in ISO 8601 format .';
             $constructBody = '';
+            $parameters    = array();
+            $tags          = array(
+                new ReturnTag(array(
+                    'datatype' => $column['phptype'],
+                    )),
+            );
             if (strpos($column['type'], 'datetime') !== false) {
+                $parameters = array(ParameterGenerator::fromArray(array(
+                        'name'         => 'returnDateTime',
+                        'defaultvalue' => true,
+                )));
+                array_unshift($tags, new ParamTag('returnDateTime', array('boolean')));
                 $constructBody .= 'if ($returnDateTime) {' . PHP_EOL;
                 $constructBody .= '     if ($this->' . $column['capital'] . ' === null) {' . PHP_EOL;
                 $constructBody .= '         return null;' . PHP_EOL;
@@ -203,20 +214,17 @@ class EntityItem extends AbstractGenerator {
             } else {
                 $constructBody .= 'return $this->' . $column['capital'] . ' ;' . PHP_EOL;
             }
+
             $methods[] = array(
                 'name'       => 'get' . $column['capital'],
-                'parameters' => array(),
+                'parameters' => $parameters,
                 'flags'      => MethodGenerator::FLAG_PUBLIC,
                 'body'       => $constructBody,
                 'docblock'   => DocBlockGenerator::fromArray(
                     array(
                         'shortDescription' => $comment,
                         'longDescription'  => null,
-                        'tags'             => array(
-                            new ReturnTag(array(
-                                'datatype' => $column['phptype'],
-                                )),
-                        )
+                        'tags'             => $tags
                     )
                 )
             );
@@ -229,8 +237,9 @@ class EntityItem extends AbstractGenerator {
         foreach ($this->data['foreignKeysInfo'] as $key) {
             $comment       = 'Sets parent relation ' . $this->data['className'][$key['key_name']]['column_name'];
             $constructBody = '';
+            $constructBody .= '$entityManager = new ' . '\\' . $this->data['_namespace'] . '\\Table\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'] . '();' . PHP_EOL;
             $constructBody .= '$this->' . $this->data['relationNameParent'][$key['key_name']] . $this->_getCapital($key['column_name']) . ' = $data;' . PHP_EOL;
-            $constructBody .= '$primary_key = $data->getPrimaryKey();' . PHP_EOL;
+            $constructBody .= '$primary_key = $entityManager->getPrimaryKeyName();' . PHP_EOL;
             if (is_array($key['foreign_tbl_column_name']) && is_array($key['column_name'])) {
                 while ($column = next($key['foreign_tbl_column_name'])) {
                     $foreign_column = next($key['column_name']);
@@ -248,7 +257,7 @@ class EntityItem extends AbstractGenerator {
                 'parameters' => array(
                     ParameterGenerator::fromArray(array(
                         'name' => 'data',
-                        'type' => '\\' . $this->data['_namespace'] . '\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'],
+                        'type' => '\\' . $this->data['_namespace'] . '\\Entity\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'],
                     ))),
                 'flags'      => MethodGenerator::FLAG_PUBLIC,
                 'body'       => $constructBody,
@@ -257,8 +266,8 @@ class EntityItem extends AbstractGenerator {
                         'shortDescription' => $comment,
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('data', array('\\' . $this->data['_namespace'] . '\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'])),
-                            new ReturnTag(array('datatype' => '\\' . $this->data['_namespace'] . '\\' . $this->data['_className']))
+                            new ParamTag('data', array('\\' . $this->data['_namespace'] . '\\Entity\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'])),
+                            new ReturnTag(array('datatype' => '\\' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']))
                         )
                     )
                 )
