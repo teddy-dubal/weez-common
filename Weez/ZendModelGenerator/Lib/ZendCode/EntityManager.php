@@ -277,7 +277,7 @@ class EntityManager extends AbstractGenerator
                     break;
                 }
             }
-            $constructBody .= '     $result = $this->save($entity);' . PHP_EOL;
+            $constructBody .= '     $result = $this->saveEntity($entity);' . PHP_EOL;
         } else {
             if ($this->data['_primaryKey']['phptype'] == 'array') {
                 $constructBody .= '     $where = array();' . PHP_EOL;
