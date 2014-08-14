@@ -96,7 +96,7 @@ class Manager extends AbstractGenerator
                     'name'       => 'setContainer',
                     'parameters' => array(ParameterGenerator::fromArray(array(
                             'name' => 'c',
-                            'type' => 'Pimple',
+                            'type' => 'Container',
                         ))),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
                     'body'       =>
@@ -107,7 +107,7 @@ class Manager extends AbstractGenerator
                                 'shortDescription' => 'Inject container',
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ParamTag('c', array('Pimple')),
+                                    new ParamTag('c', array('Container')),
                                     new ReturnTag(array(
                                         'datatype' => 'self',
                                             )),
@@ -126,7 +126,7 @@ class Manager extends AbstractGenerator
                                 'longDescription'  => null,
                                 'tags'             => array(
                                     new ReturnTag(array(
-                                        'datatype' => 'Pimple',
+                                        'datatype' => 'Container',
                                             )),
                                 )
                             )
@@ -257,7 +257,7 @@ class Manager extends AbstractGenerator
         $class->addUse('Zend\Db\TableGateway\AbstractTableGateway')
                 ->addUse('Zend\Db\TableGateway\Feature')
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
-                ->addUse('Pimple')
+                ->addUse('Pimple\Container')
                 ->addUse('Zend\Db\Adapter\Adapter');
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
