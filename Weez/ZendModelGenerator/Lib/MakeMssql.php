@@ -66,8 +66,7 @@ class MakeMssql extends MakeDbTable
      */
     protected function _convertTypeToPhp($str)
     {
-        //if (preg_match('/(bit)/', $str)) {
-        if (preg_match('/(tinyint|bit)/', $str)) {
+        if (preg_match('/(bit)/', $str)) {
             $res = 'boolean';
         } elseif (preg_match('/(date|time|text|binary|char|xml|uniqueidentifier)/', $str)) {
             $res = 'string';

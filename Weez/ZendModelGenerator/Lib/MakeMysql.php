@@ -45,8 +45,7 @@ class MakeMysql extends MakeDbTableFactory
      */
     protected function _convertTypeToPhp($str)
     {
-//        if (preg_match('bit)/', $str)) {
-        if (preg_match('/(tinyint\(1\)|bit)/', $str)) {
+        if (preg_match('/(bit)/', $str)) {
             $res = 'boolean';
         } elseif (preg_match('/(datetime|timestamp|blob|char|enum|text|date)/', $str)) {
             $res = 'string';
