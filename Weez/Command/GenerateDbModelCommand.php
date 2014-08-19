@@ -66,10 +66,10 @@ EOT
             default:
                 break;
         }
-        $tables = array();
-        if ($tablesAll) {
-            $tables = $dbAdapter->getTablesNamesFromDb();
-        }
+        //$tables = array();
+        //if ($tablesAll) {
+        $tables = $dbAdapter->getTablesNamesFromDb();
+        //}
         if (empty($tables)) {
             $output->writeln(sprintf('<error>Please provide at least one table to parse.</error>'));
             return false;
