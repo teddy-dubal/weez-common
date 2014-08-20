@@ -76,19 +76,7 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Name of database table ',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new PropertyTag('table', array('string')),
-                        )
-                    ))
-        ));
-        $classProperties[] = PropertyGenerator::fromArray(array(
-                    'name'         => 'tableName',
-                    'defaultvalue' => $this->data['_tbname'],
-                    'flags'        => PropertyGenerator::FLAG_PROTECTED,
-                    'docblock'     => DocBlockGenerator::fromArray(array(
-                        'shortDescription' => 'Name of table ',
-                        'longDescription'  => null,
-                        'tags'             => array(
-                            new PropertyTag('tableName', array('string')),
+                            new GenericTag('var', 'string' . ' ' . 'Name of DB Table'),
                         )
                     ))
         ));
@@ -100,7 +88,7 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Primary key name',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new PropertyTag('id', array($this->data['_primaryKey']['phptype'])),
+                            new GenericTag('var', 'string|array' . ' ' . 'Primary key name'),
                         )
                     ))
         ));
@@ -109,10 +97,10 @@ class EntityManager extends AbstractGenerator
                     'defaultvalue' => 'array' !== $this->data['_primaryKey']['phptype'],
                     'flags'        => PropertyGenerator::FLAG_PROTECTED,
                     'docblock'     => DocBlockGenerator::fromArray(array(
-                        'shortDescription' => '',
+                        'shortDescription' => 'Is primary Key auto increment',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new PropertyTag('sequence', array('boolean')),
+                            new GenericTag('var', 'boolean' . ' ' . 'Is primary Key auto increment'),
                         )
                     ))
         ));
@@ -128,17 +116,17 @@ class EntityManager extends AbstractGenerator
                 'parameters' => array(
                     ParameterGenerator::fromArray(array(
                         'name' => 'adapter',
-                            //'type' => 'Adapter',
+                        'type' => 'Adapter',
                     ))
                 ),
                 'flags'      => MethodGenerator::FLAG_PUBLIC,
                 'body'       => $constructBody,
                 'docblock'   => DocBlockGenerator::fromArray(
                         array(
-                            'shortDescription' => 'Sets up column and relationship lists',
-                            'longDescription'  => null,
+                            'shortDescription' => 'Constructor',
+                            'longDescription'  => 'Pass a DB Adapter to handle connection',
                             'tags'             => array(
-                                new ParamTag('adapter', array('Adapter')),
+                                new ParamTag('adapter', array('Adapter'),'Zend DB Adapter'),
                             )
                         )
                 )
