@@ -203,7 +203,7 @@ class EntityItem extends AbstractGenerator
                             'shortDescription' => $comment,
                             'longDescription'  => null,
                             'tags'             => array(
-                                new ParamTag('data', $column['phptype'],$column['name']),
+                                new ParamTag('data', $column['phptype'],$column['field']),
                                 new ReturnTag(array(
                                     'datatype' => 'self',
                                 )),
