@@ -9,6 +9,7 @@
 namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\FileGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
@@ -51,7 +52,33 @@ abstract class AbstractGenerator {
 
     public function generate() {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
+        $this->defineFileInfo($class);
         return $this->fileGenerator->setClass($class)->generate();
+    }
+
+    /**
+     * Fill file level phpdoc
+     *
+     * @param ClassGenerator $class contained class
+     */
+    protected  function defineFileInfo(ClassGenerator $class){
+        $doc = DocBlockGenerator::fromArray(
+            array(
+                'shortDescription' => 'Contains ' . $class->getName() . ' class file',
+                'longDescription' => 'Generated Automatically on ' . date('c') . "\nPlease do not modify",
+                'tags' => array(
+                    array(
+                        'name' => 'license',
+                        'description' => $this->data['_license'],
+                    ),
+                    array(
+                        'name' => 'package',
+                        'description' => $class->getNamespaceName(),
+                    ),
+                ),
+            )
+        );
+        $this->fileGenerator->setDocBlock($doc);
     }
 
     /**
