@@ -68,6 +68,10 @@ abstract class AbstractGenerator {
                 'longDescription' => 'Generated Automatically on ' . date('c') . "\nPlease do not modify",
                 'tags' => array(
                     array(
+                        'name'        => 'author',
+                        'description' => $this->data['_author'],
+                    ),
+                    array(
                         'name' => 'license',
                         'description' => $this->data['_license'],
                     ),
