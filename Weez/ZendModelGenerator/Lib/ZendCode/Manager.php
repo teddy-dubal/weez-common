@@ -259,6 +259,7 @@ class Manager extends AbstractGenerator
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse('Pimple\Container')
                 ->addUse('Zend\Db\Adapter\Adapter');
+        $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
                         ->setClass($class)

@@ -550,6 +550,7 @@ class EntityManager extends AbstractGenerator
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'], $this->data['_className'] . 'Entity')
         ;
+        $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
                         ->setClass($class)

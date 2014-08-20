@@ -483,6 +483,7 @@ class EntityItem extends AbstractGenerator
         $class
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
         ;
+        $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
         return $fileGenerator
                         ->setClass($class)
