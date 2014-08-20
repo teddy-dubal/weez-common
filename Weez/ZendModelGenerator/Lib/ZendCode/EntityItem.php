@@ -100,7 +100,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => 'Parent relation',
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new PropertyTag($name, array($this->data['_namespace'] . '\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name']))
+                                    new GenericTag('var', '\\'.$this->data['_namespace'] . '\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'] . ' ' . $name),
                                 )
                             )
                         )
@@ -122,7 +122,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => 'Dependent relation ',
                                 'longDescription'  => $longDescr,
                                 'tags'             => array(
-                                    new PropertyTag($name, array($this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name']))
+                                    new GenericTag('var', '\\'.$this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' ' . $name),
                                 )
                             )
                         )
@@ -412,7 +412,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => $comment,
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ParamTag('data', array(' array of \\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'])),
+                                    new ParamTag('data', array('array'),' array of \\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name']),
                                     new ReturnTag(array('datatype' => 'self'))
                                 )
                             )
@@ -431,7 +431,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => $comment,
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ReturnTag(array('datatype' => 'array of \\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name']))
+                                    new ReturnTag(array('datatype' => 'array'),'array of \\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'])
                                 )
                             )
                         )
@@ -457,7 +457,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => $comment,
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ParamTag('data', array(' array of \\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'])),
+                                    new ParamTag('data', array('\\' . $this->data['_namespace'] . '\\' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name']),$comment),
                                     new ReturnTag(array('datatype' => 'self'))
                                 )
                             )
