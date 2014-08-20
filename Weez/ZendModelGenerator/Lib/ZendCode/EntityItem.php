@@ -168,10 +168,6 @@ class EntityItem extends AbstractGenerator
                         array(
                             'shortDescription' => 'Sets up column and relationship lists',
                             'longDescription'  => null,
-                            'tags'             => array(
-                                new ParamTag('adapter', array('Adapter')),
-                                new ParamTag('entity', array('Entity')),
-                            )
                         )
                     )
             ),
