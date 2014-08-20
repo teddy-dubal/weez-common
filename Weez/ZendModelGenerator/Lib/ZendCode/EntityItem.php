@@ -70,17 +70,17 @@ class EntityItem extends AbstractGenerator
     {
         $classProperties = array();
         foreach ($this->data['_columns'] as $column) {
-            $comment           = !empty($column['comment']) ? $column['comment'] : $column['capital'];
+            $comment           = !empty($column['comment']) ? $column['comment'] : null;
             $classProperties[] = PropertyGenerator::fromArray(
                 array(
                     'name'     => $column['capital'],
                     'flags'    => PropertyGenerator::FLAG_PROTECTED,
                     'docblock' => DocBlockGenerator::fromArray(
                             array(
-                                'shortDescription' => $comment,
-                                'longDescription'  => null,
+                                'shortDescription' => $column['capital'],
+                                'longDescription'  => $comment,
                                 'tags'             => array(
-                                    new GenericTag('var', $column['phptype'] . ' ' . $comment),
+                                    new GenericTag('var', $column['phptype'] . ' ' . $comment ? $comment : $column['capital']),
                                 )
                             )
                         )
