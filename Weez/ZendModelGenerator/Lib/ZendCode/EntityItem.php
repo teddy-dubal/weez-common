@@ -80,7 +80,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => $comment,
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new GenericTag('var', $column['phptype']),
+                                    new GenericTag('var', $column['phptype'] . ' ' . $comment),
                                 )
                             )
                         )
