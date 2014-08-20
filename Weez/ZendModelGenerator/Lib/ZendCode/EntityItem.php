@@ -188,7 +188,7 @@ class EntityItem extends AbstractGenerator
                 $constructBody .= '    if (! $data instanceof \DateTime) {' . PHP_EOL;
                 $constructBody .= '        $data = new \DateTime($data);' . PHP_EOL;
                 $constructBody .= '    }' . PHP_EOL;
-                $constructBody .= '    $data = $data->format (\DateTime::ISO8601);' . PHP_EOL;
+                $constructBody .= '    $data = $data->format(\DateTime::ISO8601);' . PHP_EOL;
                 $constructBody .= '}' . PHP_EOL;
             }
             $constructBody .= '$this->' . $column['capital'] . ' = $data;' . PHP_EOL;
@@ -229,12 +229,12 @@ class EntityItem extends AbstractGenerator
                         )
                     )
                 );
-                array_unshift($tags, new ParamTag('returnDateTime', array('boolean')));
+                array_unshift($tags, new ParamTag('returnDateTime', array('boolean'),'Should we return a DateTime object'));
                 $constructBody .= 'if ($returnDateTime) {' . PHP_EOL;
-                $constructBody .= '     if ($this->' . $column['capital'] . ' === null) {' . PHP_EOL;
-                $constructBody .= '         return null;' . PHP_EOL;
-                $constructBody .= '     }' . PHP_EOL;
-                $constructBody .= '     return new \DateTime($this->' . $column['capital'] . ');' . PHP_EOL;
+                $constructBody .= '    if ($this->' . $column['capital'] . ' === null) {' . PHP_EOL;
+                $constructBody .= '        return null;' . PHP_EOL;
+                $constructBody .= '    }' . PHP_EOL;
+                $constructBody .= '    return new \DateTime($this->' . $column['capital'] . ');' . PHP_EOL;
                 $constructBody .= '}' . PHP_EOL;
                 $constructBody .= 'return $this->' . $column['capital'] . ';' . PHP_EOL;
             } elseif ($column['phptype'] == 'boolean') {
@@ -490,10 +490,10 @@ class EntityItem extends AbstractGenerator
             'body'       => $constructBody,
             'docblock'   => DocBlockGenerator::fromArray(
                     array(
-                        'shortDescription' => 'Array of options/values to be set for this model. Options without a matching method are ignored.',
-                        'longDescription'  => null,
+                        'shortDescription' => 'Array of options/values to be set for this model.',
+                        'longDescription'  => 'Options without a matching method are ignored.',
                         'tags'             => array(
-                            new ParamTag('data', array('array')),
+                            new ParamTag('data', array('array'),'array of values to set'),
                             new ReturnTag(array('datatype' => 'self')),
                         )
                     )
