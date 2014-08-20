@@ -4,7 +4,7 @@ namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
 use \Zend\Code\Generator\ClassGenerator;
 use \Zend\Code\Generator\DocBlock\Tag\ParamTag;
-use \Zend\Code\Generator\DocBlock\Tag\PropertyTag;
+use \Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use \Zend\Code\Generator\DocBlock\Tag\ReturnTag;
 use \Zend\Code\Generator\DocBlockGenerator;
 use \Zend\Code\Generator\MethodGenerator;
