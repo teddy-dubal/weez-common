@@ -182,8 +182,8 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Finds row by primary key',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('id', array($this->data['_primaryKey']['phptype'])),
-                            new ReturnTag(array('datatype' => $this->data['_namespace'] . '\\' . $this->data['_className'] . '|null')),
+                            new ParamTag('id', array($this->data['_primaryKey']['phptype']),'Primary key value'),
+                            new ReturnTag(array('datatype' => $this->data['_namespace'] . '\\Entity\\' . $this->data['_className'] . '|null')),
                         )
                     )
             )
