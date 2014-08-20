@@ -57,6 +57,7 @@ extras/documentation
 /app/bootstrap.php.cache
 /bin/
 /vendor/
+composer.lock
 
 # Assets and user uploads
 /web/bundles/
