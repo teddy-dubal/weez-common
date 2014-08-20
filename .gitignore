@@ -69,3 +69,6 @@ extras/documentation
 /composer.phar
 
 /.project
+
+# phpstorm metadata
+/.idea
