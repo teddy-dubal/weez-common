@@ -116,7 +116,7 @@ EOT
                 $dbAdapter->parseTable();
                 $dbAdapter->doItAll();
             } catch (Exception $e) {
-                $output->writeln(sprintf('<error>Warining: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
+                $output->writeln(sprintf('<error>Warning: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
             }
         }
         $output->writeln(sprintf('<info>Done !!</info>'));
