@@ -80,7 +80,7 @@ class EntityItem extends AbstractGenerator
                                 'shortDescription' => $column['capital'],
                                 'longDescription'  => $comment,
                                 'tags'             => array(
-                                    new GenericTag('var', $column['phptype'] . ' ' . !empty($comment) ? $comment : $column['capital']),
+                                    new GenericTag('var', $column['phptype'] . ' ' . $column['capital']),
                                 )
                             )
                         )
