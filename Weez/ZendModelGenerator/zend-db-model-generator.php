@@ -128,7 +128,7 @@ foreach ($tables as $table) {
         $cls->parseTable();
         $cls->doItAll();
     } catch (Exception $e) {
-        echo "Warining: Failed to process $table: " . $e->getMessage() . " ... Skipping\n";
+        echo "Warning: Failed to process $table: " . $e->getMessage() . " ... Skipping\n";
     }
 }
 
