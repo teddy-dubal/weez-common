@@ -233,7 +233,7 @@ class EntityManager extends AbstractGenerator
                             new ParamTag('order', array('string'),'sorting option'),
                             new ParamTag('count', array('int'),'counting option'),
                             new ParamTag('offset', array('int'),'offset option'),
-                            new ReturnTag(array('datatype' => array('array','null'),'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className'])),
+                            new ReturnTag(array('array','null'),'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
                         )
                     )
             )
@@ -315,7 +315,7 @@ class EntityManager extends AbstractGenerator
                         'tags'             => array(
                             new ParamTag('entity', array('Entity'),'Entity to delete'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if delete should be done inside a database transaction'),
-                            new ReturnTag(array('datatype' => 'Inserted id|false')),
+                            new ReturnTag(array('int','array','false'),'Inserted id'),
                         )
                     )
             )
@@ -467,7 +467,7 @@ class EntityManager extends AbstractGenerator
                             new ParamTag('ignoreEmptyValues', array('boolean'), 'Should empty values saved'),
                             new ParamTag('recursive', array('boolean'), 'Should the object graph be walked for all related elements'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if save should be done inside a database transaction'),
-                            new ReturnTag(array('datatype' => 'Inserted id|false')),
+                            new ReturnTag(array('int','array','false'),'Inserted ID'),
                         )
                     )
             )
