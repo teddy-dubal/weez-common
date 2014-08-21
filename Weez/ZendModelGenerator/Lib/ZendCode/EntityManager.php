@@ -109,7 +109,7 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-        $constructBody = 'parent::__construct($adapter,new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
+        $constructBody = 'parent::__construct($adapter, new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
         $methods       = array(
             array(
                 'name'       => '__construct',
@@ -229,11 +229,11 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Find by criteria',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('criteria', array($this->data['_primaryKey']['phptype'])),
-                            new ParamTag('order', array('string')),
-                            new ParamTag('count', array('int')),
-                            new ParamTag('offset', array('int')),
-                            new ReturnTag(array('datatype' => 'array of \'' . $this->data['_namespace'] . '\\' . $this->data['_className'] . '|null')),
+                            new ParamTag('criteria', array('array'),'Search criteria'),
+                            new ParamTag('order', array('string'),'sorting option'),
+                            new ParamTag('count', array('int'),'counting option'),
+                            new ParamTag('offset', array('int'),'offset option'),
+                            new ReturnTag(array('datatype' => array('array','null'),'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className'])),
                         )
                     )
             )
