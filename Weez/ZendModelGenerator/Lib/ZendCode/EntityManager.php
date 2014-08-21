@@ -382,7 +382,8 @@ class EntityManager extends AbstractGenerator
         }
         $constructBody .= '    } else {' . PHP_EOL;
         $constructBody .= '        $this->update(' . PHP_EOL;
-        $constructBody .= '            $data, array(' . PHP_EOL;
+        $constructBody .= '            $data,' . PHP_EOL;
+        $constructBody .= '            array(' . PHP_EOL;
         if ($this->data['_primaryKey']['phptype'] == 'array') {
             $fields = count($this->data['_primaryKey']['fields']);
             foreach ($this->data['_primaryKey']['fields'] as $key) {
