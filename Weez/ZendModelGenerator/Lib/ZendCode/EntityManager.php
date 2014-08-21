@@ -183,7 +183,7 @@ class EntityManager extends AbstractGenerator
                         'longDescription'  => null,
                         'tags'             => array(
                             new ParamTag('id', array($this->data['_primaryKey']['phptype']),'Primary key value'),
-                            new ReturnTag(array('datatype' => $this->data['_namespace'] . '\\Entity\\' . $this->data['_className'],'null'),'Found entity'),
+                            new ReturnTag(array('\\'.$this->data['_namespace'] . '\\Entity\\' . $this->data['_className'],'null'),'Found entity'),
                         )
                     )
             )
@@ -208,6 +208,7 @@ class EntityManager extends AbstractGenerator
                 ParameterGenerator::fromArray(array(
                     'name'         => 'criteria',
                     'defaultvalue' => array(),
+                    'type'         => 'array',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name'         => 'order',
@@ -373,14 +374,15 @@ class EntityManager extends AbstractGenerator
             $constructBody .= '        if ($primary_key) {' . PHP_EOL;
             $constructBody .= '            $entity->set' . $this->data['_primaryKey']['capital'] . '($primary_key);' . PHP_EOL;
             if ($this->data['_returnId']) {
-                $constructBody .= '        $success = $primary_key;' . PHP_EOL;
+                $constructBody .= '            $success = $primary_key;' . PHP_EOL;
             }
             $constructBody .= '        } else {' . PHP_EOL;
             $constructBody .= '            $success = false;' . PHP_EOL;
             $constructBody .= '        }' . PHP_EOL;
         }
         $constructBody .= '    } else {' . PHP_EOL;
-        $constructBody .= '        $this->update($data,array(' . PHP_EOL;
+        $constructBody .= '        $this->update(' . PHP_EOL;
+        $constructBody .= '            $data, array(' . PHP_EOL;
         if ($this->data['_primaryKey']['phptype'] == 'array') {
             $fields = count($this->data['_primaryKey']['fields']);
             foreach ($this->data['_primaryKey']['fields'] as $key) {
@@ -491,11 +493,11 @@ class EntityManager extends AbstractGenerator
             'body'       => $constructBody,
             'docblock'   => DocBlockGenerator::fromArray(
                     array(
-                        'shortDescription' => null,
+                        'shortDescription' => 'Apply quoteIdentifier',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('name', array('string')),
-                            new ReturnTag(array('datatype' => 'string')),
+                            new ParamTag('name', array('string'),'String to quote'),
+                            new ReturnTag(array('datatype' => 'string'),'Quoted string'),
                         )
                     )
             )
@@ -514,11 +516,11 @@ class EntityManager extends AbstractGenerator
             'body'       => $constructBody,
             'docblock'   => DocBlockGenerator::fromArray(
                     array(
-                        'shortDescription' => null,
+                        'shortDescription' => 'Apply formatParameterName',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('name', array('string')),
-                            new ReturnTag(array('datatype' => 'string')),
+                            new ParamTag('name', array('string'),'Parameter name to format'),
+                            new ReturnTag(array('datatype' => 'string'),'Formated parameter name'),
                         )
                     )
             )
