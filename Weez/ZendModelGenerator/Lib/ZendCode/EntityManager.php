@@ -183,7 +183,7 @@ class EntityManager extends AbstractGenerator
                         'longDescription'  => null,
                         'tags'             => array(
                             new ParamTag('id', array($this->data['_primaryKey']['phptype']),'Primary key value'),
-                            new ReturnTag(array('\\'.$this->data['_namespace'] . '\\Entity\\' . $this->data['_className'],'null'),'Found entity'),
+                            new ReturnTag(array('Entity\\' . $this->data['_className'],'null'),'Found entity'),
                         )
                     )
             )
@@ -266,7 +266,7 @@ class EntityManager extends AbstractGenerator
                     break;
                 }
             }
-            $constructBody .= '    $result = $this->saveEntity($entity,true,false,false);' . PHP_EOL;
+            $constructBody .= '    $result = $this->saveEntity($entity, true, false, false);' . PHP_EOL;
         } else {
             if ($this->data['_primaryKey']['phptype'] == 'array') {
                 $constructBody .= '     $where = array();' . PHP_EOL;
