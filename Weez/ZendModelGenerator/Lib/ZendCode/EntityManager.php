@@ -272,11 +272,11 @@ class EntityManager extends AbstractGenerator
                 $constructBody .= '     $where = array();' . PHP_EOL;
                 foreach ($this->data['_primaryKey']['fields'] as $key) {
                     $constructBody .= '    $pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
-                    $constructBody .= '        if ($pk_val === null) {' . PHP_EOL;
-                    $constructBody .= '            throw new \Exception(\'The value for ' . $key['capital'] . 'cannot be null\');' . PHP_EOL;
-                    $constructBody .= '        } else {' . PHP_EOL;
-                    $constructBody .= '            $where[] =  array(\'' . $key['field'] . '\' => $pk_val); ' . PHP_EOL;
-                    $constructBody .= '        }' . PHP_EOL;
+                    $constructBody .= '    if ($pk_val === null) {' . PHP_EOL;
+                    $constructBody .= '        throw new \Exception(\'The value for ' . $key['capital'] . 'cannot be null\');' . PHP_EOL;
+                    $constructBody .= '    } else {' . PHP_EOL;
+                    $constructBody .= '        $where[] =  array(\'' . $key['field'] . '\' => $pk_val); ' . PHP_EOL;
+                    $constructBody .= '    }' . PHP_EOL;
                 }
             } else {
                 $constructBody .= '    $where = array(\'' . $this->data['_primaryKey']['field'] . '\' => $entity->get' . $this->data['_primaryKey']['capital'] . '());' . PHP_EOL;
