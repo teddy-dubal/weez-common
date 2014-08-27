@@ -269,7 +269,7 @@ class EntityItem extends AbstractGenerator
             $constructBody .= '$this->' . $this->data['relationNameParent'][$key['key_name']] . $this->_getCapital(
                             $key['column_name']
                     ) . ' = $data;' . PHP_EOL;
-            $constructBody .= '$entityManager = new ' . '\\' . $this->data['_namespace'] . '\\Table\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'] . '();' . PHP_EOL;
+            //$constructBody .= '$entityManager = new ' . '\\' . $this->data['_namespace'] . '\\Table\\' . $this->data['className'][$key['key_name']]['foreign_tbl_name'] . '();' . PHP_EOL;
             $constructBody .= '$primary_key = $entityManager->getPrimaryKeyName();' . PHP_EOL;
             if (is_array($key['foreign_tbl_column_name']) && is_array($key['column_name'])) {
                 while ($column = next($key['foreign_tbl_column_name'])) {
@@ -279,6 +279,9 @@ class EntityItem extends AbstractGenerator
                             ) . '($primary_key[\'' . $foreign_column . '\']);' . PHP_EOL;
                 }
             } else {
+                var_dump($this->data);
+                exit;
+                //'array' !== $this->data['_primaryKey']['phptype'] ? $this->data['_primaryKey']['field'] : eval('return ' . $this->data['_primaryKey']['field'] . ';'),
                 $constructBody .= 'if (is_array($primary_key)) {' . PHP_EOL;
                 $constructBody .= '     $primary_key = $primary_key[\'' . $key['foreign_tbl_column_name'] . '\'];' . PHP_EOL;
                 $constructBody .= '}' . PHP_EOL;
