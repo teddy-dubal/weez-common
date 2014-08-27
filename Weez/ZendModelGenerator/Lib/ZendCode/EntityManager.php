@@ -126,7 +126,7 @@ class EntityManager extends AbstractGenerator
                             'shortDescription' => 'Constructor',
                             'longDescription'  => 'Pass a DB Adapter to handle connection',
                             'tags'             => array(
-                                new ParamTag('adapter', array('Adapter'),'Zend DB Adapter'),
+                                new ParamTag('adapter', array('Adapter'), 'Zend DB Adapter'),
                             )
                         )
                 )
@@ -182,8 +182,9 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Finds row by primary key',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('id', array($this->data['_primaryKey']['phptype']),'Primary key value'),
-                            new ReturnTag(array($this->data['_className'].'Entity','null'),'Found entity'),
+                            new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
+                            new ReturnTag(array($this->data['_className'] . 'Entity',
+                                'null'), 'Found entity'),
                         )
                     )
             )
@@ -200,7 +201,14 @@ class EntityManager extends AbstractGenerator
         $constructBody .= 'if ($offset) {' . PHP_EOL;
         $constructBody .= '      $r->offset($offset);' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
-        $constructBody .= 'return $this->selectWith($r)->toArray();' . PHP_EOL;
+        $constructBody .= '$result = $this->selectWith($r)->toArray();' . PHP_EOL;
+        $constructBody .= 'if ($toEntity) {' . PHP_EOL;
+        $constructBody .= '    foreach($result as &$v){' . PHP_EOL;
+        $constructBody .= '        $entity =  new ' . $this->data['_className'] . 'Entity();' . PHP_EOL;
+        $constructBody .= '        $v = $entity->exchangeArray($v);' . PHP_EOL;
+        $constructBody .= '    }' . PHP_EOL;
+        $constructBody .= '}' . PHP_EOL;
+        $constructBody .= 'return $result;' . PHP_EOL;
         $constructBody .= '' . PHP_EOL;
         $methods[]     = array(
             'name'       => 'findBy',
@@ -222,6 +230,10 @@ class EntityManager extends AbstractGenerator
                     'name'         => 'offset',
                     'defaultvalue' => null,
                 )),
+                ParameterGenerator::fromArray(array(
+                    'name'         => 'toEntity',
+                    'defaultvalue' => false,
+                )),
             ),
             'flags'      => MethodGenerator::FLAG_PUBLIC,
             'body'       => $constructBody,
@@ -230,11 +242,12 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Find by criteria',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('criteria', array('array'),'Search criteria'),
-                            new ParamTag('order', array('string'),'sorting option'),
-                            new ParamTag('count', array('int'),'counting option'),
-                            new ParamTag('offset', array('int'),'offset option'),
-                            new ReturnTag(array('array','null'),'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
+                            new ParamTag('criteria', array('array'), 'Search criteria'),
+                            new ParamTag('order', array('string'), 'sorting option'),
+                            new ParamTag('count', array('int'), 'counting option'),
+                            new ParamTag('offset', array('int'), 'offset option'),
+                            new ParamTag('toEntity', array('boolean'), 'return entity result'),
+                            new ReturnTag(array('array', 'null'), 'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
                         )
                     )
             )
@@ -314,9 +327,9 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Deletes the current entity',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('entity', array('Entity'),'Entity to delete'),
+                            new ParamTag('entity', array('Entity'), 'Entity to delete'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if delete should be done inside a database transaction'),
-                            new ReturnTag(array('int','array','false'),'Inserted id'),
+                            new ReturnTag(array('int', 'array', 'false'), 'Inserted id'),
                         )
                     )
             )
@@ -466,11 +479,11 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Saves current row, and optionally dependent rows',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('entity', array('Entity'),'Entity to save'),
+                            new ParamTag('entity', array('Entity'), 'Entity to save'),
                             new ParamTag('ignoreEmptyValues', array('boolean'), 'Should empty values saved'),
                             new ParamTag('recursive', array('boolean'), 'Should the object graph be walked for all related elements'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if save should be done inside a database transaction'),
-                            new ReturnTag(array('int','array','false'),'Inserted ID'),
+                            new ReturnTag(array('int', 'array', 'false'), 'Inserted ID'),
                         )
                     )
             )
@@ -497,8 +510,8 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Apply quoteIdentifier',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('name', array('string'),'String to quote'),
-                            new ReturnTag(array('datatype' => 'string'),'Quoted string'),
+                            new ParamTag('name', array('string'), 'String to quote'),
+                            new ReturnTag(array('datatype' => 'string'), 'Quoted string'),
                         )
                     )
             )
@@ -520,8 +533,8 @@ class EntityManager extends AbstractGenerator
                         'shortDescription' => 'Apply formatParameterName',
                         'longDescription'  => null,
                         'tags'             => array(
-                            new ParamTag('name', array('string'),'Parameter name to format'),
-                            new ReturnTag(array('datatype' => 'string'),'Formated parameter name'),
+                            new ParamTag('name', array('string'), 'Parameter name to format'),
+                            new ReturnTag(array('datatype' => 'string'), 'Formated parameter name'),
                         )
                     )
             )
