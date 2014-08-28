@@ -23,7 +23,7 @@ class ModelFactory
             $class->setContainer($this->container);
             return $class;
         }
-        throw new Exception("Class Not found");
+        throw new Exception($class . " Not Found");
     }
 
 }
