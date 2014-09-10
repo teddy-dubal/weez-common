@@ -51,16 +51,16 @@ class Entity extends AbstractGenerator
                             ),
                         )
                     )
-                ),
+            ),
             'methods'       => array(
                 array(
                     'name'       => 'setColumnsList',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'data',
-                                'type' => 'array',
-                            )
+                                array(
+                                    'name' => 'data',
+                                    'type' => 'array',
+                                )
                         )
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
@@ -99,10 +99,10 @@ class Entity extends AbstractGenerator
                     'name'       => 'setParentList',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'data',
-                                'type' => 'array',
-                            )
+                                array(
+                                    'name' => 'data',
+                                    'type' => 'array',
+                                )
                         )
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
@@ -141,10 +141,10 @@ class Entity extends AbstractGenerator
                     'name'       => 'setDependentList',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'data',
-                                'type' => 'array',
-                            )
+                                array(
+                                    'name' => 'data',
+                                    'type' => 'array',
+                                )
                         )
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
@@ -192,7 +192,7 @@ class Entity extends AbstractGenerator
                                 'shortDescription' => 'Converts database column name to php setter/getter function name',
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ParamTag('column', array('string'),'Column name'),
+                                    new ParamTag('column', array('string'), 'Column name'),
                                     new ReturnTag(array(
                                         'datatype' => 'self',
                                             )),
@@ -228,10 +228,10 @@ class Entity extends AbstractGenerator
                     'name'       => 'setOptions',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'options',
-                                'type' => 'array',
-                            )
+                                array(
+                                    'name' => 'options',
+                                    'type' => 'array',
+                                )
                         )
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
@@ -251,6 +251,21 @@ class Entity extends AbstractGenerator
                             )
                     )
                 ),
+                array(
+                    'name'       => 'getPrimaryKey',
+                    'parameters' => array(),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => 'return  $this->primary_key;',
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Returns primary key.',
+                                'longDescription'  => null,
+                                'tags'             => array(
+                                    new ReturnTag(array('datatype' => 'array|string')),
+                                )
+                            )
+                    )
+                )
             )
         );
     }

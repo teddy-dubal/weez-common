@@ -1,46 +1,104 @@
-create database testzdmg;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ALLOW_INVALID_DATES';
 
-use testzdmg;
+-- -----------------------------------------------------
+-- Schema testzdmg
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `testzdmg` ;
+CREATE SCHEMA IF NOT EXISTS `testzdmg` DEFAULT CHARACTER SET latin1 ;
+USE `testzdmg` ;
 
-CREATE TABLE `user` (
-  `id` INT UNSIGNED NOT NULL,
-  `name` varchar(20)  NOT NULL,
-  PRIMARY KEY (`id`)
-)
-ENGINE = MyISAM;
+-- -----------------------------------------------------
+-- Table `testzdmg`.`accounts`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `testzdmg`.`accounts` ;
 
-ALTER TABLE `user` 
-CHANGE COLUMN `id` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ;
+CREATE TABLE IF NOT EXISTS `testzdmg`.`accounts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `account_name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-# insert into `user` values (1,'name1'),(2,'name2'),(3,'name3'),(4,'name4'),(5,'name5'),(6,'name6'),(7,'name7'),(8,'name8'),(9,'name9'),(10,'name10'),
-#                           (11,'name11'),(12,'name12'),(13,'name13'),(14,'name14'),(15,'name15'),(16,'name16'),(17,'name17'),(18,'name18'),(19,'name19'),(20,'name20');
 
-CREATE TABLE accounts (
- account_name      VARCHAR(100) NOT NULL PRIMARY KEY
-) ENGINE=INNODB;
+-- -----------------------------------------------------
+-- Table `testzdmg`.`bugs`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `testzdmg`.`bugs` ;
 
-CREATE TABLE products (
- product_id        INTEGER NOT NULL PRIMARY KEY,
- product_name      VARCHAR(100)
-) ENGINE=INNODB;
+CREATE TABLE IF NOT EXISTS `testzdmg`.`bugs` (
+  `bug_id` INT(11) NOT NULL,
+  `bug_description` VARCHAR(100) NULL DEFAULT NULL,
+  `bug_status` VARCHAR(20) NULL DEFAULT NULL,
+  `reported_by` INT NULL DEFAULT NULL,
+  `assigned_to` INT NULL DEFAULT NULL,
+  `verified_by` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`bug_id`),
+  INDEX `bugs_ibfk_1_idx` (`reported_by` ASC),
+  INDEX `bugs_ibfk_2_idx` (`assigned_to` ASC),
+  INDEX `bugs_ibfk_3_idx` (`verified_by` ASC),
+  CONSTRAINT `bugs_ibfk_1`
+    FOREIGN KEY (`reported_by`)
+    REFERENCES `testzdmg`.`accounts` (`id`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `bugs_ibfk_2`
+    FOREIGN KEY (`assigned_to`)
+    REFERENCES `testzdmg`.`accounts` (`id`),
+  CONSTRAINT `bugs_ibfk_3`
+    FOREIGN KEY (`verified_by`)
+    REFERENCES `testzdmg`.`accounts` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE bugs (
-  bug_id            INTEGER NOT NULL PRIMARY KEY,
-  bug_description   VARCHAR(100),
-  bug_status        VARCHAR(20),
-  reported_by       VARCHAR(100),
-  assigned_to       VARCHAR(100),
-  verified_by       VARCHAR(100),
- FOREIGN KEY (reported_by) REFERENCES accounts(account_name),
- FOREIGN KEY (assigned_to) REFERENCES accounts(account_name),
- FOREIGN KEY (verified_by) REFERENCES accounts(account_name)
- ) ENGINE=INNODB;
 
-CREATE TABLE bugs_products (
-  bug_id            INTEGER NOT NULL,
-  product_id        INTEGER NOT NULL,
-  PRIMARY KEY       (bug_id, product_id),
- FOREIGN KEY (bug_id) REFERENCES bugs(bug_id),
- FOREIGN KEY (product_id) REFERENCES products(product_id)
-) ENGINE=INNODB;
+-- -----------------------------------------------------
+-- Table `testzdmg`.`products`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `testzdmg`.`products` ;
 
+CREATE TABLE IF NOT EXISTS `testzdmg`.`products` (
+  `product_id` INT(11) NOT NULL,
+  `product_name` VARCHAR(100) NULL DEFAULT NULL,
+  PRIMARY KEY (`product_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `testzdmg`.`bugs_products`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `testzdmg`.`bugs_products` ;
+
+CREATE TABLE IF NOT EXISTS `testzdmg`.`bugs_products` (
+  `bug_id` INT(11) NOT NULL,
+  `product_id` INT(11) NOT NULL,
+  PRIMARY KEY (`bug_id`, `product_id`),
+  INDEX `product_id` (`product_id` ASC),
+  CONSTRAINT `bugs_products_ibfk_1`
+    FOREIGN KEY (`bug_id`)
+    REFERENCES `testzdmg`.`bugs` (`bug_id`),
+  CONSTRAINT `bugs_products_ibfk_2`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `testzdmg`.`products` (`product_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `testzdmg`.`user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `testzdmg`.`user` ;
+
+CREATE TABLE IF NOT EXISTS `testzdmg`.`user` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
