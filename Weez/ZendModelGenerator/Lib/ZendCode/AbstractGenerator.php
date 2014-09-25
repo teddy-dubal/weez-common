@@ -65,7 +65,7 @@ abstract class AbstractGenerator {
         $doc = DocBlockGenerator::fromArray(
             array(
                 'shortDescription' => 'Contains ' . $class->getName() . ' class file',
-                'longDescription' => 'Generated Automatically on ' . date('c') . "\nPlease do not modify",
+                'longDescription' => 'Generated Automatically.' .PHP_EOL.'Please do not modify',
                 'tags' => array(
                     array(
                         'name'        => 'author',
