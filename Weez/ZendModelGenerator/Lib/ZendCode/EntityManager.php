@@ -263,7 +263,7 @@ class EntityManager extends AbstractGenerator
         $constructBody .= '    throw new \Exception(\'Unable to delete: invalid entity\');' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
         $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
-        $constructBody .= '    $this->adapter->getDriver()->getConnection()->beginTransaction();' . PHP_EOL;
+        $constructBody .= '    $this->beginTransaction();' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
         $constructBody .= 'try {' . PHP_EOL;
         if ($this->data['_softDeleteColumn'] != null) {
@@ -298,11 +298,11 @@ class EntityManager extends AbstractGenerator
         }
 
         $constructBody .= '    if ($useTransaction) {' . PHP_EOL;
-        $constructBody .= '        $this->adapter->getDriver()->getConnection()->commit();' . PHP_EOL;
+        $constructBody .= '        $this->commit();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '} catch (Exception $e) {' . PHP_EOL;
         $constructBody .= '    if ($useTransaction) {' . PHP_EOL;
-        $constructBody .= '        $this->adapter->getDriver()->getConnection()->rollback();' . PHP_EOL;
+        $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '    $result = false;' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
@@ -361,7 +361,7 @@ class EntityManager extends AbstractGenerator
             $constructBody .= '$exists = $this->find($primary_key);' . PHP_EOL;
             $constructBody .= '$success = true;' . PHP_EOL;
             $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
-            $constructBody .= '    $this->adapter->getDriver()->getConnection()->beginTransaction();' . PHP_EOL;
+            $constructBody .= '    $this->beginTransaction();' . PHP_EOL;
             $constructBody .= '}' . PHP_EOL;
             $constructBody .= 'try {' . PHP_EOL;
             $constructBody .= '    // Check for current existence to know if needs to be inserted' . PHP_EOL;
@@ -371,7 +371,7 @@ class EntityManager extends AbstractGenerator
             $constructBody .= '$primary_key = $entity->get' . $this->data['_primaryKey']['capital'] . '();' . PHP_EOL;
             $constructBody .= '$success = true;' . PHP_EOL;
             $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
-            $constructBody .= '    $this->adapter->getDriver()->getConnection()->beginTransaction();' . PHP_EOL;
+            $constructBody .= '    $this->beginTransaction();' . PHP_EOL;
             $constructBody .= '}' . PHP_EOL;
             if (!$this->data['_primaryKey']['foreign_key']) {
                 $constructBody .= 'unset($data[\'' . $this->data['_primaryKey']['field'] . '\']);' . PHP_EOL;
@@ -443,13 +443,13 @@ class EntityManager extends AbstractGenerator
             $constructBody .= '    }' . PHP_EOL;
         }
         $constructBody .= '    if ($useTransaction && $success) {' . PHP_EOL;
-        $constructBody .= '        $this->adapter->getDriver()->getConnection()->commit();' . PHP_EOL;
+        $constructBody .= '        $this->commit();' . PHP_EOL;
         $constructBody .= '    } elseif ($useTransaction) {' . PHP_EOL;
-        $constructBody .= '        $this->adapter->getDriver()->getConnection()->rollback();' . PHP_EOL;
+        $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '} catch (Exception $e) {' . PHP_EOL;
         $constructBody .= '    if ($useTransaction) {' . PHP_EOL;
-        $constructBody .= '        $this->adapter->getDriver()->getConnection()->rollback();' . PHP_EOL;
+        $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '    $success = false;' . PHP_EOL;
         $constructBody .= '}' . PHP_EOL;
