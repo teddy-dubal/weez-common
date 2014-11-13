@@ -304,9 +304,9 @@ BODY
                     'flags'      => MethodGenerator::FLAG_PROTECTED,
                     'body'       => <<<'BODY'
 if ($this->wasInTransaction) {
-            throw new \Exception('Inside transaction rollback call');
-        }
-        $this->adapter->getDriver()->getConnection()->rollback();
+    throw new \Exception('Inside transaction rollback call');
+}
+$this->adapter->getDriver()->getConnection()->rollback();
 BODY
                 ,
                     'docblock'   => DocBlockGenerator::fromArray(
@@ -325,7 +325,6 @@ BODY
 if (!$this->wasInTransaction) {
     $this->adapter->getDriver()->getConnection()->commit();
 }
-$this->adapter->getDriver()->getConnection()->beginTransaction();
 BODY
                 ,
                     'docblock'   => DocBlockGenerator::fromArray(
