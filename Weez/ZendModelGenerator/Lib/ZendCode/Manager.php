@@ -9,6 +9,7 @@
 namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -280,7 +281,7 @@ class Manager extends AbstractGenerator
                     'name'       => 'beginTransaction',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PROTECTED,
-                    'body'       => <<<BODY
+                    'body'       => <<<'BODY'
 if ($this->adapter->getDriver()->getConnection()->inTransaction()) {
     $this->wasInTransaction = true;
 
@@ -293,7 +294,7 @@ BODY
                             array(
                                 'shortDescription' => 'Begin a transaction',
                                 'longDescription'  => null,
-                                'tags'             => null,
+                                'tags'             => array(),
                             )
                         )
                 ),
@@ -301,7 +302,7 @@ BODY
                     'name'       => 'rollback',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PROTECTED,
-                    'body'       => <<<BODY
+                    'body'       => <<<'BODY'
 if ($this->wasInTransaction) {
             throw new \Exception('Inside transaction rollback call');
         }
@@ -312,7 +313,7 @@ BODY
                             array(
                                 'shortDescription' => 'Rollback a transaction',
                                 'longDescription'  => null,
-                                'tags'             => null,
+                                'tags'             => array(),
                             )
                         )
                 ),
@@ -320,7 +321,7 @@ BODY
                     'name'       => 'commit',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PROTECTED,
-                    'body'       => <<<BODY
+                    'body'       => <<<'BODY'
 if (!$this->wasInTransaction) {
     $this->adapter->getDriver()->getConnection()->commit();
 }
@@ -331,7 +332,7 @@ BODY
                             array(
                                 'shortDescription' => ' Commit a transaction',
                                 'longDescription'  => null,
-                                'tags'             => null,
+                                'tags'             => array(),
                             )
                         )
                 ),
