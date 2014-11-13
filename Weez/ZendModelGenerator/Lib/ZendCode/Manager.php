@@ -9,6 +9,7 @@
 namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -29,6 +30,7 @@ class Manager extends AbstractGenerator
     public function getClassArrayRepresentation()
     {
         $this->data = $this->getData();
+
         return array(
             'name'          => 'Manager',
             'namespacename' => $this->data['_namespace'] . '\Table',
@@ -57,30 +59,50 @@ class Manager extends AbstractGenerator
                             ),
                         )
                     )
-            ),
+                ),
             'properties'    => array(
                 array('entity', null, PropertyGenerator::FLAG_PROTECTED),
                 array('container', null, PropertyGenerator::FLAG_PROTECTED),
+                PropertyGenerator::fromArray(
+                    array(
+                        'name'         => 'wasInTransaction',
+                        'defaultvalue' => false,
+                        'flags'        => PropertyGenerator::FLAG_PROTECTED,
+                        'docblock'     => DocBlockGenerator::fromArray(
+                                array(
+                                    'shortDescription' => 'True if we were already in a transaction when try to start a new one',
+                                    'longDescription'  => '',
+                                    'tags'             => array(
+                                        new GenericTag('var', 'bool'),
+                                    )
+                                )
+                            )
+                    )
+                ),
             ),
             'methods'       => array(
                 array(
                     'name'       => '__construct',
                     'parameters' => array(
-                        ParameterGenerator::fromArray(array(
-                            'name' => 'adapter',
+                        ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'adapter',
                                 //'type' => 'Adapter',
-                        )),
-                        ParameterGenerator::fromArray(array(
-                            'name' => 'entity',
-                            'type' => 'Entity',
-                        )),
+                            )
+                        ),
+                        ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'entity',
+                                'type' => 'Entity',
+                            )
+                        ),
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
                     'body'       =>
-                    '$this->adapter = $adapter;' . "\n" .
-                    '$this->entity = $entity;' . "\n" .
-                    '$this->featureSet = new Feature\FeatureSet();' . "\n" .
-                    '$this->initialize();',
+                        '$this->adapter = $adapter;' . "\n" .
+                        '$this->entity = $entity;' . "\n" .
+                        '$this->featureSet = new Feature\FeatureSet();' . "\n" .
+                        '$this->initialize();',
                     'docblock'   => DocBlockGenerator::fromArray(
                             array(
                                 'shortDescription' => 'Constructor',
@@ -90,18 +112,22 @@ class Manager extends AbstractGenerator
                                     new ParamTag('entity', array('Entity')),
                                 )
                             )
-                    )
+                        )
                 ),
                 array(
                     'name'       => 'setContainer',
-                    'parameters' => array(ParameterGenerator::fromArray(array(
-                            'name' => 'c',
-                            'type' => 'Container',
-                        ))),
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'c',
+                                'type' => 'Container',
+                            )
+                        )
+                    ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
                     'body'       =>
-                    '$this->container = $c;' . "\n" .
-                    'return $this;',
+                        '$this->container = $c;' . "\n" .
+                        'return $this;',
                     'docblock'   => DocBlockGenerator::fromArray(
                             array(
                                 'shortDescription' => 'Inject container',
@@ -110,10 +136,10 @@ class Manager extends AbstractGenerator
                                     new ParamTag('c', array('Container')),
                                     new ReturnTag(array(
                                         'datatype' => 'self',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
+                        )
                 ),
                 array(
                     'name'       => 'getContainer',
@@ -127,21 +153,21 @@ class Manager extends AbstractGenerator
                                 'tags'             => array(
                                     new ReturnTag(array(
                                         'datatype' => 'Container',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
+                        )
                 ),
                 array(
                     'name'       => 'all',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
                     'body'       => '$select = $this->select();'
-                    . '$result = array();' . PHP_EOL
-                    . 'foreach ($select as $v) {' . PHP_EOL
-                    . '     $result[] = $v->getArrayCopy();' . PHP_EOL
-                    . '}' . PHP_EOL
-                    . 'return $result;',
+                        . '$result = array();' . PHP_EOL
+                        . 'foreach ($select as $v) {' . PHP_EOL
+                        . '     $result[] = $v->getArrayCopy();' . PHP_EOL
+                        . '}' . PHP_EOL
+                        . 'return $result;',
                     'docblock'   => DocBlockGenerator::fromArray(
                             array(
                                 'shortDescription' => '',
@@ -149,10 +175,10 @@ class Manager extends AbstractGenerator
                                 'tags'             => array(
                                     new ReturnTag(array(
                                         'datatype' => 'self',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
+                        )
                 ),
                 array(
                     'name'       => 'getPrimaryKeyName',
@@ -166,10 +192,10 @@ class Manager extends AbstractGenerator
                                 'tags'             => array(
                                     new ReturnTag(array(
                                         'datatype' => 'array|string',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
+                        )
                 ),
                 array(
                     'name'       => 'getTableName',
@@ -183,10 +209,10 @@ class Manager extends AbstractGenerator
                                 'tags'             => array(
                                     new ReturnTag(array(
                                         'datatype' => 'array|string',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
+                        )
                 ),
                 /* array(
                   'name'       => 'save',
@@ -226,11 +252,15 @@ class Manager extends AbstractGenerator
                   ), */
                 array(
                     'name'       => 'deleteEntity',
-                    'parameters' => array(ParameterGenerator::fromArray(array(
-                            'name' => 'entity',
-                            'type' => 'Entity',
-                        )),
-                        'useTransaction = true'),
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'entity',
+                                'type' => 'Entity',
+                            )
+                        ),
+                        'useTransaction = true'
+                    ),
                     'flags'      => array(MethodGenerator::FLAG_PUBLIC, MethodGenerator::FLAG_ABSTRACT),
                     'body'       => null,
                     'docblock'   => DocBlockGenerator::fromArray(
@@ -242,28 +272,87 @@ class Manager extends AbstractGenerator
                                     new ParamTag('useTransaction', array('boolean')),
                                     new ReturnTag(array(
                                         'datatype' => 'int',
-                                            )),
+                                    )),
                                 )
                             )
-                    )
-                )
+                        )
+                ),
+                array(
+                    'name'       => 'beginTransaction',
+                    'parameters' => array(),
+                    'flags'      => MethodGenerator::FLAG_PROTECTED,
+                    'body'       => <<<'BODY'
+if ($this->adapter->getDriver()->getConnection()->inTransaction()) {
+    $this->wasInTransaction = true;
+
+    return;
+}
+$this->adapter->getDriver()->getConnection()->beginTransaction();
+BODY
+                ,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Begin a transaction',
+                                'longDescription'  => null,
+                                'tags'             => array(),
+                            )
+                        )
+                ),
+                array(
+                    'name'       => 'rollback',
+                    'parameters' => array(),
+                    'flags'      => MethodGenerator::FLAG_PROTECTED,
+                    'body'       => <<<'BODY'
+if ($this->wasInTransaction) {
+    throw new \Exception('Inside transaction rollback call');
+}
+$this->adapter->getDriver()->getConnection()->rollback();
+BODY
+                ,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Rollback a transaction',
+                                'longDescription'  => null,
+                                'tags'             => array(),
+                            )
+                        )
+                ),
+                array(
+                    'name'       => 'commit',
+                    'parameters' => array(),
+                    'flags'      => MethodGenerator::FLAG_PROTECTED,
+                    'body'       => <<<'BODY'
+if (!$this->wasInTransaction) {
+    $this->adapter->getDriver()->getConnection()->commit();
+}
+BODY
+                ,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => ' Commit a transaction',
+                                'longDescription'  => null,
+                                'tags'             => array(),
+                            )
+                        )
+                ),
             )
         );
     }
 
     public function generate()
     {
-        $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
+        $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse('Zend\Db\TableGateway\AbstractTableGateway')
-                ->addUse('Zend\Db\TableGateway\Feature')
-                ->addUse($this->data['_namespace'] . '\Entity\\Entity')
-                ->addUse('Pimple\Container')
-                ->addUse('Zend\Db\Adapter\Adapter');
+            ->addUse('Zend\Db\TableGateway\Feature')
+            ->addUse($this->data['_namespace'] . '\Entity\\Entity')
+            ->addUse('Pimple\Container')
+            ->addUse('Zend\Db\Adapter\Adapter');
         $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
+
         return $fileGenerator
-                        ->setClass($class)
-                        ->generate();
+            ->setClass($class)
+            ->generate();
     }
 
 }
