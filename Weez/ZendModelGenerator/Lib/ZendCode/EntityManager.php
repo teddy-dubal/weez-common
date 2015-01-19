@@ -190,69 +190,6 @@ class EntityManager extends AbstractGenerator
 	    )
 	);
 
-
-	$constructBody	 = '$r = $this->sql->select()->where($criteria);' . PHP_EOL;
-	$constructBody .= 'if ($order) {' . PHP_EOL;
-	$constructBody .= '      $r->order($order);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'if ($limit) {' . PHP_EOL;
-        $constructBody .= '      $r->limit($limit);' . PHP_EOL;
-        $constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'if ($offset) {' . PHP_EOL;
-	$constructBody .= '      $r->offset($offset);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= '$result = $this->selectWith($r)->toArray();' . PHP_EOL;
-	$constructBody .= 'if ($toEntity) {' . PHP_EOL;
-	$constructBody .= '    foreach($result as &$v){' . PHP_EOL;
-	$constructBody .= '        $entity =  new ' . $this->data['_className'] . 'Entity();' . PHP_EOL;
-	$constructBody .= '        $v = $entity->exchangeArray($v);' . PHP_EOL;
-	$constructBody .= '    }' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'return $result;' . PHP_EOL;
-	$constructBody .= '' . PHP_EOL;
-	$methods[]	 = array(
-	    'name'		 => 'findBy',
-	    'parameters'	 => array(
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'criteria',
-		    'defaultvalue'	 => array(),
-		    'type'		 => 'array',
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'order',
-		    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'         => 'limit',
-                    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'offset',
-		    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'toEntity',
-		    'defaultvalue'	 => false,
-		)),
-	    ),
-	    'flags'		 => MethodGenerator::FLAG_PUBLIC,
-	    'body'		 => $constructBody,
-	    'docblock'	 => DocBlockGenerator::fromArray(
-		    array(
-			'shortDescription'	 => 'Find by criteria',
-			'longDescription'	 => null,
-			'tags'			 => array(
-			    new ParamTag('criteria', array('array'), 'Search criteria'),
-			    new ParamTag('order', array('string'), 'sorting option'),
-			    new ParamTag('limit', array('int'), 'limit option'),
-                            new ParamTag('offset', array('int'), 'offset option'),
-			    new ParamTag('toEntity', array('boolean'), 'return entity result'),
-			    new ReturnTag(array('array', 'null'), 'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
-			)
-		    )
-	    )
-	);
-
 	return $methods;
     }
 

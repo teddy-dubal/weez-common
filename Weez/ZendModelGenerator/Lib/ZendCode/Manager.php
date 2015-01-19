@@ -214,42 +214,65 @@ class Manager extends AbstractGenerator
                             )
                         )
                 ),
-                /* array(
-                  'name'       => 'save',
-                  'parameters' => array(ParameterGenerator::fromArray(array(
-                  'name' => 'entity',
-                  'type' => 'Entity',
-                  ))),
-                  'flags'      => MethodGenerator::FLAG_PUBLIC,
-                  'body'       =>
-                  '$data = $entity->toArray();' . "\n" .
-                  '$returnId = false;' . "\n" .
-                  '$id = (int)$data[$this->id];' . "\n" .
-                  'if ($id == 0) {' . "\n" .
-                  '   $this->insert($data);' . "\n" .
-                  '   $returnId = $this->getLastInsertValue();' . "\n" .
-                  '} else {' . "\n" .
-                  '   if ($this->find($id)) {' . "\n" .
-                  '       $returnId = $id;' . "\n" .
-                  '       $this->update($data, array($this->id => $id));' . "\n" .
-                  '   } else {' . "\n" .
-                  '       throw new \Exception(\'Form id does not exit\');' . "\n" .
-                  '   }' . "\n" .
-                  '}' . "\n" .
-                  'return $returnId;',
-                  'docblock'   => DocBlockGenerator::fromArray(
-                  array(
-                  'shortDescription' => 'Saves current row, and optionally dependent rows',
-                  'longDescription'  => null,
-                  'tags'             => array(
-                  new ParamTag('entity', array('Entity')),
-                  new ReturnTag(array(
-                  'datatype' => 'int',
-                  )),
-                  )
-                  )
-                  )
-                  ), */
+                array(
+                    'name'       => 'findBy',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'order',
+                            'defaultvalue' => null,
+                        )),
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'limit',
+                            'defaultvalue' => null,
+                        )),
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'offset',
+                            'defaultvalue' => null,
+                        )),
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'toEntity',
+                            'defaultvalue' => false,
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
+                    'if ($order) {' . PHP_EOL .
+                    '      $r->order($order);' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    'if ($limit) {' . PHP_EOL .
+                    '      $r->limit($limit);' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    'if ($offset) {' . PHP_EOL .
+                    '      $r->offset($offset);' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    '$result = $this->selectWith($r)->toArray();' . PHP_EOL .
+                    'if ($toEntity) {' . PHP_EOL .
+                    '    foreach($result as &$v){' . PHP_EOL .
+                    '        $entity =  clone $this->entity;' . PHP_EOL .
+                    '        $v = $entity->exchangeArray($v);' . PHP_EOL .
+                    '    }' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    'return $result;' . PHP_EOL,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Find by criteria',
+                                'longDescription'  => null,
+                                'tags'             => array(
+                                    new ParamTag('criteria', array('array'), 'Search criteria'),
+                                    new ParamTag('order', array('string'), 'sorting option'),
+                                    new ParamTag('limit', array('int'), 'limit option'),
+                                    new ParamTag('offset', array('int'), 'offset option'),
+                                    new ParamTag('toEntity', array('boolean'), 'return entity result'),
+                                    new ReturnTag(array('array', 'null'), '' ),
+                                )
+                            )
+                    )
+                ),
                 array(
                     'name'       => 'deleteEntity',
                     'parameters' => array(
