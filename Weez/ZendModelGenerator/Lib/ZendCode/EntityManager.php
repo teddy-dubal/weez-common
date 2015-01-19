@@ -195,9 +195,9 @@ class EntityManager extends AbstractGenerator
 	$constructBody .= 'if ($order) {' . PHP_EOL;
 	$constructBody .= '      $r->order($order);' . PHP_EOL;
 	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'if ($count) {' . PHP_EOL;
-	$constructBody .= '      $r->limit($count);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
+	$constructBody .= 'if ($limit) {' . PHP_EOL;
+        $constructBody .= '      $r->limit($limit);' . PHP_EOL;
+        $constructBody .= '}' . PHP_EOL;
 	$constructBody .= 'if ($offset) {' . PHP_EOL;
 	$constructBody .= '      $r->offset($offset);' . PHP_EOL;
 	$constructBody .= '}' . PHP_EOL;
@@ -223,8 +223,8 @@ class EntityManager extends AbstractGenerator
 		    'defaultvalue'	 => null,
 		)),
 		ParameterGenerator::fromArray(array(
-		    'name'		 => 'count',
-		    'defaultvalue'	 => null,
+		    'name'         => 'limit',
+                    'defaultvalue'	 => null,
 		)),
 		ParameterGenerator::fromArray(array(
 		    'name'		 => 'offset',
@@ -244,8 +244,8 @@ class EntityManager extends AbstractGenerator
 			'tags'			 => array(
 			    new ParamTag('criteria', array('array'), 'Search criteria'),
 			    new ParamTag('order', array('string'), 'sorting option'),
-			    new ParamTag('count', array('int'), 'counting option'),
-			    new ParamTag('offset', array('int'), 'offset option'),
+			    new ParamTag('limit', array('int'), 'limit option'),
+                            new ParamTag('offset', array('int'), 'offset option'),
 			    new ParamTag('toEntity', array('boolean'), 'return entity result'),
 			    new ReturnTag(array('array', 'null'), 'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
 			)
