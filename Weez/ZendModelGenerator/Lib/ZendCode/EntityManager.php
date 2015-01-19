@@ -109,16 +109,23 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-	$constructBody	 = 'parent::__construct($adapter, new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
-	$methods	 = array(
+	$constructBody = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
+        $methods	 = array(
 	    array(
 		'name'		 => '__construct',
 		'parameters'	 => array(
 		    ParameterGenerator::fromArray(array(
 			'name'	 => 'adapter',
 			'type'	 => 'Adapter',
-		    ))
-		),
+		    )),
+                    ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'entity',
+                                'type'         => 'Entity',
+                                'defaultvalue' => null,
+                            )
+                    ),
+                ),
 		'flags'		 => MethodGenerator::FLAG_PUBLIC,
 		'body'		 => $constructBody,
 		'docblock'	 => DocBlockGenerator::fromArray(
