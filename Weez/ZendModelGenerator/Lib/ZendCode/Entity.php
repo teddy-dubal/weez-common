@@ -8,6 +8,7 @@
 
 namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
+use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -28,6 +29,7 @@ class Entity extends AbstractGenerator
         return array(
             'name'          => 'Entity',
             'namespacename' => $data['_namespace'] . '\Entity',
+            'flags'         => ClassGenerator::FLAG_ABSTRACT,
             'docblock'      => DocBlockGenerator::fromArray(
                     array(
                         'shortDescription' => 'Generic Entity Class',
@@ -269,5 +271,4 @@ class Entity extends AbstractGenerator
             )
         );
     }
-
 }
