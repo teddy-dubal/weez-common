@@ -11,10 +11,10 @@
         "symfony/console": "~2.5",
         "symfony/filesystem": "~2.5",
         "symfony/finder": "~2.5",
-        "zendframework/zend-db": "2.3.*",
-        "zendframework/zend-inputfilter": "2.3.*",
-        "zendframework/zend-code": "2.3.*",
-        "fabpot/php-cs-fixer": "0.5.*",
+        "zendframework/zend-db": "~2.3",
+        "zendframework/zend-inputfilter": "~2.3",
+        "zendframework/zend-code": "~2.3",
+        "fabpot/php-cs-fixer": "~1.5",
         "pimple/pimple": "3.0.0"
     },
     "autoload": {
