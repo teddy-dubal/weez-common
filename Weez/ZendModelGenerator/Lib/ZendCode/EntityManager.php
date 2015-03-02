@@ -109,16 +109,23 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-	$constructBody	 = 'parent::__construct($adapter, new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
-	$methods	 = array(
+	$constructBody = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
+        $methods	 = array(
 	    array(
 		'name'		 => '__construct',
 		'parameters'	 => array(
 		    ParameterGenerator::fromArray(array(
 			'name'	 => 'adapter',
 			'type'	 => 'Adapter',
-		    ))
-		),
+		    )),
+                    ParameterGenerator::fromArray(
+                            array(
+                                'name' => 'entity',
+                                'type'         => 'Entity',
+                                'defaultvalue' => null,
+                            )
+                    ),
+                ),
 		'flags'		 => MethodGenerator::FLAG_PUBLIC,
 		'body'		 => $constructBody,
 		'docblock'	 => DocBlockGenerator::fromArray(
@@ -185,69 +192,6 @@ class EntityManager extends AbstractGenerator
 			    new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
 			    new ReturnTag(array($this->data['_className'] . 'Entity',
 				'null'), 'Found entity'),
-			)
-		    )
-	    )
-	);
-
-
-	$constructBody	 = '$r = $this->sql->select()->where($criteria);' . PHP_EOL;
-	$constructBody .= 'if ($order) {' . PHP_EOL;
-	$constructBody .= '      $r->order($order);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'if ($count) {' . PHP_EOL;
-	$constructBody .= '      $r->limit($count);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'if ($offset) {' . PHP_EOL;
-	$constructBody .= '      $r->offset($offset);' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= '$result = $this->selectWith($r)->toArray();' . PHP_EOL;
-	$constructBody .= 'if ($toEntity) {' . PHP_EOL;
-	$constructBody .= '    foreach($result as &$v){' . PHP_EOL;
-	$constructBody .= '        $entity =  new ' . $this->data['_className'] . 'Entity();' . PHP_EOL;
-	$constructBody .= '        $v = $entity->exchangeArray($v);' . PHP_EOL;
-	$constructBody .= '    }' . PHP_EOL;
-	$constructBody .= '}' . PHP_EOL;
-	$constructBody .= 'return $result;' . PHP_EOL;
-	$constructBody .= '' . PHP_EOL;
-	$methods[]	 = array(
-	    'name'		 => 'findBy',
-	    'parameters'	 => array(
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'criteria',
-		    'defaultvalue'	 => array(),
-		    'type'		 => 'array',
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'order',
-		    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'count',
-		    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'offset',
-		    'defaultvalue'	 => null,
-		)),
-		ParameterGenerator::fromArray(array(
-		    'name'		 => 'toEntity',
-		    'defaultvalue'	 => false,
-		)),
-	    ),
-	    'flags'		 => MethodGenerator::FLAG_PUBLIC,
-	    'body'		 => $constructBody,
-	    'docblock'	 => DocBlockGenerator::fromArray(
-		    array(
-			'shortDescription'	 => 'Find by criteria',
-			'longDescription'	 => null,
-			'tags'			 => array(
-			    new ParamTag('criteria', array('array'), 'Search criteria'),
-			    new ParamTag('order', array('string'), 'sorting option'),
-			    new ParamTag('count', array('int'), 'counting option'),
-			    new ParamTag('offset', array('int'), 'offset option'),
-			    new ParamTag('toEntity', array('boolean'), 'return entity result'),
-			    new ReturnTag(array('array', 'null'), 'array of \'' . $this->data['_namespace'] . '\\Entity\\' . $this->data['_className']),
 			)
 		    )
 	    )
