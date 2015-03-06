@@ -121,7 +121,7 @@ class EntityManager extends AbstractGenerator
                     ParameterGenerator::fromArray(
                             array(
                                 'name' => 'entity',
-                                'type'         => 'Entity',
+                                'type'         => $this->data['_className'] . 'Entity',
                                 'defaultvalue' => null,
                             )
                     ),
