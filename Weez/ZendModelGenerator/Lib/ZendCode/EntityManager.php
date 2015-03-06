@@ -134,6 +134,7 @@ class EntityManager extends AbstractGenerator
 			    'longDescription'	 => 'Pass a DB Adapter to handle connection',
 			    'tags'			 => array(
 				new ParamTag('adapter', array('Adapter'), 'Zend DB Adapter'),
+				new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Reference entity'),
 			    )
 			)
 		)

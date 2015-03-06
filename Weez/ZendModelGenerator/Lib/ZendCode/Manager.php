@@ -271,7 +271,7 @@ class Manager extends AbstractGenerator
                                     new ParamTag('limit', array('int'), 'limit option'),
                                     new ParamTag('offset', array('int'), 'offset option'),
                                     new ParamTag('toEntity', array('boolean'), 'return entity result'),
-                                    new ReturnTag(array('array', 'null'), '' ),
+                                    new ReturnTag(array('array'), '' ),
                                 )
                             )
                     )
