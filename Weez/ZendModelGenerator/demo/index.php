@@ -4,6 +4,7 @@ use Pimple\Container;
 use Weez\Model\ModelFactory;
 use Weez\ZendModelGenerator\demo\Core\Model\Entity\Accounts;
 use Weez\ZendModelGenerator\demo\Core\Model\Entity\Bugs;
+use Weez\ZendModelGenerator\demo\Core\Model\Entity\User;
 use Zend\Db\Adapter\Adapter;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
@@ -26,68 +27,55 @@ $app['entity'] = function() use ($app) {
 };
 
 $timestart = microtime(true);
-//$userManager = $app['entity']->get('\Weez\ZendModelGenerator\demo\Core\Model\Table\User');
-//$nbUser      = 10;
-//echo "***********************************************" . "<br>";
-////Ajouter x users
-//echo sprintf('Ajout de %s users', $nbUser) . "<br>";
-//for ($i = 0; $i < $nbUser; $i++) {
-//    $user   = new User();
-//    $user->setOptions(array('name' => 'Teddy_' . $i));
-//    $user->setOptions(array('name' => 'Teddy'));
-//    $result = $userManager->saveEntity($user);
-//    echo sprintf('User id:%s', $result) . "<br>";
-//}
-//echo "***********************************************" . "<br>";
-////Afficher les x users
-//echo sprintf('Affichage des %s users', $nbUser) . "<br>";
-//$result   = $userManager->fetchAll();
-//$id_Users = array();
-//foreach ($result as $v) {
-//    echo '<pre>';
-//    var_dump($v);
-//    echo '</pre>';
-//    $id_Users[] = $v['id'];
-//}
-//$key = array_rand($id_Users);
-//$id  = $id_Users[$key];
-//echo "***********************************************" . "<br>";
-//echo sprintf('Find user id : %s', $id) . "<br>";
-//$u   = $userManager->find($id);
-//
-//echo '<pre>';
-//var_dump($u);
-//echo '</pre>';
-//echo "***********************************************" . "<br>";
-//echo "***********************************************" . "<br>";
-//$name = 'Teddy';
-//echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
-//$u    = $userManager->findBy(array('name' => $name), 'id ASC', 10, null, false);
-//echo '<pre>';
-//var_dump($u);
-//echo '</pre>';
-//echo "***********************************************" . "<br>";
-//echo sprintf('Suppression des %s users', $nbUser) . "<br>";
-//foreach ($id_Users as $v) {
-//    $userToDelete = new User();
-//    $userToDelete->setId($v);
-//    $res          = $userManager->deleteEntity($userToDelete);
-//}
+$userManager = $app['entity']->get('\Weez\ZendModelGenerator\demo\Core\Model\Table\User');
+$nbUser      = 10;
+echo "***********************************************" . "<br>";
+//Ajouter x users
+echo sprintf('Ajout de %s users', $nbUser) . "<br>";
+for ($i = 0; $i < $nbUser; $i++) {
+    $user   = new User();
+    $user->setOptions(array('name' => 'Teddy_' . $i));
+    $user->setOptions(array('name' => 'Teddy'));
+    $result = $userManager->saveEntity($user);
+    echo sprintf('User id:%s', $result) . "<br>";
+}
+echo "***********************************************" . "<br>";
+//Afficher les x users
+echo sprintf('Affichage des %s users', $nbUser) . "<br>";
+$result   = $userManager->fetchAll();
+$id_Users = array();
+foreach ($result as $v) {
+    echo '<pre>';
+    var_dump($v);
+    echo '</pre>';
+    $id_Users[] = $v['id'];
+}
+$key = array_rand($id_Users);
+$id  = $id_Users[$key];
+echo "***********************************************" . "<br>";
+echo sprintf('Find user id : %s', $id) . "<br>";
+$u   = $userManager->find($id);
+
+echo '<pre>';
+var_dump($u);
+echo '</pre>';
+echo "***********************************************" . "<br>";
+echo "***********************************************" . "<br>";
+$name = 'Teddy';
+echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
+$u    = $userManager->findBy(array('name' => $name), 'id ASC', 10, null, false);
+echo '<pre>';
+var_dump($u);
+echo '</pre>';
+echo "***********************************************" . "<br>";
+echo sprintf('Suppression des %s users', $nbUser) . "<br>";
+foreach ($id_Users as $v) {
+    $userToDelete = new User();
+    $userToDelete->setId($v);
+    $res          = $userManager->deleteEntity($userToDelete);
+}
 
 echo "***********************************************" . "<br>";
-echo sprintf('Ajout d\'un account') . "<br>";
-$accountManager = $app['entity']->get('\Weez\ZendModelGenerator\demo\Core\Model\Table\Accounts');
-$bug            = new Bugs();
-$bug->setBugStatus('En cours')
-        ->setBugDescription('wep');
-$account        = new Accounts();
-$account->setAccountName('ted')
-        ->addBugsByAssignedTo($bug);
-
-$res = $accountManager->saveEntity($account, true, true);
-echo '<pre>';
-var_dump($res);
-echo '</pre>';
 
 $timeend = microtime(true);
 $time    = $timeend - $timestart;

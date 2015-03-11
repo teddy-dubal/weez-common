@@ -8,6 +8,7 @@
 
 namespace Weez\ZendModelGenerator\Lib\ZendCode;
 
+use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -28,6 +29,7 @@ class Entity extends AbstractGenerator
         return array(
             'name'          => 'Entity',
             'namespacename' => $data['_namespace'] . '\Entity',
+            'flags'         => ClassGenerator::FLAG_ABSTRACT,
             'docblock'      => DocBlockGenerator::fromArray(
                     array(
                         'shortDescription' => 'Generic Entity Class',
@@ -252,6 +254,30 @@ class Entity extends AbstractGenerator
                     )
                 ),
                 array(
+                    'name'       => 'exchangeArray',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(
+                                array(
+                                    'name' => 'options',
+                                    'type' => 'array',
+                                )
+                        )
+                    ),
+                    'flags'      => MethodGenerator::FLAG_ABSTRACT,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Array of options/values to be set for this model.',
+                                'longDescription'  => 'Options without a matching method are ignored.',
+                                'tags'             => array(
+                                    new ParamTag('options', array('array'), 'array of Options'),
+                                    new ReturnTag(array(
+                                        'datatype' => 'self',
+                                            )),
+                                )
+                            )
+                    )
+                ),
+                array(
                     'name'       => 'getPrimaryKey',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
@@ -269,5 +295,4 @@ class Entity extends AbstractGenerator
             )
         );
     }
-
 }
