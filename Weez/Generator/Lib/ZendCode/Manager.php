@@ -268,7 +268,30 @@ class Manager extends AbstractGenerator
                                     new ParamTag('limit', array('int'), 'limit option'),
                                     new ParamTag('offset', array('int'), 'offset option'),
                                     new ParamTag('toEntity', array('boolean'), 'return entity result'),
-                                    new ReturnTag(array('array', 'null'), '' ),
+                                    new ReturnTag(array('array'), '' ),
+                                )
+                            )
+                    )
+                ),
+                array(
+                    'name'       => 'countBy',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->columns(array("count" => new Expression("count(*)")))->where($criteria);' . PHP_EOL .
+                    'return  (int)current($this->selectWith($r)->toArray())["count"];' . PHP_EOL,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Count by criteria',
+                                'longDescription'  => null,
+                                'tags'             => array(
+                                    new ParamTag('criteria', array('array'), 'Criteria'),
+                                    new ReturnTag(array('int'), ''),
                                 )
                             )
                     )
@@ -367,7 +390,8 @@ BODY
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse('Zend\Db\TableGateway\AbstractTableGateway')
             ->addUse('Zend\Db\TableGateway\Feature')
-            ->addUse($this->data['_namespace'] . '\Entity\\Entity')
+            ->addUse('Zend\Db\Sql\Expression')
+                ->addUse($this->data['_namespace'] . '\Entity\Entity')
             ->addUse('Pimple\Container')
             ->addUse('Zend\Db\Adapter\Adapter');
         $this->defineFileInfo($class);

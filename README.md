@@ -17,7 +17,7 @@ Weez/Generator/config/config.php.dist
 * Generate Entity and EntityManager
 
 ```
-php weezcmd app:model-generator Weez/Generator/config/config.php testzdmg Weez\\Generator\\demo\\Core\\Model Weez/Generator/demo/Core/Model --tables-all --zfv 2
+php weezcmd app:model-generator Weez/Generator/config/config.php testzdmg Weez\\Generator\\demo\\Core\\Model Weez/Generator/demo/Core/Model --tables-all
 
 ```
 

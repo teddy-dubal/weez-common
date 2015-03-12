@@ -24,7 +24,18 @@ class ModelFactory
 	return $this->container;
     }
 
-    public function get($class_name)
+    /**
+     *
+     * @param Container $container
+     * @return \Weez\Model\ModelFactory
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+        return $this;
+    }
+
+    public function get($className)
     {
 	if ($this->getContainer()->offsetExists('EntityManager.' . $className)) {
 	    return $this->getContainer()['EntityManager.' . $className];

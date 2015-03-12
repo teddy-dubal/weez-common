@@ -14,33 +14,6 @@ use Weez\Generator\Lib\ZendCode\Manager;
 abstract class MakeDbTableFactory extends MakeDbTableAbstract {
 
     /**
-     *   @var int $zfv;
-     */
-    protected $zfv;
-
-    /**
-     *   @var boolean $_addRequire;
-     */
-    protected $_addRequire;
-
-    /**
-     *   @var String $_includePath;
-     */
-    protected $_includePath;
-
-    public function setIncludePath($path) {
-        $this->_includePath = $path;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getIncludePath() {
-        return $this->_includePath;
-    }
-
-    /**
      *
      *  the class constructor
      *

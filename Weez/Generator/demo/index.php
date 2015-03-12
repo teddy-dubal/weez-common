@@ -68,6 +68,13 @@ echo '<pre>';
 var_dump($u);
 echo '</pre>';
 echo "***********************************************" . "<br>";
+$name = 'Teddy';
+echo sprintf('Count by criteria (name) : %s', $name) . "<br>";
+$u    = $userManager->countBy(array('name' => $name));
+echo '<pre>';
+var_dump($u);
+echo '</pre>';
+echo "***********************************************" . "<br>";
 echo sprintf('Suppression des %s users', $nbUser) . "<br>";
 foreach ($id_Users as $v) {
     $userToDelete = new User();
