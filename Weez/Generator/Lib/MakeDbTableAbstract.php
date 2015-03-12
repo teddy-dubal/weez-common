@@ -1,6 +1,6 @@
 <?php
 
-namespace Weez\ZendModelGenerator\Lib;
+namespace Weez\Generator\Lib;
 
 /**
  * main class for files creation

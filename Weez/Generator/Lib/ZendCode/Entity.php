@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Weez\ZendModelGenerator\Lib\ZendCode;
+namespace Weez\Generator\Lib\ZendCode;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;

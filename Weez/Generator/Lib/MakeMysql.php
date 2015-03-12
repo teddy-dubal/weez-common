@@ -1,9 +1,9 @@
 <?php
 
-namespace Weez\ZendModelGenerator\Lib;
+namespace Weez\Generator\Lib;
 
 use Exception;
-use Weez\ZendModelGenerator\Lib\MakeDbTableFactory;
+use Weez\Generator\Lib\MakeDbTableFactory;
 
 /**
  * MySQL specific class for model creation
