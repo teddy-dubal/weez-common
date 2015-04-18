@@ -109,8 +109,8 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-	$constructBody = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
-        $methods	 = array(
+	$constructBody	 = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
+	$methods	 = array(
 	    array(
 		'name'		 => '__construct',
 		'parameters'	 => array(
@@ -118,14 +118,14 @@ class EntityManager extends AbstractGenerator
 			'name'	 => 'adapter',
 			'type'	 => 'Adapter',
 		    )),
-                    ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'entity',
-                                'type'         => 'Entity',
-                                'defaultvalue' => null,
-                            )
-                    ),
-                ),
+		    ParameterGenerator::fromArray(
+			    array(
+				'name'		 => 'entity',
+				'type'		 => 'Entity',
+				'defaultvalue'	 => null,
+			    )
+		    ),
+		),
 		'flags'		 => MethodGenerator::FLAG_PUBLIC,
 		'body'		 => $constructBody,
 		'docblock'	 => DocBlockGenerator::fromArray(
@@ -230,7 +230,7 @@ class EntityManager extends AbstractGenerator
 		foreach ($this->data['_primaryKey']['fields'] as $key) {
 		    $constructBody .= '    $pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
 		    $constructBody .= '    if ($pk_val === null) {' . PHP_EOL;
-		    $constructBody .= '        throw new \Exception(\'The value for ' . $key['capital'] . 'cannot be null\');' . PHP_EOL;
+		    $constructBody .= '        throw new \Exception(\'The value for ' . $key['capital'] . ' cannot be null\');' . PHP_EOL;
 		    $constructBody .= '    } else {' . PHP_EOL;
 		    $constructBody .= '        $where[\'' . $key['field'] . '\'] =  $pk_val; ' . PHP_EOL;
 		    $constructBody .= '    }' . PHP_EOL;
@@ -295,12 +295,16 @@ class EntityManager extends AbstractGenerator
 	if ($this->data['_primaryKey']['phptype'] == 'array') {
 	    $constructBody .= '$primary_key = array();' . PHP_EOL;
 	    foreach ($this->data['_primaryKey']['fields'] as $key) {
-		$constructBody .= '$pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
-		$constructBody .= 'if ($pk_val === null) {' . PHP_EOL;
-		$constructBody .= '    return false;' . PHP_EOL;
-		$constructBody .= '} else {' . PHP_EOL;
-		$constructBody .= '    $primary_key[\'' . $key['field'] . '\'] =  $pk_val;' . PHP_EOL;
-		$constructBody .= '}' . PHP_EOL;
+		if (!$key['ai']) {
+		    $constructBody .= '$pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
+		    $constructBody .= 'if ($pk_val === null) {' . PHP_EOL;
+		    $constructBody .= '    return false;' . PHP_EOL;
+		    $constructBody .= '} else {' . PHP_EOL;
+		    $constructBody .= '    $primary_key[\'' . $key['field'] . '\'] =  $pk_val;' . PHP_EOL;
+		    $constructBody .= '}' . PHP_EOL;
+		} else {
+		    $constructBody .= '$primary_key[\'' . $key['field'] . '\'] =  $entity->get' . $key['capital'] . '();' . PHP_EOL;
+		}
 	    }
 	    $constructBody .= '$exists = $this->find($primary_key);' . PHP_EOL;
 	    $constructBody .= '$success = true;' . PHP_EOL;
