@@ -11,9 +11,9 @@
 	"symfony/console": "~2.5",
 	"symfony/filesystem": "~2.5",
 	"symfony/finder": "~2.5",
-	"zendframework/zend-db": "2.3.*",
-	"zendframework/zend-inputfilter": "2.3.*",
-	"zendframework/zend-code": "2.3.*",
+	"zendframework/zend-db": "~2.4",
+	"zendframework/zend-inputfilter": "~2.4",
+	"zendframework/zend-code": "~2.4",
 	"fabpot/php-cs-fixer": "2.0.*@dev",
 	"pimple/pimple": "3.0.0"
     },
