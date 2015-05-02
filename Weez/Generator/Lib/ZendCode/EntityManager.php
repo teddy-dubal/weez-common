@@ -356,7 +356,7 @@ class EntityManager extends AbstractGenerator
 	$constructBody .= '            )' . PHP_EOL;
 	$constructBody .= '        );' . PHP_EOL;
 	if ($this->data['_primaryKey']['phptype'] != 'array') {
-	    $constructBody .='             $success = $primary_key;' . PHP_EOL;
+	    $constructBody .='     $success = $primary_key;' . PHP_EOL;
 	}
 	$constructBody .= '    }' . PHP_EOL;
 	if (count($this->data['dependentTables']) > 0) {
@@ -383,8 +383,7 @@ class EntityManager extends AbstractGenerator
 			}
 		    }
 		    $constructBody .= '                 ;' . PHP_EOL;
-		    $constructBody .= '                $success = $success && $entityManager->saveEntity($value,$ignoreEmptyValues, $recursive, false);' . PHP_EOL;
-		    $constructBody .= '                if (! $success) {' . PHP_EOL;
+		    $constructBody .= '                if (! ($success && $entityManager->saveEntity($value,$ignoreEmptyValues, $recursive, false))) {' . PHP_EOL;
 		    $constructBody .= '                    break;' . PHP_EOL;
 		    $constructBody .= '                }' . PHP_EOL;
 		    $constructBody .= '            }' . PHP_EOL;
