@@ -191,7 +191,7 @@ class EntityManager extends AbstractGenerator
 			'longDescription'	 => null,
 			'tags'			 => array(
 			    new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
-			    new ReturnTag(array('Array',
+			    new ReturnTag(array('array',
 				'null')),
 			)
 		    )
