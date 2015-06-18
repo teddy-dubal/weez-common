@@ -177,7 +177,7 @@ class Manager extends AbstractGenerator
                                 'longDescription'  => null,
                                 'tags'             => array(
                                     new ReturnTag(array(
-                                        'datatype' => 'self',
+                                        'datatype' => 'Array',
                                     )),
                                 )
                             )
