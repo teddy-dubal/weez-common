@@ -157,7 +157,7 @@ class EntityManager extends AbstractGenerator
 			'shortDescription'	 => 'Fetch all Entity',
 			'longDescription'	 => null,
 			'tags'			 => array(
-			    new ReturnTag(array('Array','Array of items')),
+			    new ReturnTag(array('Array'),'Array of items'),
 			)
 		    )
 	    )
