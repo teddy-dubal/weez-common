@@ -147,24 +147,7 @@ abstract class MakeDbTableAbstract
      */
     protected $_softDeleteColumn = null;
 
-    /**
-     * Name of the Cache Manager to use. Left blank if the feature is to be disabled
-     * @var string
-     */
-    protected $_cacheManagerName = '';
-
-    /**
-     * Name of the cache to use
-     * @var string
-     */
-    protected $_cacheName = 'model';
-
-    /**
-     * Name of the Zend Log to use. Left blank if the feature is to be disabled
-     * @var string
-     */
-    protected $_loggerName = '';
-
+   
     /**
      *
      * @param array $info
@@ -489,27 +472,7 @@ abstract class MakeDbTableAbstract
         $this->_license   = $this->_config['docs.license'];
         $this->_copyright = $this->_config['docs.copyright'];
 
-        $this->_cacheManagerName = $this->_config['cache.manager_name'];
-        $this->_cacheName        = $this->_config['cache.name'];
-
-        $this->_loggerName = $this->_config['log.logger_name'];
     }
 
-    /**
-     *
-     * parse a tpl file and return the result
-     *
-     * @param String $tplFile
-     * @return String
-     */
-    public function getParsedTplContents($tplFile, $vars = array())
-    {
-        extract($vars);
-        ob_start();
-        require($this->getTemplatePath() . DIRECTORY_SEPARATOR . $tplFile);
-        $data = ob_get_contents();
-        ob_end_clean();
-        return $data;
-    }
 
 }

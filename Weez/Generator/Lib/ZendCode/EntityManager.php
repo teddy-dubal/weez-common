@@ -29,10 +29,10 @@ class EntityManager extends AbstractGenerator
 	$methods = array_merge($methods, $this->getMethods());
 	$methods = array_merge($methods, $this->getSaveEntityMethod());
 	$methods = array_merge($methods, $this->getDeleteEntityMethod());
-	$methods = array_merge($methods, $this->getUtils());
+//	$methods = array_merge($methods, $this->getUtils());
 
 
-	return array(
+        return array(
 	    'name'		 => $this->data['_className'],
 	    'namespacename'	 => $this->data['_namespace'] . '\Table',
 	    'extendedclass'	 => 'Manager',
@@ -120,11 +120,11 @@ class EntityManager extends AbstractGenerator
 		    )),
 		    ParameterGenerator::fromArray(
 			    array(
-				'name'		 => 'entity',
-				'type'		 => 'Entity',
-				'defaultvalue'	 => null,
-			    )
-		    ),
+                                'name'         => 'entity',
+                                'type'         => $this->data['_className'] . 'Entity',
+                                'defaultvalue' => null,
+                            )
+                    ),
 		),
 		'flags'		 => MethodGenerator::FLAG_PUBLIC,
 		'body'		 => $constructBody,
@@ -134,7 +134,8 @@ class EntityManager extends AbstractGenerator
 			    'longDescription'	 => 'Pass a DB Adapter to handle connection',
 			    'tags'			 => array(
 				new ParamTag('adapter', array('Adapter'), 'Zend DB Adapter'),
-			    )
+                                new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Reference entity'),
+                            )
 			)
 		)
 	    ),

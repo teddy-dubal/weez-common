@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8d1480c15bceec3fad44c89b6c4ad2b1",
+    "hash": "1a97ce6bdb8c46bd80af002bdda2e090",
     "packages": [
         {
             "name": "fabpot/php-cs-fixer",
-            "version": "v1.9",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "ef528b9d3f1dd66197baabf8f77c8402c62bb9fc"
+                "reference": "6c3710b95fb1a7ee38ef00827b313715e2cb47ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/ef528b9d3f1dd66197baabf8f77c8402c62bb9fc",
-                "reference": "ef528b9d3f1dd66197baabf8f77c8402c62bb9fc",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/6c3710b95fb1a7ee38ef00827b313715e2cb47ca",
+                "reference": "6c3710b95fb1a7ee38ef00827b313715e2cb47ca",
                 "shasum": ""
             },
             "require": {
@@ -38,6 +38,11 @@
                 "php-cs-fixer"
             ],
             "type": "application",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\CS\\": "Symfony/CS/"
@@ -58,7 +63,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2015-06-13 09:30:19"
+            "time": "2015-06-22 19:20:36"
         },
         {
             "name": "pimple/pimple",
@@ -855,7 +860,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "fabpot/php-cs-fixer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -58,6 +58,13 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
 
         $manager     = new Manager();
         $manager->setData($vars);
+        if (isset($this->_config['overrideTableGateway'])) {
+            $manager
+                    ->setTableGatewayClass($this->_config['overrideTableGateway']['className'])
+                    ->setUseTableGatewayClass(
+                            $this->_config['overrideTableGateway']['namespace'] . '\\' . $this->_config['overrideTableGateway']['className']
+            );
+        }
         $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . "Manager.php";
 
         $entityItem     = new EntityItem();

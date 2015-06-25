@@ -6,7 +6,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ALLOW_INVALID_DATES';
 -- Schema testzdmg
 -- -----------------------------------------------------
 DROP SCHEMA IF EXISTS `testzdmg` ;
-CREATE SCHEMA IF NOT EXISTS `testzdmg` DEFAULT CHARACTER SET latin1 ;
+CREATE SCHEMA IF NOT EXISTS `testzdmg` DEFAULT CHARACTER SET utf8 ;
 USE `testzdmg` ;
 
 -- -----------------------------------------------------
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `testzdmg`.`user` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 

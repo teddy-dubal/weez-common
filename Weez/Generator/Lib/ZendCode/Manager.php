@@ -25,6 +25,8 @@ use Zend\Code\Generator\PropertyGenerator;
 class Manager extends AbstractGenerator
 {
 
+    private $tableGatewayClass    = 'AbstractTableGateway';
+    private $useTableGatewayClass = 'Zend\Db\TableGateway\AbstractTableGateway';
     private $data;
 
     public function getClassArrayRepresentation()
@@ -34,7 +36,7 @@ class Manager extends AbstractGenerator
         return array(
             'name'          => 'Manager',
             'namespacename' => $this->data['_namespace'] . '\Table',
-            'extendedclass' => 'AbstractTableGateway',
+            'extendedclass' => $this->tableGatewayClass,
             'flags'         => ClassGenerator::FLAG_ABSTRACT,
             'docblock'      => DocBlockGenerator::fromArray(
                     array(
@@ -388,8 +390,8 @@ BODY
     public function generate()
     {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
-        $class->addUse('Zend\Db\TableGateway\AbstractTableGateway')
-            ->addUse('Zend\Db\TableGateway\Feature')
+        $class->addUse($this->useTableGatewayClass)
+                ->addUse('Zend\Db\TableGateway\Feature')
             ->addUse('Zend\Db\Sql\Expression')
                 ->addUse($this->data['_namespace'] . '\Entity\Entity')
             ->addUse('Pimple\Container')
@@ -400,6 +402,30 @@ BODY
         return $fileGenerator
             ->setClass($class)
             ->generate();
+    }
+
+    /**
+     * @param string $tableGatewayClass
+     *
+     * @return self
+     */
+    public function setTableGatewayClass($tableGatewayClass)
+    {
+        $this->tableGatewayClass = $tableGatewayClass;
+
+        return $this;
+    }
+
+    /**
+     * @param string $useTableGatewayClass
+     *
+     * @return self
+     */
+    public function setUseTableGatewayClass($useTableGatewayClass)
+    {
+        $this->useTableGatewayClass = $useTableGatewayClass;
+
+        return $this;
     }
 
 }

@@ -28,39 +28,22 @@ $config=array(
     'db.user' => 'root',
 
     # database password
-    'db.password' => 'PASSWORD',
+    'db.password' => '',
 
     # zend framework version (1 - for 1.x, 2 - for 2.x)
-    'zfv'=>1,
+    'zfv'=>2,
 
     # if enabled, all save methods will return the inserted ID when the row is created (this will not trigger when its an update)
 
     'save.return_id' => true,
 
-    # The Cache Manager name in the Zend Registry. Leave blank to ignore
-    'cache.manager_name' => '',
-
-    # The Cache name to use inside the cache manager. Ignored if manager_name is blank
-    'cache.name' => 'model',
-
-    # The Zend Log name in the Zend Registry. Leave blank to ignore
-    'log.logger_name' => '',
-
-    ############### zend framework 1.x related directives. ignore if generating for zf2 ###########
-
-    # if enabled, to add require_once to the model file to include the mapper file,
-    # and in the mapper file to include the dbtable file.
-    # usful if you don't have class auto-loading.
-    # if you're using Zend Framework's MVC you can probably set this to false
-    'include.addrequire' => false,
-
-	# include path with inclusion of files based upon (type)_(table_name).inc
-	# Either relative path to parent folder or absolute path
-    'include.path' => 'includes',
-
     # default namespace name
     'namespace.default' => 'Default',
-    #####################################################################################################
+    #Override tg
+    /* 'overrideTableGateway' => array(
+          'namespace' => 'Weez\\Generator\\demo\\Custom\\Model',
+          'className' => 'ModEntity'
+          ) */
 
 
 );
