@@ -89,14 +89,14 @@ class MakeMysql extends MakeDbTableFactory
 	foreach ($lines as $line) {
 	    preg_match('/^\s*CONSTRAINT `(\w+)` FOREIGN KEY \(`(.+)`\) REFERENCES `(\w+)` \(`(.+)`\)/', $line, $tblinfo);
 	    if (sizeof($tblinfo) > 0) {
-		if (strpos($tblinfo[2], ',') !== false) {
-		    $column_name = explode(',', $tblinfo[2]);
-		} else {
+                if (strpos($tblinfo[2], ',') !== false) {
+		    $column_name = array_map('trim', explode(',', str_replace('`', '', $tblinfo[2])));
+                } else {
 		    $column_name = $tblinfo[2];
 		}
 		if (strpos($tblinfo[4], ',') !== false) {
-		    $foreign_column_name = explode('`,`', $tblinfo[4]);
-		} else {
+		    $foreign_column_name = array_map('trim', explode(',', str_replace('`', '', $tblinfo[4])));
+                } else {
 		    $foreign_column_name = $tblinfo[4];
 		}
 
@@ -280,7 +280,7 @@ class MakeMysql extends MakeDbTableFactory
 	}
 
 	$this->_primaryKey	 = $primaryKey;
-	$this->_columns		 = $columns;
+	$this->_columns    = $columns;
     }
 
 }

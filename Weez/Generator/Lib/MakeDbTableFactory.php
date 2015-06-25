@@ -11,7 +11,8 @@ use Weez\Generator\Lib\ZendCode\Manager;
 /**
  * main class for files creation
  */
-abstract class MakeDbTableFactory extends MakeDbTableAbstract {
+abstract class MakeDbTableFactory extends MakeDbTableAbstract
+{
 
     /**
      *
@@ -21,7 +22,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
      * @param String $dbname
      * @param String $namespace
      */
-    public function __construct($config, $dbname, $namespace) {
+    public function __construct($config, $dbname, $namespace)
+    {
         parent::__construct($config, $dbname, $namespace);
     }
 
@@ -38,6 +40,8 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         $getRelationNameParent    = array();
         $getClassName             = array();
         $getClassNameDependent    = array();
+
+
         foreach ($vars['foreignKeysInfo'] as $key) {
             $getRelationNameParent[$key['key_name']]            = $this->_getRelationName($key, 'parent');
             $getClassName[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
@@ -47,22 +51,23 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
             $getRelationNameDependent[$key['key_name']]                  = $this->_getRelationName($key, 'dependent');
             $getClassNameDependent[$key['key_name']]['foreign_tbl_name'] = $this->_getClassName($key['foreign_tbl_name']);
         }
+        
         $vars['relationNameDependent'] = $getRelationNameDependent;
         $vars['relationNameParent']    = $getRelationNameParent;
         $vars['className']             = $getClassName;
         $vars['classNameDependent']    = $getClassNameDependent;
-
+        
         $entity     = new Entity();
         $entity->setData($vars);
         $entityFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . "Entity.php";
 
-        $manager     = new Manager();
+        $manager = new Manager();
         $manager->setData($vars);
-        if (isset($this->_config['overrideTableGateway'])) {
+        if (isset($vars['_config']['overrideTableGateway'])) {
             $manager
-                    ->setTableGatewayClass($this->_config['overrideTableGateway']['className'])
+                    ->setTableGatewayClass($vars['_config']['overrideTableGateway']['className'])
                     ->setUseTableGatewayClass(
-                            $this->_config['overrideTableGateway']['namespace'] . '\\' . $this->_config['overrideTableGateway']['className']
+                            $vars['_config']['overrideTableGateway']['namespace'] . '\\' . $vars['_config']['overrideTableGateway']['className']
             );
         }
         $managerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . "Manager.php";
@@ -70,10 +75,11 @@ abstract class MakeDbTableFactory extends MakeDbTableAbstract {
         $entityItem     = new EntityItem();
         $entityItem->setData($vars);
         $entityItemFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . $this->_className . ".php";
-
+        
         $entityManager     = new EntityManager();
         $entityManager->setData($vars);
         $entityManagerFile = $this->getLocation() . DIRECTORY_SEPARATOR . "Table" . DIRECTORY_SEPARATOR . $this->_className . ".php";
+        
         if (!file_put_contents($entityFile, $entity->generate()))
             die("Error: could not write Entity file $entityFile.");
         if (!file_put_contents($managerFile, $manager->generate()))

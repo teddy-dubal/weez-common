@@ -26,7 +26,6 @@ class GenerateDbModelCommand extends BaseCommand
                     new InputOption('--tables-all', null, InputOption::VALUE_NONE, ''),
                     new InputOption('--tables-regex', null, InputOption::VALUE_REQUIRED, '', false),
                     new InputOption('--tables-prefix', null, InputOption::VALUE_REQUIRED, '', array()),
-                    new InputOption('--templates', null, InputOption::VALUE_REQUIRED, '', false),
                 ))
                 ->setHelp(<<<EOT
                         <info>info</info>
@@ -47,7 +46,6 @@ EOT
         $tablesAll    = $input->getOption('tables-all');
         $tablesRegex  = $input->getOption('tables-regex');
         $tablesPrefix = $input->getOption('tables-prefix');
-        $templates    = $input->getOption('templates');
 
         if (!file_exists($configfile)) {
             $output->writeln(sprintf('<error>Incorrect config file path "%s"</error>', $configfile));
@@ -98,12 +96,13 @@ EOT
             }
         }
         $output->writeln(sprintf('<info>Done !!</info>'));
-//        $output->writeln(sprintf('<info>Database "%s"</info>', $database));
-//        $output->writeln(sprintf('<comment>Namespace "%s"</comment>', $namespace));
-//        $output->writeln(sprintf('<question>Location "%s"</question>', $location));
-//        $output->writeln(sprintf('<error>Config path "%s"</error>', $configfile));
     }
 
+    /**
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
 
