@@ -316,7 +316,14 @@ class EntityManager extends AbstractGenerator
 	    $constructBody .= '    // Check for current existence to know if needs to be inserted' . PHP_EOL;
 	    $constructBody .= '    if ($exists === null) {' . PHP_EOL;
 	    $constructBody .= '        $this->insert($data);' . PHP_EOL;
-	} else {
+            if ($this->data['_primaryKey']['phptype'] == 'array') {
+                foreach ($this->data['_primaryKey']['fields'] as $key) {
+                    if ($key['ai']) {
+                        $constructBody .= '        $success = $primary_key[\'' . $key['field'] . '\'] =  $this->getLastInsertValue();' . PHP_EOL;
+                    } 
+                }
+            }
+        } else {
 	    $constructBody .= '$primary_key = $entity->get' . $this->data['_primaryKey']['capital'] . '();' . PHP_EOL;
 	    $constructBody .= '$success = true;' . PHP_EOL;
 	    $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
@@ -347,7 +354,6 @@ class EntityManager extends AbstractGenerator
 	$constructBody .= '            $data,' . PHP_EOL;
 	$constructBody .= '            array(' . PHP_EOL;
 	if ($this->data['_primaryKey']['phptype'] == 'array') {
-	    $fields = count($this->data['_primaryKey']['fields']);
 	    foreach ($this->data['_primaryKey']['fields'] as $key) {
 		$constructBody .= '            \'' . $key['field'] . ' = ?\' => $primary_key[\'' . $key['field'] . '\'],' . PHP_EOL;
 	    }
@@ -375,15 +381,20 @@ class EntityManager extends AbstractGenerator
 		    $constructBody .= '            $entityManager = new ' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . '($this->adapter);' . PHP_EOL;
 		    $constructBody .= '            foreach ($' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' as $value) {' . PHP_EOL;
 		    $constructBody .= '                $value' . PHP_EOL;
-		    if ($this->data['_primaryKey']['phptype'] !== 'array') {
-			$constructBody .= '                    ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
-		    } elseif (is_array($key['column_name'])) {
-			foreach (explode(',', $key['column_name'][0]) as $_column) {
-			    $column = trim(str_replace('`', '', $_column));
-			    $constructBody .= '                ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
-			}
-		    }
-		    $constructBody .= '                 ;' . PHP_EOL;
+                    if ($this->data['_primaryKey']['phptype'] !== 'array') {
+                        $constructBody .= '                    ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
+                    }
+                    if (is_array($key['column_name'])) {
+                        if (is_array($key['column_name'])) {
+                            foreach (explode(',', $key['column_name'][0]) as $_column) {
+                                $column = trim(str_replace('`', '', $_column));
+                                $constructBody .= '                ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
+                            }
+                        }
+                    } else {
+                        $constructBody .= '                ->set' . $this->_getCapital($key['column_name']) . '($primary_key[\'' . $key['foreign_tbl_column_name'] . '\'])' . PHP_EOL;
+                    }
+                    $constructBody .= '                 ;' . PHP_EOL;
 		    $constructBody .= '                if (! ($success && $entityManager->saveEntity($value,$ignoreEmptyValues, $recursive, false))) {' . PHP_EOL;
 		    $constructBody .= '                    break;' . PHP_EOL;
 		    $constructBody .= '                }' . PHP_EOL;

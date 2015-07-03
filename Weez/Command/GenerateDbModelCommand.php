@@ -23,7 +23,7 @@ class GenerateDbModelCommand extends BaseCommand
                     new InputArgument('database', InputArgument::REQUIRED, 'The Database'),
                     new InputArgument('namespace', InputArgument::REQUIRED, 'The namespace.'),
                     new InputArgument('location', InputArgument::REQUIRED, 'Where to store model files'),
-                    new InputOption('--tables-all', null, InputOption::VALUE_NONE, ''),
+                    new InputOption('--tables-all', null, InputOption::VALUE_NONE, '', null),
                     new InputOption('--tables-regex', null, InputOption::VALUE_REQUIRED, '', false),
                     new InputOption('--tables-prefix', null, InputOption::VALUE_REQUIRED, '', array()),
                 ))
@@ -61,7 +61,6 @@ EOT
                 break;
         }
         $tables = $dbAdapter->getTablesNamesFromDb();
-        //}
         if (empty($tables)) {
             $output->writeln(sprintf('<error>Please provide at least one table to parse.</error>'));
             return false;
@@ -85,15 +84,17 @@ EOT
         }
         $dbAdapter->setTableList($tables);
         $dbAdapter->addTablePrefixes($tablesPrefix);
-
         foreach ($tables as $table) {
-            $dbAdapter->setTableName($table);
-            try {
-                $dbAdapter->parseTable();
-                $dbAdapter->generate();
-            } catch (Exception $e) {
-                $output->writeln(sprintf('<error>Warning: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
+            if ($tablesRegex && !preg_match("/$tablesRegex/", $table) > 0) {
+                continue;
             }
+            $dbAdapter->setTableName($table);
+                try {
+                    $dbAdapter->parseTable();
+                    $dbAdapter->generate();
+                } catch (Exception $e) {
+                    $output->writeln(sprintf('<error>Warning: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
+                }
         }
         $output->writeln(sprintf('<info>Done !!</info>'));
     }

@@ -151,8 +151,8 @@ class MakeMysql extends MakeDbTableFactory
 		if (preg_match('/^\s*PRIMARY KEY \(`(.+)`\)/', $line, $matches)) {
 		    $pk_string = $matches[1];
 		} elseif (preg_match("/^\s*CONSTRAINT `(\w+)` FOREIGN KEY \(`(.+)`\) REFERENCES `$tbname` \(`(.+)`\)/", $line, $tblinfo)) {
-		    if (strpos($tblinfo[2], ',') !== false) {
-			$column_name = explode('`,`', $tblinfo[2]);
+                    if (strpos($tblinfo[2], ',') !== false) {
+                        $column_name = explode('`,`', $tblinfo[2]);
 		    } else {
 			$column_name = $tblinfo[2];
 		    }
@@ -215,8 +215,7 @@ class MakeMysql extends MakeDbTableFactory
 
 	$res		 = $qry->fetchAll();
 	$primaryKey	 = array();
-
-	foreach ($res as $row) {
+        foreach ($res as $row) {
 	    if (isset($comments[$row['Field']])) {
 		$comment = $comments[$row['Field']];
 	    } else {
@@ -224,15 +223,15 @@ class MakeMysql extends MakeDbTableFactory
 	    }
 
 	    if ($row['Key'] == 'PRI') {
-		$primaryKey[] = array(
+                $primaryKey[] = array(
 		    'ai'		 => 'auto_increment' == $row['Extra'],
 		    'field'		 => $row['Field'],
 		    'type'		 => $row['Type'],
 		    'phptype'	 => $this->_convertTypeToPhp($row['Type']),
 		    'capital'	 => $this->_getCapital($row['Field']),
-		    'foreign_key'	 => false,
-		);
-	    }
+		    'foreign_key' => 'auto_increment' != $row['Extra'],
+                );
+            }
 
 	    $columns[] = array(
 		'field'		 => $row['Field'],
@@ -248,8 +247,7 @@ class MakeMysql extends MakeDbTableFactory
 		$this->_softDeleteColumn = $row['Field'];
 	    }
 	}
-
-	if (sizeof($primaryKey) == 0) {
+        if (sizeof($primaryKey) == 0) {
 	    throw new Exception("Did not find any primary keys for table $tbname.");
 	} elseif (sizeof($primaryKey) == 1) {
 	    $primaryKey = $primaryKey[0];
@@ -277,8 +275,7 @@ class MakeMysql extends MakeDbTableFactory
 	    $temp['field'] .= ')';
 
 	    $primaryKey = $temp;
-	}
-
+        }
 	$this->_primaryKey	 = $primaryKey;
 	$this->_columns    = $columns;
     }
