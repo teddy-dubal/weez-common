@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Weez\ZendModelGenerator\Lib\ZendCode;
+namespace Weez\Generator\Lib\ZendCode;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\GenericTag;
@@ -25,9 +25,8 @@ use Zend\Code\Generator\PropertyGenerator;
 class Manager extends AbstractGenerator
 {
 
-    private $tableGatewayClass = 'AbstractTableGateway';
+    private $tableGatewayClass    = 'AbstractTableGateway';
     private $useTableGatewayClass = 'Zend\Db\TableGateway\AbstractTableGateway';
-
     private $data;
 
     public function getClassArrayRepresentation()
@@ -177,7 +176,7 @@ class Manager extends AbstractGenerator
                                 'longDescription'  => null,
                                 'tags'             => array(
                                     new ReturnTag(array(
-                                        'datatype' => 'array',
+                                        'datatype' => 'self',
                                     )),
                                 )
                             )
@@ -277,6 +276,29 @@ class Manager extends AbstractGenerator
                     )
                 ),
                 array(
+                    'name'       => 'countBy',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->columns(array("count" => new Expression("count(*)")))->where($criteria);' . PHP_EOL .
+                    'return  (int)current($this->selectWith($r)->toArray())["count"];' . PHP_EOL,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Count by criteria',
+                                'longDescription'  => null,
+                                'tags'             => array(
+                                    new ParamTag('criteria', array('array'), 'Criteria'),
+                                    new ReturnTag(array('int'), ''),
+                                )
+                            )
+                    )
+                ),
+                array(
                     'name'       => 'deleteEntity',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
@@ -369,8 +391,9 @@ BODY
     {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse($this->useTableGatewayClass)
-            ->addUse('Zend\Db\TableGateway\Feature')
-            ->addUse($this->data['_namespace'] . '\Entity\\Entity')
+                ->addUse('Zend\Db\TableGateway\Feature')
+            ->addUse('Zend\Db\Sql\Expression')
+                ->addUse($this->data['_namespace'] . '\Entity\Entity')
             ->addUse('Pimple\Container')
             ->addUse('Zend\Db\Adapter\Adapter');
         $this->defineFileInfo($class);
@@ -404,4 +427,5 @@ BODY
 
         return $this;
     }
+
 }

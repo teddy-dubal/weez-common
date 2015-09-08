@@ -8,9 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
-use Weez\ZendModelGenerator\Lib\MakeMysql;
+use Weez\Generator\Lib\MakeMysql;
 
 class GenerateDbModelCommand extends BaseCommand
 {
@@ -25,11 +23,9 @@ class GenerateDbModelCommand extends BaseCommand
                     new InputArgument('database', InputArgument::REQUIRED, 'The Database'),
                     new InputArgument('namespace', InputArgument::REQUIRED, 'The namespace.'),
                     new InputArgument('location', InputArgument::REQUIRED, 'Where to store model files'),
-                    new InputOption('--tables-all', null, InputOption::VALUE_NONE, ''),
+                    new InputOption('--tables-all', null, InputOption::VALUE_NONE, '', null),
                     new InputOption('--tables-regex', null, InputOption::VALUE_REQUIRED, '', false),
                     new InputOption('--tables-prefix', null, InputOption::VALUE_REQUIRED, '', array()),
-                    new InputOption('--templates', null, InputOption::VALUE_REQUIRED, '', false),
-                    new InputOption('--zfv', null, InputOption::VALUE_REQUIRED, '', 1),
                 ))
                 ->setHelp(<<<EOT
                         <info>info</info>
@@ -50,8 +46,6 @@ EOT
         $tablesAll    = $input->getOption('tables-all');
         $tablesRegex  = $input->getOption('tables-regex');
         $tablesPrefix = $input->getOption('tables-prefix');
-        $templates    = $input->getOption('templates');
-        $zfv          = $input->getOption('zfv');
 
         if (!file_exists($configfile)) {
             $output->writeln(sprintf('<error>Incorrect config file path "%s"</error>', $configfile));
@@ -61,15 +55,12 @@ EOT
         $db_type = $config['db.type'];
         switch ($db_type) {
             case 'Mysql':
-                $dbAdapter = new MakeMysql($config, $database, $namespace, $zfv);
+                $dbAdapter = new MakeMysql($config, $database, $namespace);
                 break;
             default:
                 break;
         }
-        //$tables = array();
-        //if ($tablesAll) {
         $tables = $dbAdapter->getTablesNamesFromDb();
-        //}
         if (empty($tables)) {
             $output->writeln(sprintf('<error>Please provide at least one table to parse.</error>'));
             return false;
@@ -82,50 +73,37 @@ EOT
         $location .= DIRECTORY_SEPARATOR;
         $dbAdapter->addTablePrefixes($tablesPrefix);
         $dbAdapter->setLocation($location);
-        switch ($zfv) {
-            case 1:
-                foreach (array('DbTable', 'Mapper') as $name) {
-                    $dir = $location . $name;
-                    if (!is_dir($dir)) {
-                        if (!@mkdir($dir, 0755, true)) {
-                            $output->writeln(sprintf('<error>Could not create directory zf1 "%s"</error>', $dir));
-                            return false;
-                        }
-                    }
+        foreach (array('Table', 'Entity') as $name) {
+            $dir = $location . $name;
+            if (!is_dir($dir)) {
+                if (!@mkdir($dir, 0755, true)) {
+                    $output->writeln(sprintf('<error>Could not create directory zf2 "%s"</error>', $dir));
+                    return false;
                 }
-                break;
-            case 2:
-                foreach (array('Table', 'Entity') as $name) {
-                    $dir = $location . $name;
-                    if (!is_dir($dir)) {
-                        if (!@mkdir($dir, 0755, true)) {
-                            $output->writeln(sprintf('<error>Could not create directory zf2 "%s"</error>', $dir));
-                            return false;
-                        }
-                    }
-                }
-                break;
-        }
-
-        $dbAdapter->setTableList($tables);
-        $dbAdapter->addTablePrefixes($tablesPrefix);
-
-        foreach ($tables as $table) {
-            $dbAdapter->setTableName($table);
-            try {
-                $dbAdapter->parseTable();
-                $dbAdapter->doItAll();
-            } catch (Exception $e) {
-                $output->writeln(sprintf('<error>Warning: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
             }
         }
+        $dbAdapter->setTableList($tables);
+        $dbAdapter->addTablePrefixes($tablesPrefix);
+        foreach ($tables as $table) {
+            if ($tablesRegex && !preg_match("/$tablesRegex/", $table) > 0) {
+                continue;
+            }
+            $dbAdapter->setTableName($table);
+                try {
+                    $dbAdapter->parseTable();
+                    $dbAdapter->generate();
+                } catch (Exception $e) {
+                    $output->writeln(sprintf('<error>Warning: Failed to process "%s" : %s ... Skipping</error>', $table, $e->getMessage()));
+                }
+        }
         $output->writeln(sprintf('<info>Done !!</info>'));
-//        $output->writeln(sprintf('<info>Database "%s"</info>', $database));
-//        $output->writeln(sprintf('<comment>Namespace "%s"</comment>', $namespace));
-//        $output->writeln(sprintf('<question>Location "%s"</question>', $location));
-//        $output->writeln(sprintf('<error>Config path "%s"</error>', $configfile));
     }
 
+    /**
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
 
@@ -174,15 +152,6 @@ EOT
             );
             $input->setArgument('location', $location);
         }
-    }
-
-    public function getTwig()
-    {
-        $loader = new Twig_Loader_Filesystem();
-        $twig   = new Twig_Environment($loader);
-        // use
-        //echo $container['translator']->render('index.html.twig', array('name' => 'Fabien'));
-        return $twig;
     }
 
 }

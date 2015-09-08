@@ -1,6 +1,6 @@
 <?php
 
-namespace Weez\ZendModelGenerator\Lib\ZendCode;
+namespace Weez\Generator\Lib\ZendCode;
 
 use \Zend\Code\Generator\ClassGenerator;
 use \Zend\Code\Generator\DocBlock\Tag\ParamTag;
@@ -29,10 +29,10 @@ class EntityManager extends AbstractGenerator
 	$methods = array_merge($methods, $this->getMethods());
 	$methods = array_merge($methods, $this->getSaveEntityMethod());
 	$methods = array_merge($methods, $this->getDeleteEntityMethod());
-	$methods = array_merge($methods, $this->getUtils());
+//	$methods = array_merge($methods, $this->getUtils());
 
 
-	return array(
+        return array(
 	    'name'		 => $this->data['_className'],
 	    'namespacename'	 => $this->data['_namespace'] . '\Table',
 	    'extendedclass'	 => 'Manager',
@@ -109,8 +109,8 @@ class EntityManager extends AbstractGenerator
 
     private function getConstructor()
     {
-	$constructBody = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
-        $methods	 = array(
+	$constructBody	 = 'parent::__construct($adapter, $entity ? $entity : new ' . $this->data['_className'] . 'Entity());' . PHP_EOL;
+	$methods	 = array(
 	    array(
 		'name'		 => '__construct',
 		'parameters'	 => array(
@@ -118,14 +118,14 @@ class EntityManager extends AbstractGenerator
 			'name'	 => 'adapter',
 			'type'	 => 'Adapter',
 		    )),
-                    ParameterGenerator::fromArray(
-                            array(
-                                'name' => 'entity',
+		    ParameterGenerator::fromArray(
+			    array(
+                                'name'         => 'entity',
                                 'type'         => $this->data['_className'] . 'Entity',
                                 'defaultvalue' => null,
                             )
                     ),
-                ),
+		),
 		'flags'		 => MethodGenerator::FLAG_PUBLIC,
 		'body'		 => $constructBody,
 		'docblock'	 => DocBlockGenerator::fromArray(
@@ -134,8 +134,8 @@ class EntityManager extends AbstractGenerator
 			    'longDescription'	 => 'Pass a DB Adapter to handle connection',
 			    'tags'			 => array(
 				new ParamTag('adapter', array('Adapter'), 'Zend DB Adapter'),
-				new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Reference entity'),
-			    )
+                                new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Reference entity'),
+                            )
 			)
 		)
 	    ),
@@ -157,7 +157,7 @@ class EntityManager extends AbstractGenerator
 			'shortDescription'	 => 'Fetch all Entity',
 			'longDescription'	 => null,
 			'tags'			 => array(
-			    new ReturnTag(array('array')),
+			    new ReturnTag(array('datatype' => 'array of ' . $this->data['_className'])),
 			)
 		    )
 	    )
@@ -191,8 +191,8 @@ class EntityManager extends AbstractGenerator
 			'longDescription'	 => null,
 			'tags'			 => array(
 			    new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
-			    new ReturnTag(array('array',
-				'null')),
+			    new ReturnTag(array($this->data['_className'] . 'Entity',
+				'null'), 'Found entity'),
 			)
 		    )
 	    )
@@ -231,7 +231,7 @@ class EntityManager extends AbstractGenerator
 		foreach ($this->data['_primaryKey']['fields'] as $key) {
 		    $constructBody .= '    $pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
 		    $constructBody .= '    if ($pk_val === null) {' . PHP_EOL;
-		    $constructBody .= '        throw new \Exception(\'The value for ' . $key['capital'] . 'cannot be null\');' . PHP_EOL;
+		    $constructBody .= '        throw new \Exception(\'The value for ' . $key['capital'] . ' cannot be null\');' . PHP_EOL;
 		    $constructBody .= '    } else {' . PHP_EOL;
 		    $constructBody .= '        $where[\'' . $key['field'] . '\'] =  $pk_val; ' . PHP_EOL;
 		    $constructBody .= '    }' . PHP_EOL;
@@ -296,12 +296,16 @@ class EntityManager extends AbstractGenerator
 	if ($this->data['_primaryKey']['phptype'] == 'array') {
 	    $constructBody .= '$primary_key = array();' . PHP_EOL;
 	    foreach ($this->data['_primaryKey']['fields'] as $key) {
-		$constructBody .= '$pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
-		$constructBody .= 'if ($pk_val === null) {' . PHP_EOL;
-		$constructBody .= '    return false;' . PHP_EOL;
-		$constructBody .= '} else {' . PHP_EOL;
-		$constructBody .= '    $primary_key[\'' . $key['field'] . '\'] =  $pk_val;' . PHP_EOL;
-		$constructBody .= '}' . PHP_EOL;
+		if (!$key['ai']) {
+		    $constructBody .= '$pk_val = $entity->get' . $key['capital'] . '();' . PHP_EOL;
+		    $constructBody .= 'if ($pk_val === null) {' . PHP_EOL;
+		    $constructBody .= '    return false;' . PHP_EOL;
+		    $constructBody .= '} else {' . PHP_EOL;
+		    $constructBody .= '    $primary_key[\'' . $key['field'] . '\'] =  $pk_val;' . PHP_EOL;
+		    $constructBody .= '}' . PHP_EOL;
+		} else {
+		    $constructBody .= '$primary_key[\'' . $key['field'] . '\'] =  $entity->get' . $key['capital'] . '();' . PHP_EOL;
+		}
 	    }
 	    $constructBody .= '$exists = $this->find($primary_key);' . PHP_EOL;
 	    $constructBody .= '$success = true;' . PHP_EOL;
@@ -312,7 +316,14 @@ class EntityManager extends AbstractGenerator
 	    $constructBody .= '    // Check for current existence to know if needs to be inserted' . PHP_EOL;
 	    $constructBody .= '    if ($exists === null) {' . PHP_EOL;
 	    $constructBody .= '        $this->insert($data);' . PHP_EOL;
-	} else {
+            if ($this->data['_primaryKey']['phptype'] == 'array') {
+                foreach ($this->data['_primaryKey']['fields'] as $key) {
+                    if ($key['ai']) {
+                        $constructBody .= '        $success = $primary_key[\'' . $key['field'] . '\'] =  $this->getLastInsertValue();' . PHP_EOL;
+                    } 
+                }
+            }
+        } else {
 	    $constructBody .= '$primary_key = $entity->get' . $this->data['_primaryKey']['capital'] . '();' . PHP_EOL;
 	    $constructBody .= '$success = true;' . PHP_EOL;
 	    $constructBody .= 'if ($useTransaction) {' . PHP_EOL;
@@ -343,7 +354,6 @@ class EntityManager extends AbstractGenerator
 	$constructBody .= '            $data,' . PHP_EOL;
 	$constructBody .= '            array(' . PHP_EOL;
 	if ($this->data['_primaryKey']['phptype'] == 'array') {
-	    $fields = count($this->data['_primaryKey']['fields']);
 	    foreach ($this->data['_primaryKey']['fields'] as $key) {
 		$constructBody .= '            \'' . $key['field'] . ' = ?\' => $primary_key[\'' . $key['field'] . '\'],' . PHP_EOL;
 	    }
@@ -352,6 +362,9 @@ class EntityManager extends AbstractGenerator
 	}
 	$constructBody .= '            )' . PHP_EOL;
 	$constructBody .= '        );' . PHP_EOL;
+	if ($this->data['_primaryKey']['phptype'] != 'array') {
+	    $constructBody .='     $success = $primary_key;' . PHP_EOL;
+	}
 	$constructBody .= '    }' . PHP_EOL;
 	if (count($this->data['dependentTables']) > 0) {
 	    $constructBody .= '    if ($recursive) {' . PHP_EOL;
@@ -368,17 +381,21 @@ class EntityManager extends AbstractGenerator
 		    $constructBody .= '            $entityManager = new ' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . '($this->adapter);' . PHP_EOL;
 		    $constructBody .= '            foreach ($' . $this->data['classNameDependent'][$key['key_name']]['foreign_tbl_name'] . ' as $value) {' . PHP_EOL;
 		    $constructBody .= '                $value' . PHP_EOL;
-		    if ($this->data['_primaryKey']['phptype'] !== 'array') {
-			$constructBody .= '                    ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
-		    } elseif (is_array($key['column_name'])) {
-			foreach (explode(',', $key['column_name'][0]) as $_column) {
-			    $column = trim(str_replace('`', '', $_column));
-			    $constructBody .= '                ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
-			}
-		    }
-		    $constructBody .= '                 ;' . PHP_EOL;
-		    $constructBody .= '                $success = $success && $entityManager->saveEntity($value,$ignoreEmptyValues, $recursive, false);' . PHP_EOL;
-		    $constructBody .= '                if (! $success) {' . PHP_EOL;
+                    if ($this->data['_primaryKey']['phptype'] !== 'array') {
+                        $constructBody .= '                    ->set' . $this->_getCapital($key['column_name']) . '($primary_key)' . PHP_EOL;
+                    }
+                    if (is_array($key['column_name'])) {
+                        if (is_array($key['column_name'])) {
+                            foreach (explode(',', $key['column_name'][0]) as $_column) {
+                                $column = trim(str_replace('`', '', $_column));
+                                $constructBody .= '                ->set' . $this->_getCapital($column) . '($primary_key[\'' . $column . '\'])' . PHP_EOL;
+                            }
+                        }
+                    } else {
+                        $constructBody .= '                ->set' . $this->_getCapital($key['column_name']) . '($primary_key[\'' . $key['foreign_tbl_column_name'] . '\'])' . PHP_EOL;
+                    }
+                    $constructBody .= '                 ;' . PHP_EOL;
+		    $constructBody .= '                if (! ($success && $entityManager->saveEntity($value,$ignoreEmptyValues, $recursive, false))) {' . PHP_EOL;
 		    $constructBody .= '                    break;' . PHP_EOL;
 		    $constructBody .= '                }' . PHP_EOL;
 		    $constructBody .= '            }' . PHP_EOL;

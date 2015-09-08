@@ -1,6 +1,6 @@
 <?php
 
-namespace Weez\ZendModelGenerator\Lib;
+namespace Weez\Generator\Lib;
 
 /**
  * main class for files creation
@@ -146,24 +146,6 @@ abstract class MakeDbTableAbstract
      * @var string
      */
     protected $_softDeleteColumn = null;
-
-    /**
-     * Name of the Cache Manager to use. Left blank if the feature is to be disabled
-     * @var string
-     */
-    protected $_cacheManagerName = '';
-
-    /**
-     * Name of the cache to use
-     * @var string
-     */
-    protected $_cacheName = 'model';
-
-    /**
-     * Name of the Zend Log to use. Left blank if the feature is to be disabled
-     * @var string
-     */
-    protected $_loggerName = '';
 
     /**
      *
@@ -320,34 +302,41 @@ abstract class MakeDbTableAbstract
      * 	Removes underscores and capital the letter that was after the underscore
      *  example: 'ab_cd_ef' to 'AbCdEf'
      *
-     * @param string $str
-     * @return string
+     * @param array|string $str
+     * @return array|string
      */
-    protected function _getClassName($str)
+    protected function _getClassName($_str)
     {
-        $temp = '';
-        // Remove common prefixes
-        foreach ($this->_tablePrefixes as $prefix) {
-            if (preg_match("/^$prefix/i", $str)) {
-                // Only replace a single prefix
-                $str = preg_replace("/^$prefix/i", '', $str);
-                break;
+        $str_tab = $_str;
+        if (!is_array($_str)) {
+            $str_tab = array($_str);
+        }
+        foreach ($str_tab as &$str) {
+            $temp = '';
+            // Remove common prefixes
+            foreach ($this->_tablePrefixes as $prefix) {
+                if (preg_match("/^$prefix/i", $str)) {
+                    // Only replace a single prefix
+                    $str = preg_replace("/^$prefix/i", '', $str);
+                    break;
+                }
             }
-        }
 
-        // Remove common suffixes
-        foreach ($this->_columnSuffixes as $suffix) {
-            if (preg_match("/$suffix$/i", $str)) {
-                // Only replace a single prefix
-                $str = preg_replace("/$suffix$/i", '', $str);
-                break;
+            // Remove common suffixes
+            foreach ($this->_columnSuffixes as $suffix) {
+                if (preg_match("/$suffix$/i", $str)) {
+                    // Only replace a single prefix
+                    $str = preg_replace("/$suffix$/i", '', $str);
+                    break;
+                }
             }
-        }
 
-        foreach (explode("_", $str) as $part) {
-            $temp.=ucfirst($part);
+            foreach (explode("_", $str) as $part) {
+                $temp.=ucfirst($part);
+            }
+            $str = $temp;
         }
-        return $temp;
+        return count($str_tab) > 1 ? $str_tab : $str_tab[0];
     }
 
     /**
@@ -362,22 +351,25 @@ abstract class MakeDbTableAbstract
         if ($type == 'parent') {
             // Check if a column exists with the same resulting name
             $str = $this->_getClassName($relation_info['column_name']);
-            foreach ($this->_columns as $column) {
-                if ($column['capital'] == $str) {
-                    $conflict = false;
-                    // Check if should use the table name so long as there is not another conflict
-                    foreach ($this->_dependentTables as $relation) {
-                        $conflict = $conflict || $this->_getClassName($relation['column_name']) == $str;
-                    }
+            if (is_array($str)) {
+                $str = $this->_getClassName($relation_info['foreign_tbl_name']);
+            } else {
+                foreach ($this->_columns as $column) {
+                    if ($column['capital'] == $str) {
+                        $conflict = false;
+                        // Check if should use the table name so long as there is not another conflict
+                        foreach ($this->_dependentTables as $relation) {
+                            $conflict = $conflict || $this->_getClassName($relation['column_name']) == $str;
+                        }
 
-                    if ($conflict) {
-                        $str = $this->_getClassName($relation_info['foreign_tbl_name']) . 'By' . $str;
-                    } else {
-                        $str = $this->_getClassName($relation_info['foreign_tbl_name']);
+                        if ($conflict) {
+                            $str = $this->_getClassName($relation_info['foreign_tbl_name']) . 'By' . $str;
+                        } else {
+                            $str = $this->_getClassName($relation_info['foreign_tbl_name']);
+                        }
                     }
                 }
             }
-            //$relations = $this->_foreignKeysInfo;
         } else {
 
             $table_count = 0;
@@ -488,28 +480,6 @@ abstract class MakeDbTableAbstract
         $this->_author    = $this->_config['docs.author'];
         $this->_license   = $this->_config['docs.license'];
         $this->_copyright = $this->_config['docs.copyright'];
-
-        $this->_cacheManagerName = $this->_config['cache.manager_name'];
-        $this->_cacheName        = $this->_config['cache.name'];
-
-        $this->_loggerName = $this->_config['log.logger_name'];
-    }
-
-    /**
-     *
-     * parse a tpl file and return the result
-     *
-     * @param String $tplFile
-     * @return String
-     */
-    public function getParsedTplContents($tplFile, $vars = array())
-    {
-        extract($vars);
-        ob_start();
-        require($this->getTemplatePath() . DIRECTORY_SEPARATOR . $tplFile);
-        $data = ob_get_contents();
-        ob_end_clean();
-        return $data;
     }
 
 }

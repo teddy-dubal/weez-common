@@ -12,18 +12,56 @@ class ModelFactory
 
     public function __construct($adapter, $container = null)
     {
-        $this->adapter   = $adapter;
-        $this->container = $container;
+	$this->adapter	 = $adapter;
+	$this->container = $container;
     }
 
-    public function get($class_name)
+    /**
+     * @return Container
+     */
+    public function getContainer()
     {
-        if (class_exists($class_name)) {
-            $class = new $class_name($this->adapter);
-            $class->setContainer($this->container);
-            return $class;
-        }
-        throw new Exception($class . " Not Found");
+	return $this->container;
+    }
+
+    /**
+     *
+     * @param Container $container
+     * @return \Weez\Model\ModelFactory
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+        return $this;
+    }
+
+    public function get($className)
+    {
+	if ($this->getContainer()->offsetExists('EntityManager.' . $className)) {
+	    return $this->getContainer()['EntityManager.' . $className];
+	}
+	if (count(explode('\\', $className)) > 1 && class_exists($className)) {
+	    $class = new $className($this->adapter);
+	    $class->setContainer($this->container);
+	    $this->getContainer()['EntityManager.' . $className] = $class;
+	    return $class;
+	}
+	/**
+	 * @TODO put model path in config file
+	 */
+	if (class_exists($cl = 'Weezevent\Model\Table\\' . $className)) {
+	    $class = new $cl($this->adapter);
+	    $class->setContainer($this->container);
+	    $this->getContainer()['EntityManager.' . $className] = $class;
+	    return $class;
+	}
+	if (class_exists($cl = 'Weezevent\Generated\Model\Table\\' . $className)) {
+	    $class = new $cl($this->adapter);
+	    $class->setContainer($this->container);
+	    $this->getContainer()['EntityManager.' . $className] = $class;
+	    return $class;
+	}
+	throw new Exception("Class " . $className . " Not found");
     }
 
 }

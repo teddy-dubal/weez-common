@@ -2,9 +2,9 @@
 
 use Pimple\Container;
 use Weez\Model\ModelFactory;
-use Weez\ZendModelGenerator\demo\Core\Model\Entity\Accounts;
-use Weez\ZendModelGenerator\demo\Core\Model\Entity\Bugs;
-use Weez\ZendModelGenerator\demo\Core\Model\Entity\User;
+use Weez\Generator\demo\Core\Model\Entity\Accounts;
+use Weez\Generator\demo\Core\Model\Entity\Bugs;
+use Weez\Generator\demo\Core\Model\Entity\User;
 use Zend\Db\Adapter\Adapter;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
@@ -27,7 +27,7 @@ $app['entity'] = function() use ($app) {
 };
 
 $timestart = microtime(true);
-$userManager = $app['entity']->get('\Weez\ZendModelGenerator\demo\Core\Model\Table\User');
+$userManager = $app['entity']->get('\Weez\Generator\demo\Core\Model\Table\User');
 $nbUser      = 10;
 echo "***********************************************" . "<br>";
 //Ajouter x users
@@ -64,6 +64,13 @@ echo "***********************************************" . "<br>";
 $name = 'Teddy';
 echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
 $u    = $userManager->findBy(array('name' => $name), 'id ASC', 10, null, false);
+echo '<pre>';
+var_dump($u);
+echo '</pre>';
+echo "***********************************************" . "<br>";
+$name = 'Teddy';
+echo sprintf('Count by criteria (name) : %s', $name) . "<br>";
+$u    = $userManager->countBy(array('name' => $name));
 echo '<pre>';
 var_dump($u);
 echo '</pre>';

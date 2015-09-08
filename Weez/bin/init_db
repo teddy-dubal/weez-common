@@ -1,0 +1,5 @@
+#!/bin/bash
+#sqlite3 zdmg.db
+echo 'Installation sqlite'
+echo "Répertoire d'installation :"
+read path
