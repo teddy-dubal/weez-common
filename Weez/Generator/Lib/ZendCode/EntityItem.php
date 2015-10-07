@@ -504,7 +504,7 @@ class EntityItem extends AbstractGenerator
         $constructBody = '';
         foreach ($this->data['_columns'] as $column) {
             if (strpos($column['type'], 'datetime') !== false) {
-                $constructBody .= '$this->' . $column['capital'] . ' = $this->set' . $column['capital'] . '(isset($data[\'' . $column['field'] . '\']) ? $data[\'' . $column['field'] . '\'] : null);' . PHP_EOL;
+                $constructBody .= '$this->set' . $column['capital'] . '(isset($data[\'' . $column['field'] . '\']) ? $data[\'' . $column['field'] . '\'] : null);' . PHP_EOL;
             } else {
                 $constructBody .= '$this->' . $column['capital'] . ' = isset($data[\'' . $column['field'] . '\']) ? $data[\'' . $column['field'] . '\'] : null;' . PHP_EOL;
             }
