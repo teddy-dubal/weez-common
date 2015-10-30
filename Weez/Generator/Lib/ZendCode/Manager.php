@@ -161,28 +161,6 @@ class Manager extends AbstractGenerator
                         )
                 ),
                 array(
-                    'name'       => 'all',
-                    'parameters' => array(),
-                    'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => '$select = $this->select();'
-                        . '$result = array();' . PHP_EOL
-                        . 'foreach ($select as $v) {' . PHP_EOL
-                        . '     $result[] = $v->getArrayCopy();' . PHP_EOL
-                        . '}' . PHP_EOL
-                        . 'return $result;',
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => '',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ReturnTag(array(
-                                        'datatype' => 'self',
-                                    )),
-                                )
-                            )
-                        )
-                ),
-                array(
                     'name'       => 'getPrimaryKeyName',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
