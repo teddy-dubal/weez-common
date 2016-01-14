@@ -355,7 +355,7 @@ BODY
                 ,
                     'docblock'   => DocBlockGenerator::fromArray(
                             array(
-                                'shortDescription' => ' Commit a transaction',
+                                'shortDescription' => ' @see Zend\Db\TableGateway\AbstractTableGateway::selectWith',
                                 'longDescription'  => null,
                                 'tags'             => array(),
                             )
