@@ -361,6 +361,32 @@ BODY
                             )
                         )
                 ),
+                array(
+                    'name'       => 'selectWith',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name' => 'select',
+                            'type' => 'Select',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => <<<'BODY'
+    return parent::selectWith($select);
+BODY
+                    ,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => ' Commit a transaction',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('select', array('Select')),
+                                new ReturnTag(array(
+                                    'datatype' => 'ResultSet',
+                                )),
+                            )
+                        )
+                    )
+                ),
             )
         );
     }
@@ -369,11 +395,13 @@ BODY
     {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse($this->useTableGatewayClass)
-                ->addUse('Zend\Db\TableGateway\Feature')
-            ->addUse('Zend\Db\Sql\Expression')
-                ->addUse($this->data['_namespace'] . '\Entity\Entity')
-            ->addUse('Pimple\Container')
-            ->addUse('Zend\Db\Adapter\Adapter');
+              ->addUse('Zend\Db\TableGateway\Feature')
+              ->addUse('Zend\Db\Sql\Expression')
+              ->addUse($this->data['_namespace'] . '\Entity\Entity')
+              ->addUse('Pimple\Container')
+              ->addUse('Zend\Db\Adapter\Adapter')
+              ->addUse('Zend\Db\ResultSet\ResultSet')
+              ->addUse('Zend\Db\Sql\Select');
         $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
 
