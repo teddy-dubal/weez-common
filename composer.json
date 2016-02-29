@@ -2,25 +2,25 @@
     "name": "weez/common",
     "description": "Common Lib for weezevent",
     "authors": [
-	{
-	    "name": "T.ED",
-	    "email": "t.erembertdubal@weezevent.com"
-	}
+        {
+            "name": "T.ED",
+            "email": "t.erembertdubal@weezevent.com"
+        }
     ],
     "require": {
-	"symfony/console": "~2.6",
-	"symfony/filesystem": "~2.6",
-	"symfony/finder": "~2.6",
-	"zendframework/zend-db": "~2.4",
-	"zendframework/zend-inputfilter": "~2.4",
-	"zendframework/zend-code": "~2.4",
-	"fabpot/php-cs-fixer": "2.0.*@dev",
-	"pimple/pimple": "3.0.0"
+        "symfony/console": "v3.0.3",
+        "symfony/filesystem": "v3.0.3",
+        "symfony/finder": "v3.0.3",
+        "zendframework/zend-db": "~2.4",
+        "zendframework/zend-inputfilter": "~2.4",
+        "zendframework/zend-code": "~2.4",
+        "fabpot/php-cs-fixer": "2.0.*@dev",
+        "pimple/pimple": "3.0.0"
     },
     "autoload": {
-	"psr-0": {
-	    "Weez": ""
-	}
+        "psr-0": {
+            "Weez": ""
+        }
     },
     "bin": ["weezcmd"]
 }
