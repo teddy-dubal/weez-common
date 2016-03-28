@@ -4,8 +4,7 @@
 $config=array(
 
     # author name used in documentation
-    'docs.author' => '<YOUR NAME HERE>',
-
+    'docs.author' => 'Test',
     # licence for your code
     'docs.license' => 'http://framework.zend.com/license/new-bsd     New BSD License',
 
