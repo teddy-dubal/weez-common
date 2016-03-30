@@ -23,7 +23,7 @@ $p        = array(
         'local' => array(
             'exchange' => 'default_direct',
             'queues'   => array(
-                'catch_all'
+                'direct'
             )
         )
     ),
@@ -63,11 +63,10 @@ $p        = array(
         ),
     ),
     'queues'      => array(
-        'catch_all' => array(
+        'direct' => array(
             'options'     => array(
-                'name' => 'Weez.Q.Topic.v1.catch_all',
+                'name' => 'Weez.Q.Direct.v1',
             ),
-//            'exchange'    => 'default_direct',
             'routing_key' => 'donation.toto',
             'callback'    => 'Weez\Rabbitmq\Workers\debugWorker'
         ),

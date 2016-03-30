@@ -218,13 +218,11 @@ class RabbitMQ {
         $consumer = new Consumer($con_params);
         $consumer->setDic($this->c);
         $this->setExchange($consumer, $config);
-
         echo "Connected to " . $con_params['host'] . ":" . $con_params['port'] . " (vhost:" . $con_params['vhost'] . ")\n";
         // get queues
         $queues = array();
         if (!empty($config['queues'])) {
             $queue_config = $this->getConfig('queues');
-
             if (is_array($config['queues'])) {
                 foreach ($config['queues'] as $queue) {
                     echo "queue: " . $queue . "\n";
@@ -249,7 +247,6 @@ class RabbitMQ {
         if (!empty($config['callback'])) {
             $consumer->setCallback(array($config['callback'], 'execute'));
         }
-
         if (!empty($config['routing_key'])) {
             if (is_array($config['routing_key'])) {
                 foreach ($config['routing_key'] as $routing_key) {

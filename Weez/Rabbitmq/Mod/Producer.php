@@ -53,7 +53,8 @@ class Producer extends \Thumper\Producer {
         $this->_dic = $dic;
     }
 
-    public function publish($msgBody, $routingKey = '', $msg_arguments = array()) {
+    public function publish($msgBody, $routingKey = '', $msg_arguments = array())
+    {
         if (!$this->exchangeReady) {
             //declare a durable non autodelete exchange
             $this->ch->exchange_declare($this->exchangeOptions['name'], $this->exchangeOptions['type'], $this->exchangeOptions['passive'], $this->exchangeOptions['durable'], $this->exchangeOptions['auto_delete'], $this->exchangeOptions['internal'], $this->exchangeOptions['nowait'], $this->exchangeOptions['arguments'], $this->exchangeOptions['ticket']);

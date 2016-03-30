@@ -30,14 +30,14 @@ $p        = array(
             'exchange' => 'default_direct'
         )
     ),
-    'consumers'   => array(
-        'local' => array(
-            'exchange' => 'default_direct',
-            'queues'   => array(
-                'catch_all'
-            )
-        )
-    ),
+//    'consumers'   => array(
+//        'local' => array(
+//            'exchange' => 'default_direct',
+//            'queues'   => array(
+//                'catch_all'
+//            )
+//        )
+//    ),
     'exchanges'   => array(
         'default_topic'  => array(
             'exchange_options' => array(
@@ -73,22 +73,24 @@ $p        = array(
             )
         ),
     ),
-    'queues'      => array(
-        'catch_all' => array(
-            'options'     => array(
-                'name' => 'Weez.Q.Topic.v1.catch_all',
-            ),
-//            'exchange'    => 'default_topic',
-            'routing_key' => '#',
-            'callback'    => 'Weez\Rabbitmq\Workers\debugWorker'
-        ),
-    ),
+//    'queues'      => array(
+//        'catch_all' => array(
+//            'options'     => array(
+//                'name' => 'Weez.Q.Topic.v1.catch_all',
+//            ),
+////            'exchange'    => 'default_topic',
+//            'routing_key' => '#',
+//            'callback'    => 'Weez\Rabbitmq\Workers\debugWorker'
+//        ),
+//    ),
 );
 $c                  = new Pimple\Container();
 $c['rabbitmq_conf'] = $p;
 $ck       = isset($argv[1]) ? $argv[1] : 'local';
 $producer           = new Weez\Rabbitmq\RabbitMQ($c);
 for ($i = 0; $i < 10; $i++) {
+    $rt_k = $routing_keys[array_rand($routing_keys)];
+    var_dump($rt_k);
     $msg = json_encode(array('blabl' => 'FTW ' . $i));
-    $producer->publish($ck, $msg, $routing_keys[array_rand($routing_keys)], array(), $ck);
+    $producer->publish($ck, $msg, $rt_k, array(), $ck);
 }
