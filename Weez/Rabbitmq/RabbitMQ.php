@@ -17,6 +17,7 @@ class RabbitMQ {
 
     protected $c; // Pimple
     protected $config;
+    protected $is_debug = false;
 
     public function __construct(Container $c) {
         $this->c = $c;
@@ -37,6 +38,25 @@ class RabbitMQ {
     protected function getConfig($key, $default = null) {
         return (!empty($this->config[$key])) ? $this->config[$key] : $default;
     }
+    /**
+     *
+     * @param boolean $debug
+     * @return \Weez\Rabbitmq\RabbitMQ
+     */
+    public function setDebug($debug)
+    {
+        $this->is_debug = $debug;
+        return $this;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isDebug()
+    {
+        return (boolean) $this->is_debug;
+    }
 
     /**
      *
@@ -48,9 +68,7 @@ class RabbitMQ {
      * @param type $connection
      */
     public function publish($producer, $msg, $routing_key = '', $msg_arguments = array(), $connection = 'default') {
-        //static $producers;
-        global $is_debug;
-        if (!$is_debug) {
+        if (!$this->is_debug) {
             try {
                 //if (!isset($producers[$producer])) {
                 $producers[$producer] = $this->getProducer($producer, $connection);

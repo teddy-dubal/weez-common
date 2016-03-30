@@ -107,7 +107,7 @@ $base_config = array(
             'options'     => array(
                 'name' => 'Weez.Q.Topic.v1.email_send',
             ),
-            'exchange'    => 'default_topic',
+//            'exchange'    => 'default_topic',
             'routing_key' => 'email.send',
             'callback'    => 'Weez\Rabbitmq\Workers\emailWorker'
         ),
@@ -115,7 +115,7 @@ $base_config = array(
             'options'     => array(
                 'name' => 'Weez.Q.Topic.v1.catch_all',
             ),
-            'exchange'    => 'default_topic',
+//            'exchange'    => 'default_topic',
             'routing_key' => '#',
             'callback'    => 'Weez\Rabbitmq\Workers\debugWorker'
         ),
@@ -123,7 +123,7 @@ $base_config = array(
             'options'     => array(
                 'name' => 'Weez.Q.Topic.v1.dead_letter',
             ),
-            'exchange'    => 'dead_topic',
+//            'exchange'    => 'dead_topic',
             'routing_key' => '#',
             'callback'    => 'Weez\Rabbitmq\Workers\deadLetterWorker'
         ),
@@ -137,7 +137,7 @@ $base_config = array(
                     )
                 )
             ),
-            'exchange'    => 'default_topic',
+//            'exchange'    => 'default_topic',
             'routing_key' => 'delayed.#',
             'callback'    => 'Weez\Rabbitmq\Workers\debugWorker'
         )
