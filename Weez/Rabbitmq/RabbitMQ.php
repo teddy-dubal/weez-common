@@ -293,7 +293,7 @@ class RabbitMQ {
         return $consumer;
     }
 
-    public function getRpcClient($name, $connection = null) {
+    public function getRpcClient($name, $connection = 'default') {
         $config = $this->getConfig('rpc_clients');
 
         if (empty($config[$name]) or ! $config = $config[$name]) {
@@ -310,7 +310,7 @@ class RabbitMQ {
         return $client;
     }
 
-    public function getRpcServer($name, $connection = null) {
+    public function getRpcServer($name, $connection = 'default') {
         $config = $this->getConfig('rpc_servers');
         if (empty($config[$name]) or ! $config = $config[$name]) {
             throw new Exception(sprintf('There is no rabbitmq rpc server with "%s" name in config', $name));
