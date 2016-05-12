@@ -560,13 +560,11 @@ class EntityItem extends AbstractGenerator
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function generate()
     {
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
-        $class
-                ->addUse($this->data['_namespace'] . '\Entity\\Entity');
         $this->defineFileInfo($class);
         $fileGenerator = $this->getFileGenerator();
 

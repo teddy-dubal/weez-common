@@ -169,8 +169,7 @@ class EntityManager extends AbstractGenerator {
                         'longDescription' => null,
                         'tags' => array(
                             new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
-                            new ReturnTag(array($this->data['_className'] . 'Entity',
-                                'null'), 'Found entity'),
+                            new ReturnTag(array('array','null'), 'Found entity'),
                         )
                     )
             )
@@ -396,7 +395,7 @@ class EntityManager extends AbstractGenerator {
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name' => 'entity',
-                    'type' => 'Entity',
+                    'type' => $this->data['_className'].'Entity',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name' => 'ignoreEmptyValues',
@@ -418,7 +417,7 @@ class EntityManager extends AbstractGenerator {
                         'shortDescription' => 'Saves current row, and optionally dependent rows',
                         'longDescription' => null,
                         'tags' => array(
-                            new ParamTag('entity', array('Entity'), 'Entity to save'),
+                            new ParamTag('entity', array($this->data['_className'].'Entity'), 'Entity to save'),
                             new ParamTag('ignoreEmptyValues', array('boolean'), 'Should empty values saved'),
                             new ParamTag('recursive', array('boolean'), 'Should the object graph be walked for all related elements'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if save should be done inside a database transaction'),
@@ -486,7 +485,7 @@ class EntityManager extends AbstractGenerator {
      */
     public function generate() {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
-        $class->addUse($this->data['_namespace'] . '\Table\Manager')
+        $class
                 ->addUse('Zend\Db\Adapter\Adapter')
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'], $this->data['_className'] . 'Entity')

@@ -278,6 +278,20 @@ class Entity extends AbstractGenerator
                     )
                 ),
                 array(
+                    'name'       => 'toArray',
+                    'parameters' => array(),
+                    'flags'      => MethodGenerator::FLAG_ABSTRACT,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => 'Returns an array, keys are the field names.',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ReturnTag(array('datatype' => 'array')),
+                            )
+                        )
+                    )
+                ),
+                array(
                     'name'       => 'getPrimaryKey',
                     'parameters' => array(),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
