@@ -1,6 +1,6 @@
 <?php
 
-namespace Kartel\Tools;
+namespace Weez\Tools;
 
 use Exception;
 use Zend\Mail\Message;
@@ -81,8 +81,8 @@ class Mail
 	$at->type	 = 'application/pdf';
 	$at->disposition = Mime::DISPOSITION_INLINE;
 	$at->encoding	 = Mime::ENCODING_BASE64;
-	$at->filename	 = 'My_' . date('YmdHis') . '.pdf';
-	return $this;
+	$at->filename    = date('YmdHis') . '.pdf';
+        return $this;
     }
 
     /**
