@@ -6,8 +6,8 @@ use Exception;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
-use Zend\Mime\Mime;
 use Zend\Mime\Message as MimeMessage;
+use Zend\Mime\Mime;
 use Zend\Mime\Part as MimePart;
 
 class Mail
