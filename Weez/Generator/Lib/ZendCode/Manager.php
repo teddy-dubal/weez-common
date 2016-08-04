@@ -277,6 +277,31 @@ class Manager extends AbstractGenerator
                     )
                 ),
                 array(
+                    'name'       => 'exists',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
+                                    '$r->limit(1);' . PHP_EOL .
+                                    '$result = $this->selectWith($r);' . PHP_EOL . PHP_EOL .
+                                    'return $result->count() === 1;',
+                    'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => 'Is a least one row exists with criteria',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('criteria', array('array'), 'Criteria'),
+                                new ReturnTag(array('bool'), ''),
+                            )
+                        )
+                    )
+                ),
+                array(
                     'name'       => 'deleteEntity',
                     'parameters' => array(
                         ParameterGenerator::fromArray(
