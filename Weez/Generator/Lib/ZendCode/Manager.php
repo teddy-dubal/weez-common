@@ -254,6 +254,67 @@ class Manager extends AbstractGenerator
                     )
                 ),
                 array(
+                    'name'       => 'findOneBy',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
+                        '$result = $this->selectWith($r);' . PHP_EOL .
+                        'if($result->count() > 0){' . PHP_EOL .
+                        '    throw new \Exception("More than One arrayEntity find by criteria submitted .");' . PHP_EOL .
+                        '}' . PHP_EOL .
+                        'return $result->current();' . PHP_EOL,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => 'Find one by criteria',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('criteria', array('array'), 'Search criteria'),
+                                new ReturnTag(array('array|\ArrayObject|null'), '' ),
+                                new ThrowsTag(array('\Exception'), '' ),
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'name'       => 'findOneEntityBy',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(array(
+                            'name'         => 'criteria',
+                            'defaultvalue' => array(),
+                            'type'         => 'array',
+                        )),
+                    ),
+                    'flags'      => MethodGenerator::FLAG_PUBLIC,
+                    'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
+                        '$result = $this->selectWith($r);' . PHP_EOL .
+                        'if($result->count() > 0){' . PHP_EOL .
+                        '    throw new \Exception("More than Entity find by criteria submitted .");' . PHP_EOL .
+                        '}' . PHP_EOL .
+                        '$result = $result->toArray();' . PHP_EOL .
+                        'foreach ($result as &$v) {' . PHP_EOL .
+                        '    $entity =  clone $this->entity;' . PHP_EOL .
+                        '    $v = $entity->exchangeArray($v);'  . PHP_EOL .
+                        '}' . PHP_EOL .
+                        'return $entity;' . PHP_EOL,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                        array(
+                            'shortDescription' => 'Find Entity one by criteria',
+                            'longDescription'  => null,
+                            'tags'             => array(
+                                new ParamTag('criteria', array('array'), 'Search criteria'),
+                                new ReturnTag(array('null|Entity'), '' ),
+                                new ThrowsTag(array('\Exception'), '' ),
+                            )
+                        )
+                    )
+                ),
+                array(
                     'name'       => 'countBy',
                     'parameters' => array(
                         ParameterGenerator::fromArray(array(
