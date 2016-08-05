@@ -265,10 +265,10 @@ class Manager extends AbstractGenerator
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
                     'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
                         '$result = $this->selectWith($r);' . PHP_EOL .
-                        'if($result->count() > 0){' . PHP_EOL .
+                        'if($result->count() > 1){' . PHP_EOL .
                         '    throw new \Exception("More than One arrayEntity find by criteria submitted .");' . PHP_EOL .
                         '}' . PHP_EOL .
-                        'return $result->current();' . PHP_EOL,
+                        'return (array) $result->current();' . PHP_EOL,
                     'docblock'   => DocBlockGenerator::fromArray(
                         array(
                             'shortDescription' => 'Find one by criteria',
@@ -291,17 +291,9 @@ class Manager extends AbstractGenerator
                         )),
                     ),
                     'flags'      => MethodGenerator::FLAG_PUBLIC,
-                    'body'       => '$r = $this->sql->select()->where($criteria);' . PHP_EOL .
-                        '$result = $this->selectWith($r);' . PHP_EOL .
-                        'if($result->count() > 0){' . PHP_EOL .
-                        '    throw new \Exception("More than Entity find by criteria submitted .");' . PHP_EOL .
-                        '}' . PHP_EOL .
-                        '$result = $result->toArray();' . PHP_EOL .
-                        'foreach ($result as &$v) {' . PHP_EOL .
-                        '    $entity =  clone $this->entity;' . PHP_EOL .
-                        '    $v = $entity->exchangeArray($v);'  . PHP_EOL .
-                        '}' . PHP_EOL .
-                        'return $entity;' . PHP_EOL,
+                    'body'       => '$r = $this->findOneBy($criteria);' . PHP_EOL .
+                        '$entity =  clone $this->entity;' . PHP_EOL .
+                        'return $entity->exchangeArray($r);'  . PHP_EOL ,
                     'docblock'   => DocBlockGenerator::fromArray(
                         array(
                             'shortDescription' => 'Find Entity one by criteria',
