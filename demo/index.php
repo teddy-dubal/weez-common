@@ -7,7 +7,7 @@ use Weez\Generator\demo\Core\Model\Entity\Bugs;
 use Weez\Generator\demo\Core\Model\Entity\User;
 use Zend\Db\Adapter\Adapter;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 $config    = require_once '../config/config.php';
 $app       = new Container();

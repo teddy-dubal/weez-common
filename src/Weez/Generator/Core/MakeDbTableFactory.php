@@ -1,12 +1,12 @@
 <?php
 
-namespace Weez\Generator\Lib;
+namespace Weez\Generator\Core;
 
-use Weez\Generator\Lib\MakeDbTableAbstract;
-use Weez\Generator\Lib\ZendCode\Entity;
-use Weez\Generator\Lib\ZendCode\EntityItem;
-use Weez\Generator\Lib\ZendCode\EntityManager;
-use Weez\Generator\Lib\ZendCode\Manager;
+use Weez\Generator\Core\MakeDbTableAbstract;
+use Weez\Generator\Core\ZendCode\Entity;
+use Weez\Generator\Core\ZendCode\EntityItem;
+use Weez\Generator\Core\ZendCode\EntityManager;
+use Weez\Generator\Core\ZendCode\Manager;
 
 /**
  * main class for files creation

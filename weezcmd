@@ -13,5 +13,5 @@ if (file_exists($a = __DIR__ . '/../../autoload.php')) {
 } else {
     require_once __DIR__ . '/vendor/autoload.php';
 }
-require __DIR__ . '/Weez/console.php';
+require __DIR__ . '/src/Weez/console.php';
 

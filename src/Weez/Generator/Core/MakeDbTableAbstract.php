@@ -1,6 +1,6 @@
 <?php
 
-namespace Weez\Generator\Lib;
+namespace Weez\Generator\Core;
 
 /**
  * main class for files creation
