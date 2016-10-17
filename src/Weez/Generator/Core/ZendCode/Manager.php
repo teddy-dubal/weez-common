@@ -412,32 +412,32 @@ BODY
                             )
                     )
                 ),
-                array(
-                    'name'       => 'deleteEntity',
-                    'parameters' => array(
-                        ParameterGenerator::fromArray(
-                                array(
-                                    'name' => 'entity',
-                                )
-                        ),
-                        'useTransaction = true'
-                    ),
-                    'flags'      => array(MethodGenerator::FLAG_PUBLIC, MethodGenerator::FLAG_ABSTRACT),
-                    'body'       => null,
-                    'docblock'   => DocBlockGenerator::fromArray(
-                            array(
-                                'shortDescription' => 'Converts database column name to php setter/getter function name',
-                                'longDescription'  => null,
-                                'tags'             => array(
-                                    new ParamTag('entity'),
-                                    new ParamTag('useTransaction', array('boolean')),
-                                    new ReturnTag(array(
-                                        'datatype' => 'int',
-                                            )),
-                                )
-                            )
-                    )
-                ),
+                /* array(
+                  'name'       => 'deleteEntity',
+                  'parameters' => array(
+                  ParameterGenerator::fromArray(
+                  array(
+                  'name' => 'entity',
+                  )
+                  ),
+                  'useTransaction = true'
+                  ),
+                  'flags'      => array(MethodGenerator::FLAG_PUBLIC, MethodGenerator::FLAG_ABSTRACT),
+                  'body'       => null,
+                  'docblock'   => DocBlockGenerator::fromArray(
+                  array(
+                  'shortDescription' => 'Converts database column name to php setter/getter function name',
+                  'longDescription'  => null,
+                  'tags'             => array(
+                  new ParamTag('entity'),
+                  new ParamTag('useTransaction', array('boolean')),
+                  new ReturnTag(array(
+                  'datatype' => 'int',
+                  )),
+                  )
+                  )
+                  )
+                  ), */
                 array(
                     'name'       => 'beginTransaction',
                     'parameters' => array(),
