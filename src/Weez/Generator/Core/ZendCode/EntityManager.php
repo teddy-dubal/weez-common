@@ -248,7 +248,7 @@ class EntityManager extends AbstractGenerator {
                         'shortDescription' => 'Deletes the current entity',
                         'longDescription' => null,
                         'tags' => array(
-                            new ParamTag('entity', array('Entity'), 'Entity to delete'),
+                            new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Entity to delete'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if delete should be done inside a database transaction'),
                             new ReturnTag(array('int', 'array', 'false'), 'Inserted id'),
                         )
