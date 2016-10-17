@@ -234,7 +234,7 @@ class EntityManager extends AbstractGenerator {
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name' => 'entity',
-                    'type' => 'Entity',
+                    'type' => $this->data['_className'] . 'Entity',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name' => 'useTransaction',
