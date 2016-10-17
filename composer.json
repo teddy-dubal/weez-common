@@ -3,7 +3,7 @@
     "description": "Common Lib for weezevent",
     "authors": [
         {
-            "name": "T.ED",
+            "name": "Teddy Dona",
             "email": "teddy.dona@gmail.com"
         }
     ],
@@ -17,17 +17,27 @@
         "pimple/pimple": "3.0.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "* v1.6.0",
+        "fzaninotto/faker": "v1.6.0",
         "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^5.4",
         "phpspec/phpspec": "^2.5",
-        "friendsofphp/php-cs-fixer": "v1.11.5"
+        "monolog/monolog": "~1.7",
+        "friendsofphp/php-cs-fixer": "v2.0.0-alpha"
     },
     "autoload": {
-        "psr-0": {
-            "":"demo/",
-            "Weez": "src/"
+        "psr-4": {
+            "Weez\\": "src"
         }
     },
-    "bin": ["weezcmd"]
+    "autoload-dev": {
+        "psr-0": {
+            "": "demo/"
+        },
+        "psr-4": {
+            "Weez\\Model\\": "demo/models"
+        }
+    },
+    "bin": [
+        "weezcmd"
+    ]
 }

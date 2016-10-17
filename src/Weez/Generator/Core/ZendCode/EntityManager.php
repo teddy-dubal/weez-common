@@ -27,7 +27,6 @@ class EntityManager extends AbstractGenerator {
         $methods = array_merge($methods, $this->getMethods());
         $methods = array_merge($methods, $this->getSaveEntityMethod());
         $methods = array_merge($methods, $this->getDeleteEntityMethod());
-//	$methods = array_merge($methods, $this->getUtils());
 
 
         return array(
@@ -169,13 +168,11 @@ class EntityManager extends AbstractGenerator {
                         'longDescription' => null,
                         'tags' => array(
                             new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
-                            new ReturnTag(array($this->data['_className'] . 'Entity',
-                                'null'), 'Found entity'),
+                            new ReturnTag(array('array','null'), 'Found entity'),
                         )
                     )
             )
         );
-
         return $methods;
     }
 
@@ -223,6 +220,8 @@ class EntityManager extends AbstractGenerator {
         $constructBody .= '        $this->commit();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '} catch (\Exception $e) {' . PHP_EOL;
+        $constructBody .= '    !isset($this->getContainer()[\'logger\']) ? : $this->getContainer()[\'logger\']->debug(__CLASS__ . \'|\' . __FUNCTION__, array(' . PHP_EOL;
+        $constructBody .= '    \'error\'=>$e->getMessage()));' . PHP_EOL;
         $constructBody .= '    if ($useTransaction) {' . PHP_EOL;
         $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
@@ -315,21 +314,15 @@ class EntityManager extends AbstractGenerator {
                 $constructBody .= '    if ($exists === null) {' . PHP_EOL;
             }
             $constructBody .= '        $this->insert($data);' . PHP_EOL;
-            if (!$this->data['_primaryKey']['foreign_key']) {
-                $constructBody .= '        $primary_key = $this->getLastInsertValue();' . PHP_EOL;
-                $constructBody .= '        if ($primary_key) {' . PHP_EOL;
-                $constructBody .= '            $entity->set' . $this->data['_primaryKey']['capital'] . '($primary_key);' . PHP_EOL;
-                if ($this->data['_returnId']) {
-                    $constructBody .= '            $success = $primary_key;' . PHP_EOL;
-                }
-                $constructBody .= '        } else {' . PHP_EOL;
-                $constructBody .= '            $success = false;' . PHP_EOL;
-                $constructBody .= '        }' . PHP_EOL;
-            } else {
-                if ($this->data['_returnId']) {
-                    $constructBody .= '            $success = $primary_key;' . PHP_EOL;
-                }
+            $constructBody .= '        $primary_key = $this->getLastInsertValue();' . PHP_EOL;
+            $constructBody .= '        if ($primary_key) {' . PHP_EOL;
+            $constructBody .= '            $entity->set' . $this->data['_primaryKey']['capital'] . '($primary_key);' . PHP_EOL;
+            if ($this->data['_returnId']) {
+                $constructBody .= '            $success = $primary_key;' . PHP_EOL;
             }
+            $constructBody .= '        } else {' . PHP_EOL;
+            $constructBody .= '            $success = false;' . PHP_EOL;
+            $constructBody .= '        }' . PHP_EOL;
         }
         $constructBody .= '    } else {' . PHP_EOL;
         $constructBody .= '        $this->update(' . PHP_EOL;
@@ -391,6 +384,8 @@ class EntityManager extends AbstractGenerator {
         $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
         $constructBody .= '} catch (\Exception $e) {' . PHP_EOL;
+        $constructBody .= '    !isset($this->getContainer()[\'logger\']) ? : $this->getContainer()[\'logger\']->debug(__CLASS__ . \'|\' . __FUNCTION__, array(' . PHP_EOL;
+        $constructBody .= '    \'error\'=>$e->getMessage()));' . PHP_EOL;
         $constructBody .= '    if ($useTransaction) {' . PHP_EOL;
         $constructBody .= '        $this->rollback();' . PHP_EOL;
         $constructBody .= '    }' . PHP_EOL;
@@ -402,7 +397,7 @@ class EntityManager extends AbstractGenerator {
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name' => 'entity',
-                    'type' => 'Entity',
+                    'type' => $this->data['_className'].'Entity',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name' => 'ignoreEmptyValues',
@@ -424,61 +419,11 @@ class EntityManager extends AbstractGenerator {
                         'shortDescription' => 'Saves current row, and optionally dependent rows',
                         'longDescription' => null,
                         'tags' => array(
-                            new ParamTag('entity', array('Entity'), 'Entity to save'),
+                            new ParamTag('entity', array($this->data['_className'].'Entity'), 'Entity to save'),
                             new ParamTag('ignoreEmptyValues', array('boolean'), 'Should empty values saved'),
                             new ParamTag('recursive', array('boolean'), 'Should the object graph be walked for all related elements'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if save should be done inside a database transaction'),
                             new ReturnTag(array('int', 'array', 'false'), 'Inserted ID'),
-                        )
-                    )
-            )
-        );
-        return $methods;
-    }
-
-    private function getUtils() {
-        $constructBody = 'return $this->adapter->platform->quoteIdentifier($name);
-';
-        $methods[] = array(
-            'name' => 'qi',
-            'parameters' => array(
-                ParameterGenerator::fromArray(array(
-                    'name' => 'name',
-                    'type' => 'string',
-                ))
-            ),
-            'flags' => MethodGenerator::FLAG_PUBLIC,
-            'body' => $constructBody,
-            'docblock' => DocBlockGenerator::fromArray(
-                    array(
-                        'shortDescription' => 'Apply quoteIdentifier',
-                        'longDescription' => null,
-                        'tags' => array(
-                            new ParamTag('name', array('string'), 'String to quote'),
-                            new ReturnTag(array('datatype' => 'string'), 'Quoted string'),
-                        )
-                    )
-            )
-        );
-        $constructBody = 'return $this->adapter->driver->formatParameterName($name);
-';
-        $methods[] = array(
-            'name' => 'fp',
-            'parameters' => array(
-                ParameterGenerator::fromArray(array(
-                    'name' => 'name',
-                    'type' => 'string',
-                ))
-            ),
-            'flags' => MethodGenerator::FLAG_PUBLIC,
-            'body' => $constructBody,
-            'docblock' => DocBlockGenerator::fromArray(
-                    array(
-                        'shortDescription' => 'Apply formatParameterName',
-                        'longDescription' => null,
-                        'tags' => array(
-                            new ParamTag('name', array('string'), 'Parameter name to format'),
-                            new ReturnTag(array('datatype' => 'string'), 'Formated parameter name'),
                         )
                     )
             )
@@ -492,7 +437,7 @@ class EntityManager extends AbstractGenerator {
      */
     public function generate() {
         $class = ClassGenerator::fromArray($this->getClassArrayRepresentation());
-        $class->addUse($this->data['_namespace'] . '\Table\Manager')
+        $class
                 ->addUse('Zend\Db\Adapter\Adapter')
                 ->addUse($this->data['_namespace'] . '\Entity\\Entity')
                 ->addUse($this->data['_namespace'] . '\Entity\\' . $this->data['_className'], $this->data['_className'] . 'Entity')

@@ -3,18 +3,18 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema testzdmg
+-- Schema common
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `testzdmg` ;
-CREATE SCHEMA IF NOT EXISTS `testzdmg` DEFAULT CHARACTER SET utf8 ;
-USE `testzdmg` ;
+DROP SCHEMA IF EXISTS `common` ;
+CREATE SCHEMA IF NOT EXISTS `common` DEFAULT CHARACTER SET utf8 ;
+USE `common` ;
 
 -- -----------------------------------------------------
--- Table `testzdmg`.`accounts`
+-- Table `common`.`accounts`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testzdmg`.`accounts` ;
+DROP TABLE IF EXISTS `common`.`accounts` ;
 
-CREATE TABLE IF NOT EXISTS `testzdmg`.`accounts` (
+CREATE TABLE IF NOT EXISTS `common`.`accounts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `account_name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`))
@@ -23,11 +23,11 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `testzdmg`.`bugs`
+-- Table `common`.`bugs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testzdmg`.`bugs` ;
+DROP TABLE IF EXISTS `common`.`bugs` ;
 
-CREATE TABLE IF NOT EXISTS `testzdmg`.`bugs` (
+CREATE TABLE IF NOT EXISTS `common`.`bugs` (
   `bug_id` INT(11) NOT NULL,
   `bug_description` VARCHAR(100) NULL DEFAULT NULL,
   `bug_status` VARCHAR(20) NULL DEFAULT NULL,
@@ -40,25 +40,25 @@ CREATE TABLE IF NOT EXISTS `testzdmg`.`bugs` (
   INDEX `bugs_ibfk_3_idx` (`verified_by` ASC),
   CONSTRAINT `bugs_ibfk_1`
     FOREIGN KEY (`reported_by`)
-    REFERENCES `testzdmg`.`accounts` (`id`)
+    REFERENCES `common`.`accounts` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `bugs_ibfk_2`
     FOREIGN KEY (`assigned_to`)
-    REFERENCES `testzdmg`.`accounts` (`id`),
+    REFERENCES `common`.`accounts` (`id`),
   CONSTRAINT `bugs_ibfk_3`
     FOREIGN KEY (`verified_by`)
-    REFERENCES `testzdmg`.`accounts` (`id`))
+    REFERENCES `common`.`accounts` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `testzdmg`.`products`
+-- Table `common`.`products`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testzdmg`.`products` ;
+DROP TABLE IF EXISTS `common`.`products` ;
 
-CREATE TABLE IF NOT EXISTS `testzdmg`.`products` (
+CREATE TABLE IF NOT EXISTS `common`.`products` (
   `product_id` INT(11) NOT NULL,
   `product_name` VARCHAR(100) NULL DEFAULT NULL,
   PRIMARY KEY (`product_id`))
@@ -67,31 +67,31 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `testzdmg`.`bugs_products`
+-- Table `common`.`bugs_products`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testzdmg`.`bugs_products` ;
+DROP TABLE IF EXISTS `common`.`bugs_products` ;
 
-CREATE TABLE IF NOT EXISTS `testzdmg`.`bugs_products` (
+CREATE TABLE IF NOT EXISTS `common`.`bugs_products` (
   `bug_id` INT(11) NOT NULL,
   `product_id` INT(11) NOT NULL,
   PRIMARY KEY (`bug_id`, `product_id`),
   INDEX `product_id` (`product_id` ASC),
   CONSTRAINT `bugs_products_ibfk_1`
     FOREIGN KEY (`bug_id`)
-    REFERENCES `testzdmg`.`bugs` (`bug_id`),
+    REFERENCES `common`.`bugs` (`bug_id`),
   CONSTRAINT `bugs_products_ibfk_2`
     FOREIGN KEY (`product_id`)
-    REFERENCES `testzdmg`.`products` (`product_id`))
+    REFERENCES `common`.`products` (`product_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `testzdmg`.`user`
+-- Table `common`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testzdmg`.`user` ;
+DROP TABLE IF EXISTS `common`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `testzdmg`.`user` (
+CREATE TABLE IF NOT EXISTS `common`.`user` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))

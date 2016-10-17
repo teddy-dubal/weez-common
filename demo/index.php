@@ -1,88 +1,114 @@
 <?php
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Pimple\Container;
-use Weez\Model\ModelFactory;
-use Weez\Generator\demo\Core\Model\Entity\Accounts;
-use Weez\Generator\demo\Core\Model\Entity\Bugs;
-use Weez\Generator\demo\Core\Model\Entity\User;
+use Weez\Factory\ModelFactory;
+use Weez\Model\Entity\User;
 use Zend\Db\Adapter\Adapter;
 
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$config    = require_once '../config/config.php';
+$config    = require_once __DIR__ . '/config/config.php';
 $app       = new Container();
 $app['db'] = array(
     'driver'   => 'Pdo_Mysql',
     'host'     => $config['db.host'],
-    'dbname'   => 'testzdmg',
+    'dbname'   => 'common',
     'username' => $config['db.user'],
     'password' => $config['db.password'],
     'charset'  => 'utf8',
 );
-
+$app['logger'] = function ($container) {
+    $log = new Logger('Weez-Common-Log');
+    $log->pushHandler(new StreamHandler('php://stderr'));
+    return $log;
+};
 $app['entity'] = function() use ($app) {
     $db           = new Adapter($app['db']);
     $modelFactory = new ModelFactory($db, $app);
     return $modelFactory;
 };
 
-$timestart = microtime(true);
-$userManager = $app['entity']->get('\Weez\Generator\demo\Core\Model\Table\User');
+$timestart   = microtime(true);
+$userManager = $app['entity']->get('\Weez\Model\Table\User');
 $nbUser      = 10;
-echo "***********************************************" . "<br>";
+echo "***********************************************" . PHP_EOL;
 //Ajouter x users
-echo sprintf('Ajout de %s users', $nbUser) . "<br>";
+echo sprintf('Ajout de %s users', $nbUser) . PHP_EOL;
 for ($i = 0; $i < $nbUser; $i++) {
     $user   = new User();
     $user->setOptions(array('name' => 'Teddy_' . $i));
     $user->setOptions(array('name' => 'Teddy'));
     $result = $userManager->saveEntity($user);
-    echo sprintf('User id:%s', $result) . "<br>";
+    echo sprintf('User id:%s', $result) . PHP_EOL;
 }
-echo "***********************************************" . "<br>";
+echo "***********************************************" . PHP_EOL;
 //Afficher les x users
-echo sprintf('Affichage des %s users', $nbUser) . "<br>";
-$result   = $userManager->fetchAll();
+echo sprintf('Affichage des %s users', $nbUser) . PHP_EOL;
+$result   = $userManager->findBy([]);
 $id_Users = array();
 foreach ($result as $v) {
-    echo '<pre>';
     var_dump($v);
-    echo '</pre>';
     $id_Users[] = $v['id'];
 }
 $key = array_rand($id_Users);
 $id  = $id_Users[$key];
-echo "***********************************************" . "<br>";
-echo sprintf('Find user id : %s', $id) . "<br>";
+echo "***********************************************" . PHP_EOL;
+echo sprintf('Find user id : %s', $id) . PHP_EOL;
 $u   = $userManager->find($id);
 
-echo '<pre>';
 var_dump($u);
-echo '</pre>';
-echo "***********************************************" . "<br>";
-echo "***********************************************" . "<br>";
+
+echo "***********************************************" . PHP_EOL;
 $name = 'Teddy';
-echo sprintf('Find user by criteria (name) : %s', $name) . "<br>";
+echo sprintf('Find user by criteria (name) : %s', $name) . PHP_EOL;
 $u    = $userManager->findBy(array('name' => $name), 'id ASC', 10, null, false);
-echo '<pre>';
+
 var_dump($u);
-echo '</pre>';
-echo "***********************************************" . "<br>";
+echo "***********************************************" . PHP_EOL;
+
+echo sprintf('Find user by criteria (name) in debug mode : %s', $name) . PHP_EOL;
+$userManager->setDebug(true);
+$u    = $userManager->findBy(array('name' => $name), 'id ASC', 10, null, false);
+var_dump($u);
+$userManager->setDebug(false);
+echo "***********************************************" . PHP_EOL;
 $name = 'Teddy';
-echo sprintf('Count by criteria (name) : %s', $name) . "<br>";
+echo sprintf('Count by criteria (name) : %s', $name) . PHP_EOL;
 $u    = $userManager->countBy(array('name' => $name));
-echo '<pre>';
+
 var_dump($u);
-echo '</pre>';
-echo "***********************************************" . "<br>";
-echo sprintf('Suppression des %s users', $nbUser) . "<br>";
+
+echo "***********************************************" . PHP_EOL;
+$name = 'Teddy';
+echo sprintf('FindOneBy With result : %s', $name) . PHP_EOL;
+$u    = $userManager->findOneBy(array('name' => $name));
+var_dump($u);
+echo "***********************************************" . PHP_EOL;
+$name = 'Meddy';
+echo sprintf('FindOneBy Without result : %s', $name) . PHP_EOL;
+$u    = $userManager->findOneBy(array('name' => $name));
+var_dump($u);
+echo "***********************************************" . PHP_EOL;
+$name = 'Teddy';
+echo sprintf('FindOneEntityBy With result : %s', $name) . PHP_EOL;
+$u    = $userManager->findOneEntityBy(array('name' => $name));
+var_dump($u);
+echo "***********************************************" . PHP_EOL;
+$name = 'Meddy';
+echo sprintf('FindOneEntityBy Without result : %s', $name) . PHP_EOL;
+$u    = $userManager->findOneEntityBy(array('name' => $name));
+var_dump($u);
+echo "***********************************************" . PHP_EOL;
+echo sprintf('Suppression des %s users', $nbUser) . PHP_EOL;
 foreach ($id_Users as $v) {
     $userToDelete = new User();
     $userToDelete->setId($v);
     $res          = $userManager->deleteEntity($userToDelete);
 }
 
-echo "***********************************************" . "<br>";
+echo "***********************************************" . PHP_EOL;
 
 $timeend = microtime(true);
 $time    = $timeend - $timestart;
@@ -90,4 +116,4 @@ $time    = $timeend - $timestart;
 $page_load_time = number_format($time, 3);
 //echo "Debut du script: " . date("H:i:s", $timestart);
 //echo "<br>Fin du script: " . date("H:i:s", $timeend);
-echo "<br>Script execute en " . $page_load_time . " sec";
+echo PHP_EOL . "Script execute en " . $page_load_time . " sec" . PHP_EOL;
