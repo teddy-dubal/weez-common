@@ -418,7 +418,6 @@ BODY
                         ParameterGenerator::fromArray(
                                 array(
                                     'name' => 'entity',
-                                    'type' => 'Entity',
                                 )
                         ),
                         'useTransaction = true'
@@ -430,7 +429,7 @@ BODY
                                 'shortDescription' => 'Converts database column name to php setter/getter function name',
                                 'longDescription'  => null,
                                 'tags'             => array(
-                                    new ParamTag('entity', array('Entity')),
+                                    new ParamTag('entity'),
                                     new ParamTag('useTransaction', array('boolean')),
                                     new ReturnTag(array(
                                         'datatype' => 'int',
