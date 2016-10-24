@@ -168,11 +168,13 @@ class EntityManager extends AbstractGenerator {
                         'longDescription' => null,
                         'tags' => array(
                             new ParamTag('id', array($this->data['_primaryKey']['phptype']), 'Primary key value'),
-                            new ReturnTag(array('array','null'), 'Found entity'),
+                            new ReturnTag(array($this->data['_className'] . 'Entity',
+                                'null'), 'Found entity'),
                         )
                     )
             )
         );
+
         return $methods;
     }
 
@@ -234,7 +236,7 @@ class EntityManager extends AbstractGenerator {
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name' => 'entity',
-                    'type' => $this->data['_className'] . 'Entity',
+                    'type' => 'Entity',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name' => 'useTransaction',
@@ -248,7 +250,7 @@ class EntityManager extends AbstractGenerator {
                         'shortDescription' => 'Deletes the current entity',
                         'longDescription' => null,
                         'tags' => array(
-                            new ParamTag('entity', array($this->data['_className'] . 'Entity'), 'Entity to delete'),
+                            new ParamTag('entity', array('Entity'), 'Entity to delete'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if delete should be done inside a database transaction'),
                             new ReturnTag(array('int', 'array', 'false'), 'Inserted id'),
                         )
@@ -397,7 +399,7 @@ class EntityManager extends AbstractGenerator {
             'parameters' => array(
                 ParameterGenerator::fromArray(array(
                     'name' => 'entity',
-                    'type' => $this->data['_className'].'Entity',
+                    'type' => 'Entity',
                 )),
                 ParameterGenerator::fromArray(array(
                     'name' => 'ignoreEmptyValues',
@@ -419,7 +421,7 @@ class EntityManager extends AbstractGenerator {
                         'shortDescription' => 'Saves current row, and optionally dependent rows',
                         'longDescription' => null,
                         'tags' => array(
-                            new ParamTag('entity', array($this->data['_className'].'Entity'), 'Entity to save'),
+                            new ParamTag('entity', array('Entity'), 'Entity to save'),
                             new ParamTag('ignoreEmptyValues', array('boolean'), 'Should empty values saved'),
                             new ParamTag('recursive', array('boolean'), 'Should the object graph be walked for all related elements'),
                             new ParamTag('useTransaction', array('boolean'), 'Flag to indicate if save should be done inside a database transaction'),

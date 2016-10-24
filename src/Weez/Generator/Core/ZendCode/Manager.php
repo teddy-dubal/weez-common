@@ -22,15 +22,13 @@ use Zend\Code\Generator\PropertyGenerator;
  *
  * @author teddy
  */
-class Manager extends AbstractGenerator
-{
+class Manager extends AbstractGenerator {
 
     private $tableGatewayClass    = 'AbstractTableGateway';
     private $useTableGatewayClass = 'Zend\Db\TableGateway\AbstractTableGateway';
     private $data;
 
-    public function getClassArrayRepresentation()
-    {
+    public function getClassArrayRepresentation() {
         $this->data = $this->getData();
 
         return array(
@@ -122,7 +120,7 @@ class Manager extends AbstractGenerator
                     'parameters' => array(
                         ParameterGenerator::fromArray(
                                 array(
-                                    'name' => 'debug',
+                                    'name'         => 'debug',
                                     'defaultvalue' => true,
                                 )
                         )
@@ -412,32 +410,33 @@ BODY
                             )
                     )
                 ),
-                /* array(
-                  'name'       => 'deleteEntity',
-                  'parameters' => array(
-                  ParameterGenerator::fromArray(
-                  array(
-                  'name' => 'entity',
-                  )
-                  ),
-                  'useTransaction = true'
-                  ),
-                  'flags'      => array(MethodGenerator::FLAG_PUBLIC, MethodGenerator::FLAG_ABSTRACT),
-                  'body'       => null,
-                  'docblock'   => DocBlockGenerator::fromArray(
-                  array(
-                  'shortDescription' => 'Converts database column name to php setter/getter function name',
-                  'longDescription'  => null,
-                  'tags'             => array(
-                  new ParamTag('entity'),
-                  new ParamTag('useTransaction', array('boolean')),
-                  new ReturnTag(array(
-                  'datatype' => 'int',
-                  )),
-                  )
-                  )
-                  )
-                  ), */
+                array(
+                    'name'       => 'deleteEntity',
+                    'parameters' => array(
+                        ParameterGenerator::fromArray(
+                                array(
+                                    'name' => 'entity',
+                                    'type' => 'Entity',
+                                )
+                        ),
+                        'useTransaction = true'
+                    ),
+                    'flags'      => array(MethodGenerator::FLAG_PUBLIC, MethodGenerator::FLAG_ABSTRACT),
+                    'body'       => null,
+                    'docblock'   => DocBlockGenerator::fromArray(
+                            array(
+                                'shortDescription' => 'Converts database column name to php setter/getter function name',
+                                'longDescription'  => null,
+                                'tags'             => array(
+                                    new ParamTag('entity', array('Entity')),
+                                    new ParamTag('useTransaction', array('boolean')),
+                                    new ReturnTag(array(
+                                        'datatype' => 'int',
+                                            )),
+                                )
+                            )
+                    )
+                ),
                 array(
                     'name'       => 'beginTransaction',
                     'parameters' => array(),
@@ -574,8 +573,7 @@ BODY
         );
     }
 
-    public function generate()
-    {
+    public function generate() {
         $class         = ClassGenerator::fromArray($this->getClassArrayRepresentation());
         $class->addUse($this->useTableGatewayClass)
                 ->addUse('Zend\Db\TableGateway\Feature')
@@ -598,8 +596,7 @@ BODY
      *
      * @return self
      */
-    public function setTableGatewayClass($tableGatewayClass)
-    {
+    public function setTableGatewayClass($tableGatewayClass) {
         $this->tableGatewayClass = $tableGatewayClass;
 
         return $this;
@@ -610,8 +607,7 @@ BODY
      *
      * @return self
      */
-    public function setUseTableGatewayClass($useTableGatewayClass)
-    {
+    public function setUseTableGatewayClass($useTableGatewayClass) {
         $this->useTableGatewayClass = $useTableGatewayClass;
 
         return $this;
