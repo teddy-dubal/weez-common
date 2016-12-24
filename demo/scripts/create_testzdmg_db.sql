@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `common`.`accounts` ;
 CREATE TABLE IF NOT EXISTS `common`.`accounts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `account_name` VARCHAR(100) NOT NULL,
+  `last_login` datetime DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -34,6 +35,8 @@ CREATE TABLE IF NOT EXISTS `common`.`bugs` (
   `reported_by` INT NULL DEFAULT NULL,
   `assigned_to` INT NULL DEFAULT NULL,
   `verified_by` INT NULL DEFAULT NULL,
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`bug_id`),
   INDEX `bugs_ibfk_1_idx` (`reported_by` ASC),
   INDEX `bugs_ibfk_2_idx` (`assigned_to` ASC),

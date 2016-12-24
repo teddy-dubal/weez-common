@@ -205,10 +205,11 @@ class EntityItem extends AbstractGenerator
     {
         $methods = array();
         foreach ($this->data['_columns'] as $column) {
+            $is_date       = strpos($column['type'], 'datetime') === false && strpos($column['type'], 'timestamp') === false;
             $comment       = 'Sets column ' . $column['field'];
-            $comment .= strpos($column['type'], 'datetime') === false ? '' : ' Stored in ISO 8601 format .';
+            $comment .= $is_date ? '' : ' Stored in ISO 8601 format .';
             $constructBody = '';
-            if (strpos($column['type'], 'datetime') !== false) {
+            if (!$is_date) {
                 $constructBody .= 'if (! empty($data)) {' . PHP_EOL;
                 $constructBody .= '    if (! $data instanceof \DateTime) {' . PHP_EOL;
                 $constructBody .= '        $data = new \DateTime($data);' . PHP_EOL;
@@ -237,7 +238,7 @@ class EntityItem extends AbstractGenerator
                 )
             );
             $comment       = 'Gets column ' . $column['field'];
-            $comment .= strpos($column['type'], 'datetime') === false ? '' : ' Stored in ISO 8601 format .';
+            $comment .= $is_date ? '' : ' Stored in ISO 8601 format .';
             $constructBody = '';
             $parameters    = array();
             $tags          = array(
@@ -245,7 +246,7 @@ class EntityItem extends AbstractGenerator
                     'datatype' => $column['phptype'],
                         )),
             );
-            if (strpos($column['type'], 'datetime') !== false) {
+            if (!$is_date) {
                 $parameters = array(
                     ParameterGenerator::fromArray(
                             array(
@@ -503,7 +504,8 @@ class EntityItem extends AbstractGenerator
     {
         $constructBody = '';
         foreach ($this->data['_columns'] as $column) {
-            if (strpos($column['type'], 'datetime') !== false) {
+            $is_date = strpos($column['type'], 'datetime') !== false || strpos($column['type'], 'timestamp') !== false;
+            if ($is_date) {
                 $constructBody .= '$this->set' . $column['capital'] . '(isset($data[\'' . $column['field'] . '\']) ? $data[\'' . $column['field'] . '\'] : null);' . PHP_EOL;
             } else {
                 $constructBody .= '$this->' . $column['capital'] . ' = isset($data[\'' . $column['field'] . '\']) ? $data[\'' . $column['field'] . '\'] : null;' . PHP_EOL;
