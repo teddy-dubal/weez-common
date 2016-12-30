@@ -509,7 +509,12 @@ BODY
     !isset($this->getContainer()['logger']) ? : $this->getContainer()['logger']->debug(__CLASS__ . '|' . __FUNCTION__, array(
     'sql' => $select->getSqlString($this->getAdapter()->getPlatform())));
     }
+    try {
     return parent::selectWith($select);
+    } catch(\Exception $e){
+    !isset($this->getContainer()['logger']) ? : $this->getContainer()['logger']->error(__CLASS__ . '|' . __FUNCTION__, array(
+    'error' => $e->getMessage()));
+    }
 BODY
                     ,
                     'docblock'   => DocBlockGenerator::fromArray(
